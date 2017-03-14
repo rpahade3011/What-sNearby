@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searchMain"
+    android:background="#FFF">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@color/colorPrimary"
+            android:padding="16dp"
+            android:id="@+id/searchBar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:id="@+id/options"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="32dp"
+                    android:id="@+id/back"
+                    android:src="@drawable/ic_arrow_back_white_24dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/namePlaceHolder"
+                        android:textAllCaps="true"
+                        android:textColor="#fff"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:scrollHorizontally="true"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:gravity="start|center_vertical"
+                        android:text="Search Places"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/initial"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_below="@id/options"
+                android:layout_marginTop="16dp"
+                android:weightSum="1">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:id="@+id/startingPoint"
+                    android:src="@drawable/ic_place_white_24dp" />
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@null"
+                    android:labelFor="@id/startingPoint"
+                    android:id="@+id/places_autocomplete"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="32dp"
+                    android:textSize="16sp"
+                    android:typeface="sans"
+                    android:background="@color/colorPrimaryDark"
+                    android:padding="4dp" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginEnd="10dp"
+                android:src="@mipmap/powered_by_google_on_non_white"
+                android:layout_below="@+id/initial"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/grad"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@+id/searchBar"
+            android:background="@drawable/searchbarback"
+            android:orientation="horizontal">
+        </LinearLayout>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchResult"
+            android:layout_below="@+id/grad">
+        </ListView>
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/getDirection"
+        android:theme="@style/Theme.AppCompat.Light"
+        app:fabSize="normal"
+        android:clickable="true"
+        app:backgroundTint="@color/yellow"
+        android:src="@drawable/ic_directions_black_24dp"
+        app:rippleColor="@color/light_gray"
+        app:elevation="5dp"
+        app:layout_anchor="@id/searchBar"
+        app:layout_anchorGravity="bottom|end"
+        android:layout_marginRight="16dp" />
+
+</android.support.design.widget.CoordinatorLayout>

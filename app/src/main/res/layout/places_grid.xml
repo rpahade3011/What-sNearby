@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary">
+
+    <GridView
+        android:id="@+id/places"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="175dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="3dp"
+        android:stretchMode="spacingWidthUniform"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true">
+    </GridView>
+
+</RelativeLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:id="@+id/contentDescription">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:scaleType="centerInside"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_arrow_back_white_24dp"
+            android:id="@+id/back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/namePlaceHolder"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:gravity="center"
+            android:text="Details"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:scaleType="centerInside"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_search"
+            android:id="@+id/search" />
+    </LinearLayout>
+
+    <com.nearby.whatsnearby.views.SlidingTabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingTop="10dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/contentDescription"
+        android:layout_gravity="center_horizontal|top" />
+
+    <LinearLayout
+        android:id="@+id/grad"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:background="@drawable/searchbarback"
+        android:orientation="horizontal"
+        android:layout_below="@+id/tabs"
+        android:layout_gravity="center_horizontal|top">
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/places_detail"
+        android:layout_gravity="center"
+        android:layout_below="@+id/grad">
+    </android.support.v4.view.ViewPager>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/message"
+        android:layout_below="@+id/contentDescription"
+        android:layout_alignParentStart="true">
+    </FrameLayout>
+
+</RelativeLayout>

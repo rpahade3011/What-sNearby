@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:background="#000000"
+    android:alpha="0.5">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:alpha="1">
+
+        <com.nearby.rudraksh.whatsnearby.crystalpreloader.CrystalPreloader
+            android:id="@+id/crystalLoader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:crs_pl_style="in_circle"
+            custom:crs_pl_size="large"
+            custom:crs_pl_fg_color="#000"
+            custom:crs_pl_bg_color="#fff"/>
+
+        <TextView
+            android:layout_toRightOf="@+id/crystalLoader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_estimation"
+            android:id="@+id/tvTimeEstimation"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:padding="5dp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

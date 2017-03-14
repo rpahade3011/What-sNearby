@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#444153</color>
+    <color name="colorPrimaryDark">#383547</color>
+    <color name="colorAccent">#95a5a6</color>
+    <color name="primary">#FF5722</color>
+    <color name="primary_light">#ff6636</color>
+    <color name="primary_dark">#E64A19</color>
+    <color name="accent">#ffc400</color>673ab7
+    <color name="yellow">#fbff00</color>
+    <color name="text_primary">#D9FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="light_gray">#FFe1e1e1</color>
+    <color name="dark_gray">#FFD1D1D1</color>
+    <color name="blue">#0288D1</color>
+    <color name="teal">#009688</color>
+    <color name="green">#2E7D32</color>
+    <color name="fab_green">#4CAF50</color>
+    <color name="text_secondary">#D9000000</color>
+    <color name="card_blue">#00BED4</color>
+    <color name="card_facebook">#3b5998</color>
+    <color name="card_twitter">#4099FF</color>
+
+    <color name="search_primary">#00838F</color>
+    <color name="search_primary_dark">#006064</color>
+    <color name="search_primary_light">#46565e</color>
+    <color name="colorPrimaryLight">#1976d2</color>
+    <color name="bgContentTop">#594691</color>
+    <color name="contentDividerLine">#e0e0e0</color>
+    <color name="contentBadgeTitle">#a9a9a9</color>
+    <color name="titleBadgeTitle">#adafb1</color>
+    <color name="titleBadgeText">#adafb1</color>
+    <color name="black_overlay">#66000000</color>
+
+    <!-- GUILLOTINE NAVIGATION COLOR RESOURCES -->
+    <color name="guillotine_background">#444153</color>
+    <color name="guillotine_background_dark">#383547</color>
+    <color name="selected_item_color">#30d1d5</color>
+
+    <!-- SWEET ALERT DIALOG COLOR RESOURCES -->
+    <color name="float_transparent">#00000000</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="gray_btn_bg_color">#D0D0D0</color>
+    <color name="gray_btn_bg_pressed_color">#B6B6B6</color>
+    <color name="blue_btn_bg_color">#AEDEF4</color>
+    <color name="blue_btn_bg_pressed_color">#96BFD2</color>
+    <color name="red_btn_bg_color">#DD6B55</color>
+    <color name="red_btn_bg_pressed_color">#CD5B55</color>
+    <color name="error_stroke_color">#F27474</color>
+    <color name="success_stroke_color">#A5DC86</color>
+    <color name="trans_success_stroke_color">#33A5DC86</color>
+    <color name="warning_stroke_color">#F8BB86</color>
+    <color name="text_color">#575757</color>
+    <color name="material_blue_grey_80">#ff37474f</color>
+    <color name="material_blue_grey_90">#ff263238</color>
+    <color name="material_blue_grey_95">#ff21272b</color>
+    <color name="material_deep_teal_20">#ff80cbc4</color>
+    <color name="material_deep_teal_50">#ff009688</color>
+
+    <color name="background">#6163ce</color>
+    <color name="backgroundDark">#353554</color>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_images"
+        android:gravity="center_horizontal"
+        android:layout_centerVertical="true" />
+
+    <GridView
+        android:id="@+id/placesImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnWidth="175dp"
+        android:numColumns="auto_fit"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="4dp"
+        android:stretchMode="spacingWidthUniform"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true">
+    </GridView>
+
+</RelativeLayout>

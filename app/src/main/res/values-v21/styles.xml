@@ -1,0 +1,13 @@
+<resources>
+    <style name="Theme.Guillotine" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:colorPrimaryDark">@color/guillotine_background</item>
+        <item name="android:colorPrimary">@color/guillotine_background_dark</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <!-- enable window content transitions -->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:typeface">serif</item>
+    </style>
+</resources>

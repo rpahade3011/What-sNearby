@@ -1,0 +1,28 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=3B:FC:D0:98:23:4B:F3:43:7A:7B:7F:39:EC:D1:30:82:05:6D:F9:B7%3Bcom.nearby.rudraksh.whatsnearby.Activities
+
+    You can also add your credentials to an existing key, using this line:
+    3B:FC:D0:98:23:4B:F3:43:7A:7B:7F:39:EC:D1:30:82:05:6D:F9:B7;com.nearby.rudraksh.whatsnearby.Activities
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+         AIzaSyBe1V_etMvTgwlUrTvxzZwlyK0mWZ_1p24
+    </string>
+    <string name="google_places_search_server_key" translatable="false">
+        AIzaSyA2nMz4vfd-wyeivmvJffVB5RP59POoTm0
+    </string>
+    
+    <string name="admob_id">ca-app-pub-5293031144790539~9762984208</string>
+    <string name="wn_banner_id">ca-app-pub-5293031144790539/3716450603</string>
+    <string name="wn_interstitial_id">ca-app-pub-5293031144790539/2100116606</string>
+</resources>
