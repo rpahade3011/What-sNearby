@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/What-sNearby.iml" filepath="$PROJECT_DIR$/What-sNearby.iml" />
-      <module fileurl="file://$PROJECT_DIR$/WhatsNearby.iml" filepath="$PROJECT_DIR$/WhatsNearby.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

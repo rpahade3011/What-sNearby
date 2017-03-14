@@ -106,6 +106,7 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
                     detailActivity.putExtra("placeId", search.getPlaceID());
                     startActivity(detailActivity);
                 }
+                ActivitySearch.this.finish();
             }
         });
         resultAdapter = new SearchResultAdapter(this, results);
