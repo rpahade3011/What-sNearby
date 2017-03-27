@@ -52,10 +52,6 @@ android {
         disable "ResourceType"
     }
     splits {
-        density {
-            enable true
-            compatibleScreens 'small', 'normal', 'large', 'xlarge'
-        }
         abi {
             enable true
             reset()
