@@ -10,7 +10,7 @@
     android:padding="16dp"
     android:orientation="horizontal"
     android:id="@+id/review_item">
-    <com.nearby.rudraksh.whatsnearby.views.RoundImageView
+    <com.nearby.whatsnearby.views.RoundImageView
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:id="@+id/author_icon"
