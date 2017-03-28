@@ -27,4 +27,6 @@ public class GlobalSettings {
     public static final float DEFAULT_BACKOFF_MULT = 1f;
 
     public static String DISTANCE_AND_TIME_ETA = null;
+
+    public static final String WHATS_NEARBY_GOOGLE_PLAY_STORE_URL_LINK = "https://play.google.com/store/apps/details?id=";
 }

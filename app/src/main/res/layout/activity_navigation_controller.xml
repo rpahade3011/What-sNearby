@@ -25,7 +25,8 @@
             <ImageView
                 android:id="@+id/content_hamburger"
                 style="@style/ImageView.Hamburger"
-                android:src="@mipmap/ic_menu_90" />
+                android:src="@mipmap/ic_menu_90"
+                android:contentDescription="@string/about"/>
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -74,6 +75,14 @@
                 android:gravity="center"/>
 
         </pl.bclogic.pulsator4droid.library.PulsatorLayout>
-
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/ad_view"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/colorPrimary"
+            android:layout_gravity="bottom"
+            app:adSize="BANNER"
+            app:adUnitId="@string/wn_banner_id" />
     </LinearLayout>
 </FrameLayout>

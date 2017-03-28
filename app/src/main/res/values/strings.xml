@@ -25,6 +25,9 @@
 
     <string name="google_map_static_api_url">https://maps.googleapis.com/maps/api/staticmap?center=</string>
 
+    <!-- [Developer Privacy Policy URL] -->
+    <string name="dev_privacy_policy_url">https://docs.google.com/document/d/1RYqPBi2Y_XRS7E7xPbtfmACeyPRkCcYLt6RbG9rRGO8/edit?usp=sharing</string>
+
     <!-- Guillotine Strings -->
     <string name="explore">EXPLORE</string>
     <string name="share">SHARE</string>

@@ -9,13 +9,14 @@ import android.util.DisplayMetrics;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.nearby.whatsnearby.places.DirectionsJSONParser;
 import com.nearby.whatsnearby.utilities.MapUtil;
-import com.nearby.whatsnearby.views.MapRipple;
 
 import org.json.JSONObject;
 
@@ -31,7 +32,7 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
 
     private Activity activity;
     private GoogleMap map;
-    private MapRipple mMapRipple = null;
+    private Circle mCircle = null;
 
     public ParseDirectionAPITask(Activity a, GoogleMap gm) {
         this.activity = a;
@@ -94,12 +95,12 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
             LatLngBounds bounds = boundsBuilder.build();
             DisplayMetrics displaymetrics = new DisplayMetrics();
             activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            int height = displaymetrics.heightPixels - 150;
+            int height = displaymetrics.heightPixels - 100;
             int width = displaymetrics.widthPixels;
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height - width, 100));
 
             // Start destination location ripple
-            //makeDestinationRipple();
+            makeDestinationRipple();
         }
     }
 
@@ -107,14 +108,11 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                mMapRipple = new MapRipple(map, MapUtil.destinationBounds, activity.getApplicationContext());
-                mMapRipple.withNumberOfRipples(3);
-                mMapRipple.withFillColor(0x80383547);
-                mMapRipple.withStrokewidth(1);
-                mMapRipple.withStrokeColor(0x55ffffff);
-                mMapRipple.withTransparency(0.5f);
-                mMapRipple.withDistance(2000);
-                mMapRipple.startRippleMapAnimation();
+                mCircle = map.addCircle(new CircleOptions()
+                        .center(MapUtil.destinationBounds).radius(500)
+                        .strokeColor(1)
+                        .strokeColor(0x55ffffff)
+                        .fillColor(0x55383547));
             }
         });
     }
