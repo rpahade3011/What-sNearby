@@ -2,6 +2,7 @@ package com.nearby.whatsnearby.appupdater;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -45,6 +46,8 @@ public class AppUpdateHandler {
     private boolean showAlert = true;
     private UpdateListener updateListener;
     private String PACKAGE_NAME = "";
+    private String CONNECTION_ERROR_TITLE = "Connection Error";
+    private String CONNECTION_ERROR_MESSAGE = "Unable to check for updates, Please check your internet connection";
 
     public AppUpdateHandler(AppCompatActivity activity) {
         this.activity = activity;
@@ -99,8 +102,20 @@ public class AppUpdateHandler {
                     GlobalSettings.DEFAULT_MAX_RETRIES, GlobalSettings.DEFAULT_BACKOFF_MULT));
             queue.add(request);
         } else {
-            TopMessageManager.showError("Unable to check for updates, Please check your internet connection",
-                    "Connection Error", TopMessage.DURATION.MEDIUM);
+            /*TopMessageManager.showError("Unable to check for updates, Please check your internet connection",
+                    "Connection Error", TopMessage.DURATION.MEDIUM);*/
+            TopMessageManager.showError(CONNECTION_ERROR_MESSAGE,
+                    CONNECTION_ERROR_TITLE, new TopMessage.ConfirmOrCancelCallback() {
+                        @Override
+                        public void confirmClick(View self) {
+                            startCheckingUpdate();
+                        }
+
+                        @Override
+                        public void cancelClick(View self) {
+                            activity.finish();
+                        }
+                    }, "RETRY", "EXIT");
         }
     }
 

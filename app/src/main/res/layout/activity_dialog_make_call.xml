@@ -19,7 +19,7 @@
         tools:ignore="UselessParent"
         android:alpha="1.0">
 
-        <com.nearby.rudraksh.whatsnearby.views.CircleImageView
+        <com.nearby.whatsnearby.views.CircleImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:id="@+id/avatar_author"

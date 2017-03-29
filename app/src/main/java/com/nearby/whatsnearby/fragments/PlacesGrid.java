@@ -32,7 +32,9 @@ public class PlacesGrid extends Fragment {
 
     private InterstitialAd mInterstitialAd = null;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.places_grid, container, false);
 
         final PlacesConstants placesConstants = new PlacesConstants();

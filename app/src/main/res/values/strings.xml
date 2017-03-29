@@ -22,6 +22,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="application_exit_msg">Press back again to exit %s</string>
 
     <string name="google_map_static_api_url">https://maps.googleapis.com/maps/api/staticmap?center=</string>
 

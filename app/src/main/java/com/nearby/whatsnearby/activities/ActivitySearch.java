@@ -75,12 +75,15 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
         setContentView(R.layout.activity_search);
 
         myView = findViewById(R.id.searchBar);
-        myView.post(new Runnable() {
-            @Override
-            public void run() {
-                createRevealLayout();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            myView.post(new Runnable() {
+                @Override
+                public void run() {
+                    createRevealLayout();
+                }
+            });
+        }
+
         checkGpsState();
 
         getWindow().setSoftInputMode(

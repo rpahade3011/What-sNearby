@@ -13,15 +13,15 @@
         android:background="@color/colorPrimary"
         android:layout_alignParentTop="true"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/wn_banner_id" />
+        ads:adUnitId="@string/wn_banner_id"
+        android:layout_marginTop="8dp"/>
 
     <ScrollView
         android:id="@+id/aboutme"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarStyle="outsideInset"
-        android:layout_below="@id/ad_view"
-        android:layout_marginTop="16dp">
+        android:layout_below="@id/ad_view">
 
     </ScrollView>
 

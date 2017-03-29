@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -22,7 +23,6 @@ import com.google.android.gms.ads.MobileAds;
 import com.nearby.whatsnearby.BuildConfig;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.constants.GlobalSettings;
-import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
 import com.nearby.whatsnearby.guillotine.GuillotineAnimation;
 import com.nearby.whatsnearby.interfaces.GpsStatusDetector;
 import com.nearby.whatsnearby.utilities.Utils;
@@ -51,7 +51,6 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
     private GuillotineAnimation guillotineAnimation = null;
     private GuillotineAnimation.GuillotineBuilder guillotineBuilder = null;
 
-    private SweetAlertDialog sweetAlertDialog = null;
     static GpsStatusDetector gpsStatusDetector = null;
     private AdView fAdView = null;
 
@@ -194,6 +193,20 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         gpsStatusDetector.checkOnActivityResult(requestCode, resultCode);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (GlobalSettings.BACK_PRESSED + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+
+            NavigationController.this.finish();
+
+        } else {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.application_exit_msg,
+                    getResources().getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+            GlobalSettings.BACK_PRESSED = System.currentTimeMillis();
+        }
     }
 
     @Override
