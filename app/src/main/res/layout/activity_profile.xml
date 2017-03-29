@@ -4,14 +4,53 @@
     android:layout_height="match_parent"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:id="@+id/bgViewGroup"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:stateListAnimator="@animator/appbar_always_elevated"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:contentDescription="@string/transition_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/shared_target"
+                android:src="@mipmap/guillotine_about_me"
+                android:transitionName="@string/transition_profile" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical|start"
+                tools:text="About"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_toEndOf="@+id/shared_target"
+                android:layout_marginStart="16dp"/>
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/ad_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
         android:background="@color/colorPrimary"
-        android:layout_alignParentTop="true"
         ads:adSize="BANNER"
         ads:adUnitId="@string/wn_banner_id"
         android:layout_marginTop="8dp"/>

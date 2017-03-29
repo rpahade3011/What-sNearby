@@ -5,6 +5,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,7 +26,9 @@ import com.nearby.whatsnearby.BuildConfig;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.guillotine.GuillotineAnimation;
+import com.nearby.whatsnearby.guillotine.GuillotineListener;
 import com.nearby.whatsnearby.interfaces.GpsStatusDetector;
+import com.nearby.whatsnearby.utilities.TransitionHelper;
 import com.nearby.whatsnearby.utilities.Utils;
 
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
@@ -47,12 +51,14 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
     private LinearLayout shareGroup;
     private PulsatorLayout pulsatorLayout;
     private ImageView imgWorld;
+    private ImageView imgVwAbout;
     private TextView tvTitle;
     private GuillotineAnimation guillotineAnimation = null;
     private GuillotineAnimation.GuillotineBuilder guillotineBuilder = null;
 
     static GpsStatusDetector gpsStatusDetector = null;
     private AdView fAdView = null;
+    private boolean isGuillotineOpened = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,13 +82,30 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
         shareGroup = (LinearLayout) guillotineMenu.findViewById(R.id.share_group);
         aboutGroup = (LinearLayout) guillotineMenu.findViewById(R.id.profile_group);
         root.addView(guillotineMenu);
+        final TextView explore = (TextView) guillotineMenu.findViewById(R.id.tvExplore);
+        imgVwAbout = (ImageView) guillotineMenu.findViewById(R.id.imgVwAbout);
+
         initialiseAdView(guillotineMenu);
+
         if (guillotineAnimation == null) {
             guillotineBuilder = new GuillotineAnimation.GuillotineBuilder
                     (guillotineMenu, guillotineMenu.findViewById(R.id.guillotine_hamburger), contentHamburger);
             guillotineBuilder.setStartDelay(RIPPLE_DURATION);
             guillotineBuilder.setActionBarViewForAnimation(toolbar);
             guillotineBuilder.setClosedOnStart(true);
+            guillotineBuilder.setGuillotineListener(new GuillotineListener() {
+                @Override
+                public void onGuillotineOpened() {
+                    isGuillotineOpened = true;
+                    Log.e(LOG_TAG, "Menu opened");
+                }
+
+                @Override
+                public void onGuillotineClosed() {
+                    isGuillotineOpened = false;
+                    Log.e(LOG_TAG, "Menu closed");
+                }
+            });
             guillotineBuilder.build();
             guillotineAnimation = new GuillotineAnimation(guillotineBuilder);
             guillotineAnimation.close();
@@ -91,9 +114,16 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
         exploreGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guillotineAnimation.close();
                 Intent intent = new Intent(NavigationController.this, PlacesMain.class);
-                startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    String transitionName = getResources().getString(R.string.transition_explore);
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(NavigationController.this, explore, transitionName);
+                    startActivity(intent, options.toBundle());
+                } else {
+                    startActivity(intent);
+                }
+                //guillotineAnimation.close();
 
             }
         });
@@ -116,9 +146,18 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
         aboutGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guillotineAnimation.close();
                 Intent intent = new Intent(NavigationController.this, ProfileActivity.class);
-                startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    String transitionName = getResources().getString(R.string.transition_profile);
+                    final Pair<View, String>[] pairs = TransitionHelper.createSafeTransitionParticipants(NavigationController.this, false,
+                            new Pair<>(imgVwAbout, transitionName));
+                    ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(NavigationController.this, pairs);
+                    startActivity(intent, transitionActivityOptions.toBundle());
+                } else {
+                    startActivity(intent);
+                }
+                //guillotineAnimation.close();
             }
         });
     }
@@ -197,15 +236,17 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
 
     @Override
     public void onBackPressed() {
-        if (GlobalSettings.BACK_PRESSED + 2000 > System.currentTimeMillis()) {
-            super.onBackPressed();
-
-            NavigationController.this.finish();
-
+        if (isGuillotineOpened) {
+            guillotineAnimation.close();
         } else {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.application_exit_msg,
-                    getResources().getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
-            GlobalSettings.BACK_PRESSED = System.currentTimeMillis();
+            if (GlobalSettings.BACK_PRESSED + 2000 > System.currentTimeMillis()) {
+                super.onBackPressed();
+                NavigationController.this.finish();
+            } else {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.application_exit_msg,
+                        getResources().getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+                GlobalSettings.BACK_PRESSED = System.currentTimeMillis();
+            }
         }
     }
 

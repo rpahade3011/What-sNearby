@@ -58,4 +58,9 @@
         or audio; the device\'s external storage</string>
     <string name="perm_wifi_connection">Allows the app to view information about Wi-Fi networking,
         such as whether Wi-Fi is enabled &amp; names of connected Wi-Fi devices</string>
+
+    <!-- [Material Transitions & Shared Element strings] -->
+    <string name="transition_grid_item">transition_from_grid_to_details</string>
+    <string name="transition_explore">transition_explore</string>
+    <string name="transition_profile">transition_profile</string>
 </resources>

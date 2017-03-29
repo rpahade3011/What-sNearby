@@ -66,7 +66,7 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlaceResult.this.finish();
+                onBackPressed();
             }
         });
 
@@ -88,6 +88,13 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
         ;
         Log.e("PlaceResult", url);
         new FetchFromServerTask(this, 0).execute(url);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //ActivityCompat.finishAfterTransition(this);
+        supportFinishAfterTransition();
+        super.onBackPressed();
     }
 
     @Override

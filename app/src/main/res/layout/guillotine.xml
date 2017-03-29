@@ -27,8 +27,10 @@
             android:contentDescription="@string/app_name"/>
 
         <TextView
+            android:id="@+id/tvExplore"
             style="@style/TextView.GuillotineItem.Selected"
-            android:text="@string/explore" />
+            android:text="@string/explore"
+            android:transitionName="@string/transition_explore"/>
     </LinearLayout>
 
     <LinearLayout
@@ -51,6 +53,7 @@
         android:layout_marginTop="@dimen/guillotine_medium_margin">
 
         <ImageView
+            android:id="@+id/imgVwAbout"
             style="@style/ImageView.GuillotineItem"
             android:src="@mipmap/guillotine_about_me"
             android:contentDescription="@string/app_name"/>

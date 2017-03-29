@@ -2,7 +2,10 @@ package com.nearby.whatsnearby.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +34,9 @@ import com.nearby.whatsnearby.utilities.GooglePlayServicesUtil;
 public class PlacesGrid extends Fragment {
 
     private InterstitialAd mInterstitialAd = null;
+    private TilesFormatter tilesFormatter = null;
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.places_grid, container, false);
@@ -40,10 +44,14 @@ public class PlacesGrid extends Fragment {
         final PlacesConstants placesConstants = new PlacesConstants();
         final Context context = getActivity().getApplicationContext();
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.animation_grow_in);
+
         GridView gridview = (GridView) view.findViewById(R.id.places);
-        gridview.setAdapter(new TilesFormatter(context));
+        tilesFormatter = new TilesFormatter(context);
+        gridview.setAdapter(tilesFormatter);
+
         GridLayoutAnimationController controller = new GridLayoutAnimationController(animation, .2f, .2f);
         gridview.setLayoutAnimation(controller);
+
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -51,17 +59,22 @@ public class PlacesGrid extends Fragment {
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 }
-
                 Intent intent = new Intent(context, PlaceResult.class);
                 String place = placesConstants.places_list[position];
                 intent.putExtra("Place_id", place);
-                getActivity().startActivity(intent);
-
+                String transitionName = getActivity().getResources().getString(R.string.transition_grid_item);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(getActivity(),
+                                    view, transitionName);
+                    ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+                } else {
+                    getActivity().startActivity(intent);
+                }
             }
         });
 
         showAds();
-
         return view;
     }
 

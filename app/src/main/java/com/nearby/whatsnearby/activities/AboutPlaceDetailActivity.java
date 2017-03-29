@@ -1,7 +1,10 @@
 package com.nearby.whatsnearby.activities;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -32,7 +35,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -103,12 +108,19 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
 
     private FloatingActionButton fabNavigate;
     private ViewPager photosViewPager = null;
+    private CoordinatorLayout coordinatorLayout = null;
+
+    // Circular Reveal variables
+    int cx, cy;
+    boolean hidden;
+    Animator animator;
 
     @SuppressLint("LongLogTag")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_about_fragment);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
         getIntentData();
 
@@ -125,7 +137,14 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                 getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimaryDark));
             }
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            coordinatorLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    createImageReveal();
+                }
+            });
+        }
         setUpMapIfNeeded();
         getUsersLocation();
         fabNavigate = (FloatingActionButton) findViewById(R.id.fabNavigate);
@@ -266,6 +285,9 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    createExitReveal();
+                }
                 startActivity(new Intent(AboutPlaceDetailActivity.this, PlacesMain.class));
                 AboutPlaceDetailActivity.this.finish();
                 break;
@@ -292,6 +314,81 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void createImageReveal() {
+
+        View profileImageView = coordinatorLayout;
+
+        // get the center for the clipping circle
+        cx = (profileImageView.getLeft() + profileImageView.getRight()) / 2;
+        cy = (profileImageView.getTop() + profileImageView.getBottom()) / 2;
+
+        // get the final radius for the clipping circle
+        int dx = Math.max(cx, profileImageView.getWidth() - cx);
+        int dy = Math.max(cy, profileImageView.getHeight() - cy);
+        float finalRadius = (float) Math.hypot(dx, dy);
+
+        // Android native animator
+        try {
+            animator =
+                    ViewAnimationUtils.createCircularReveal(profileImageView, cx, cy, 0, finalRadius);
+            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+            animator.setDuration(500);
+            animator.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            animator = null;
+        }
+
+        hidden = false;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void createExitReveal() {
+
+        View profileImageView = coordinatorLayout;
+
+        cx = (profileImageView.getLeft() + profileImageView.getRight()) / 2;
+        cy = (profileImageView.getTop() + profileImageView.getBottom()) / 2;
+
+        // get the final radius for the clipping circle
+        int dx = Math.max(cx, profileImageView.getWidth() - cx);
+        int dy = Math.max(cy, profileImageView.getHeight() - cy);
+        float finalRadius = (float) Math.hypot(dx, dy);
+
+        //end radius will be zero
+        int reverse_endradius = 0;
+
+        // performing circular reveal for reverse animation
+        Animator animate = ViewAnimationUtils.createCircularReveal(profileImageView, cx, cy, finalRadius, reverse_endradius);
+        if (hidden) {
+            // to show the layout when icon is tapped
+            coordinatorLayout.setVisibility(View.VISIBLE);
+            animator.setDuration(1500);
+            animator.start();
+            hidden = false;
+        } else {
+            //reveal_items.setVisibility(View.VISIBLE);
+
+            // to hide layout on animation end
+            animate.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    hidden = true;
+                }
+            });
+            animate.start();
+        }
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        super.onBackPressed();
     }
 
     private void setUpMapIfNeeded() {
@@ -488,6 +585,15 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                     TopMessageManager.showSuccess("You've successfully shared " + placeName, "", TopMessage.DURATION.LONG);
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            createExitReveal();
+        } else {
+            super.onBackPressed();
         }
     }
 }

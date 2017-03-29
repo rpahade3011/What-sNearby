@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_container"
-    android:background="@color/dark_gray">
+    android:background="@color/dark_gray"
+    android:transitionName="@string/transition_grid_item">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"

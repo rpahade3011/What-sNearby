@@ -75,4 +75,9 @@
     <!-- BOTTOM SHEET DIMENS -->
     <dimen name="anchor_point">300dp</dimen>
     <dimen name="bottom_sheet_peek_height">80dp</dimen>
+
+    <!-- [Material Transitions & Shared Elements] -->
+    <integer name="anim_duration_very_long">1500</integer>
+    <integer name="anim_duration_long">500</integer>
+    <integer name="anim_duration_medium">300</integer>
 </resources>

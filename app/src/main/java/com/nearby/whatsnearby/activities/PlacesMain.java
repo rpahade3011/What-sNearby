@@ -46,4 +46,10 @@ public class PlacesMain extends FragmentActivity {
         ft.add(R.id.places_grid, fragAll);
         ft.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        supportFinishAfterTransition();
+    }
 }

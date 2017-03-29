@@ -24,9 +24,11 @@
             android:scrollHorizontally="true"
             android:ellipsize="end"
             android:maxLines="1"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             android:gravity="start|center_vertical"
-            android:layout_marginStart="16dp"
-            android:text="@string/app_name"/>
+            android:layout_marginStart="20dp"
+            android:text="@string/explore"
+            android:transitionName="@string/transition_explore"/>
 
         <ImageView
             android:layout_width="24dp"
