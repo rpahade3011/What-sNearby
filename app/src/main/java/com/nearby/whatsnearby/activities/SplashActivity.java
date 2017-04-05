@@ -126,6 +126,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startAppNormally() {
+        Log.e(LOG_TAG, "No updates found, start app normally.");
         if (Build.VERSION.SDK_INT > 22) {
             if (permissionsPreferences.getApplicationOk(getApplicationContext())) {
                 Intent mainInt = new Intent(SplashActivity.this, NavigationController.class);
