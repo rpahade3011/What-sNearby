@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.appupdater.AppUpdateHandler;
-import com.nearby.whatsnearby.appupdater.UpdateListener;
 import com.nearby.whatsnearby.permissions.PermissionsPreferences;
 
 public class SplashActivity extends AppCompatActivity {
@@ -66,8 +64,7 @@ public class SplashActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run() {
-                    // Check for updates
-                    startCheckingForNewUpdates();
+                    startAppNormally();
                 }
             }, SPLASH_TIME_OUT);
         } catch (Exception e) {
@@ -90,43 +87,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void startCheckingForNewUpdates() {
-        if (appUpdateHandler == null) {
-            Log.e(LOG_TAG, "Start checking for updates");
-            appUpdateHandler = new AppUpdateHandler(SplashActivity.this);
-            // to start version checker
-            appUpdateHandler.startCheckingUpdate();
-            // prompting intervals
-            appUpdateHandler.setCount(1);
-            // to print new features added automatically
-            appUpdateHandler.setWhatsNew(true);
-            // listener for custom update prompt
-            appUpdateHandler.setOnUpdateListener(new UpdateListener() {
-                @Override
-                public void onUpdateFound(boolean newVersion, String whatsNew) {
-                    Log.e(LOG_TAG, "New updates found - " + newVersion + " : " + whatsNew);
-                    isNewUpdateAvailable = newVersion;
-                    CHANGE_LOGS = whatsNew;
-                    compareUpdates();
-                }
-            });
-        }
-    }
-
-    private void compareUpdates() {
-        // Added code on 08-March-2017, by Rudraksh
-        if (isNewUpdateAvailable && !CHANGE_LOGS.equals("")) {
-            if (appUpdateHandler != null) {
-                // Display update dialog
-                appUpdateHandler.showDefaultAlert(true);
-            }
-        } else {
-            startAppNormally();
-        }
-    }
-
     private void startAppNormally() {
-        Log.e(LOG_TAG, "No updates found, start app normally.");
         if (Build.VERSION.SDK_INT > 22) {
             if (permissionsPreferences.getApplicationOk(getApplicationContext())) {
                 Intent mainInt = new Intent(SplashActivity.this, NavigationController.class);

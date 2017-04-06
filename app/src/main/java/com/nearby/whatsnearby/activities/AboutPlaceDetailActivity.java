@@ -267,8 +267,6 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
             mMap.getUiSettings().setCompassEnabled(false);
             mMap.getUiSettings().setRotateGesturesEnabled(true);
             mMap.setMyLocationEnabled(true);
-            /*mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ub_pin_destination))
-                    .position(destination).title(placeName));*/
             mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.flag_marker))
                     .position(destination).title(placeName));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 14.0f));

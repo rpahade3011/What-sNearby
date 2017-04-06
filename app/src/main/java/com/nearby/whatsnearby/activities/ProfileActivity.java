@@ -45,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Interpolator interpolator;
     private Toolbar profileToolbar;
     private RelativeLayout bgViewGroup;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,6 +175,7 @@ public class ProfileActivity extends AppCompatActivity {
                     .scaleY(0f);
         }
     }
+
     @SuppressLint("NewApi")
     private void animateRevealShow(View viewRoot) {
         int cx = (viewRoot.getLeft() + viewRoot.getRight()) / 2;
@@ -250,7 +252,7 @@ public class ProfileActivity extends AppCompatActivity {
                             .setAppIcon(R.mipmap.ic_launcher)
                             .setAppName(R.string.app_name)
                             .setAppTitle(R.string.app_desc)
-                            .setPhoto(R.mipmap.about_rudraksh_pahade_profile_pic)
+                            .setPhoto(R.mipmap.about_dev)
                             .setCover(R.drawable.nb_mainbg)
                             .setLinksAnimated(false)
                             .setDividerDashGap(13)

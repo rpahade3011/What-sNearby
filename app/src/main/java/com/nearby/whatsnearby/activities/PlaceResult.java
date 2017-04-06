@@ -49,6 +49,9 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
     private String kind;
     private String url;
 
+    private double locLat = 0;
+    private double locLng = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,12 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
         }
 
         loc = new GpsTracker(this);
+        if (loc.canGetLocation()) {
+            locLat = loc.getLatitude();
+            locLng = loc.getLongitude();
+        } else {
+            Log.e("PlaceResult", "Unable to get your location");
+        }
 
         ImageView back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -83,16 +92,29 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
         TextView placeKind = (TextView) findViewById(R.id.namePlaceHolder);
         placeKind.setText(kind.replace("_", " "));
 
-        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-                loc.latitude + "," + loc.longitude + "&rankby=distance&types=" + kind + "&key=" + KEY;
-        ;
+        if (locLat != 0 && locLng != 0) {
+            url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+                    locLat + "," + locLng + "&rankby=distance&types=" + kind + "&key=" + KEY;
+        } else {
+            if (loc.canGetLocation()) {
+                locLat = loc.getLatitude();
+                locLng = loc.getLongitude();
+
+                if (locLat != 0 && locLng != 0) {
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+                            locLat + "," + locLng + "&rankby=distance&types=" + kind + "&key=" + KEY;
+                }
+            } else {
+                Log.e("PlaceResult", "Unable to get your location");
+            }
+        }
         Log.e("PlaceResult", url);
+
         new FetchFromServerTask(this, 0).execute(url);
     }
 
     @Override
     public void onBackPressed() {
-        //ActivityCompat.finishAfterTransition(this);
         supportFinishAfterTransition();
         super.onBackPressed();
     }
@@ -144,7 +166,7 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                     lLayoutBackground.setVisibility(View.GONE);
                     TextView no_places = (TextView) findViewById(R.id.no_places);
                     no_places.setVisibility(View.VISIBLE);
-                    no_places.setText("Sorry, no such place found your nearby.");
+                    no_places.setText("Sorry, no such place found in your nearby.");
                 }
             } catch (Exception ex) {
                 errorFragment = new ErrorFragment();

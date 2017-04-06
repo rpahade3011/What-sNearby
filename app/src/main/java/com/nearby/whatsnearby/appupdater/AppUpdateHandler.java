@@ -102,8 +102,6 @@ public class AppUpdateHandler {
                     GlobalSettings.DEFAULT_MAX_RETRIES, GlobalSettings.DEFAULT_BACKOFF_MULT));
             queue.add(request);
         } else {
-            /*TopMessageManager.showError("Unable to check for updates, Please check your internet connection",
-                    "Connection Error", TopMessage.DURATION.MEDIUM);*/
             TopMessageManager.showError(CONNECTION_ERROR_MESSAGE,
                     CONNECTION_ERROR_TITLE, new TopMessage.ConfirmOrCancelCallback() {
                         @Override

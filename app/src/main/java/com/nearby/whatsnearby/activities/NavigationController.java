@@ -24,6 +24,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.nearby.whatsnearby.BuildConfig;
 import com.nearby.whatsnearby.R;
+import com.nearby.whatsnearby.appupdater.AppUpdateHandler;
+import com.nearby.whatsnearby.appupdater.UpdateListener;
 import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.guillotine.GuillotineAnimation;
 import com.nearby.whatsnearby.guillotine.GuillotineListener;
@@ -60,6 +62,10 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
     private AdView fAdView = null;
     private boolean isGuillotineOpened = false;
 
+    private AppUpdateHandler appUpdateHandler = null;
+    private boolean isNewUpdateAvailable = false;
+    private String CHANGE_LOGS = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +76,8 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
         setUpPulsatorLayout();
         setUpGuillotineDrawer();
         checkGpsState();
+        // Check for updates
+        startCheckingForNewUpdates();
     }
 
     private void setUpGuillotineDrawer() {
@@ -225,6 +233,41 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
             // Start loading the ad in the background.
             assert fAdView != null;
             fAdView.loadAd(adRequest);
+        }
+    }
+
+    private void startCheckingForNewUpdates() {
+        if (appUpdateHandler == null) {
+            Log.e(LOG_TAG, "Start checking for updates");
+            appUpdateHandler = new AppUpdateHandler(NavigationController.this);
+            // to start version checker
+            appUpdateHandler.startCheckingUpdate();
+            // prompting intervals
+            appUpdateHandler.setCount(1);
+            // to print new features added automatically
+            appUpdateHandler.setWhatsNew(true);
+            // listener for custom update prompt
+            appUpdateHandler.setOnUpdateListener(new UpdateListener() {
+                @Override
+                public void onUpdateFound(boolean newVersion, String whatsNew) {
+                    Log.e(LOG_TAG, "New updates found - " + newVersion + " : " + whatsNew);
+                    isNewUpdateAvailable = newVersion;
+                    CHANGE_LOGS = whatsNew;
+                    compareUpdates();
+                }
+            });
+        }
+    }
+
+    private void compareUpdates() {
+        // Added code on 08-March-2017, by Rudraksh
+        if (isNewUpdateAvailable && !CHANGE_LOGS.equals("")) {
+            if (appUpdateHandler != null) {
+                // Display update dialog
+                appUpdateHandler.showDefaultAlert(true);
+            }
+        } else {
+            Log.e(LOG_TAG, "No updates found.");
         }
     }
 
