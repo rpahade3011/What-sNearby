@@ -259,7 +259,7 @@ public class ProfileActivity extends AppCompatActivity {
                             .setSubTitle("Mobile Developer")
                             .setLinksColumnsCount(3)
                             .setBrief("I'm warmed of mobile technologies. Ideas maker, curious and nature lover.")
-                            .addGooglePlayStoreLink("109312616470328191163")
+                            .addGooglePlayStoreLink("6251285879755104834")
                             .addGitHubLink("rpahade3011")
                             .addFacebookLink("rudraksh.pahade")
                             .addTwitterLink("pahade_rudraksh")
