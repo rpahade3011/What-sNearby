@@ -159,14 +159,15 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
         behavior.addBottomSheetCallback(new BottomSheetBehaviorGoogleMapsLike.BottomSheetCallback() {
 
             @Override
-            public void onStateChanged(@NonNull View bottomSheet, @BottomSheetBehaviorGoogleMapsLike.State int newState) {
+            public void onStateChanged(@NonNull View bottomSheet,
+                                       @BottomSheetBehaviorGoogleMapsLike.State int newState) {
                 switch (newState) {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
                         Log.d("bottomsheet-", "STATE_COLLAPSED");
                         shouldShowPlaceImages = false;
                         shouldShowReviews = false;
-                        initializePlaceImages();
-                        initializeReviews();
+                        /*initializePlaceImages();
+                        initializeReviews();*/
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
                         Log.d("bottomsheet-", "STATE_DRAGGING");
@@ -174,10 +175,10 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
                         Log.d("bottomsheet-", "STATE_EXPANDED");
 
-                        if (!shouldShowPlaceImages) {
+                        /*if (!shouldShowPlaceImages) {
                             shouldShowPlaceImages = true;
                             initializePlaceImages();
-                        }
+                        }*/
 
                         if (!shouldShowReviews) {
                             shouldShowReviews = true;

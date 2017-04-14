@@ -21,6 +21,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.constants.GlobalSettings;
@@ -49,6 +50,7 @@ public class AppController extends Application implements Application.ActivityLi
     @SuppressLint("StaticFieldLeak")
     private static AppController mInstance;
     private RequestQueue requestQueue;
+    private ImageLoader imageLoader;
     private GpsStatusReceiver gpsStatusReceiver = null;
 
     private PlaceDetailBean.Review[] review;
@@ -284,6 +286,15 @@ public class AppController extends Application implements Application.ActivityLi
         }
 
         return requestQueue;
+    }
+
+    public ImageLoader getImageLoader() {
+        getRequestQueue();
+        if (imageLoader == null) {
+            imageLoader = new ImageLoader(this.requestQueue,
+                    new LruBitmapCache());
+        }
+        return this.imageLoader;
     }
 
     /**

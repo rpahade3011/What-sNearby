@@ -3,7 +3,9 @@ package com.nearby.whatsnearby.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +26,7 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -277,9 +280,8 @@ public class ProfileActivity extends AppCompatActivity {
                             .setVersionNameAsAppSubTitle()
                             .addShareAction(R.string.app_name)
                             .addUpdateAction()
-                            .setActionsColumnsCount(2)
+                            .setActionsColumnsCount(3)
                             .addFeedbackAction("rudraksh3011@gmail.com")
-                            .addChangeLogAction((Intent) null)
                             .build());
         }
     }
@@ -292,7 +294,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_activity_about, menu);
+        return true;
     }
 
     @Override
@@ -302,6 +305,18 @@ public class ProfileActivity extends AppCompatActivity {
             case android.R.id.home:
                 supportFinishAfterTransition();
                 return true;
+            case R.id.action_privacy_policy:
+                Intent openIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.dev_privacy_policy_url)));
+                if (openIntent.resolveActivity(getPackageManager()) != null) {
+                    try {
+                        startActivity(Intent.createChooser(openIntent, "Open via"));
+                    } catch (ActivityNotFoundException anfe) {
+                        anfe.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "No such app found to view this content", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

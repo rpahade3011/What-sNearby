@@ -108,7 +108,7 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                 Log.e("PlaceResult", "Unable to get your location");
             }
         }
-        Log.e("PlaceResult", url);
+        System.out.println("PlaceResult" + url);
 
         new FetchFromServerTask(this, 0).execute(url);
     }

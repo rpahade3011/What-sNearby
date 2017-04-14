@@ -5,11 +5,13 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.nearby.whatsnearby.R;
-import com.squareup.picasso.Picasso;
+import com.nearby.whatsnearby.services.AppController;
 
 /**
  * Created by rudhraksh.pahade on 2/7/2017.
@@ -22,6 +24,9 @@ public class PlacesImageAdapter extends PagerAdapter {
     Context context;
     String imageId[];
     LayoutInflater inflater;
+
+    ImageLoader imageLoader;
+    NetworkImageView imageView;
 
     public PlacesImageAdapter(Context ctx, String imageId[]) {
         this.context = ctx;
@@ -36,7 +41,6 @@ public class PlacesImageAdapter extends PagerAdapter {
         } else {
             return imageId.length;
         }
-        //return imageId.length;
     }
 
     @Override
@@ -48,10 +52,12 @@ public class PlacesImageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
 
         View rootView = inflater.inflate(R.layout.gallery_image_item, container, false);
-        ImageView imageView = (ImageView)rootView.findViewById(R.id.galleryItem);
+        //ImageView imageView = (ImageView)rootView.findViewById(R.id.galleryItem);
+        imageView = (NetworkImageView)rootView.findViewById(R.id.galleryItem);
         if (imageId.length > 0) {
             String imageURL = basePlaceUrl + imageId[position] + "&key=" + key;
-            Picasso.with(context).load(imageURL).into(imageView);
+            //Picasso.with(context).load(imageURL).into(imageView);
+            downloadImages(imageURL);
         } else {
             imageView.setImageResource(R.mipmap.placeholder_image);
         }
@@ -63,5 +69,22 @@ public class PlacesImageAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((LinearLayout) object);
+    }
+
+    private void downloadImages(String imageUrl) {
+        imageLoader = AppController.getInstance().getImageLoader();
+        imageLoader.get(imageUrl, new ImageLoader.ImageListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                imageView.setImageBitmap(response.getBitmap());
+            }
+        });
+
+        imageView.setImageUrl(imageUrl, imageLoader);
     }
 }

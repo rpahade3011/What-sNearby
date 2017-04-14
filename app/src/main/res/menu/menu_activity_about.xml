@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.nearby.rudraksh.whatsnearby.activities.ActivityAbout">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_privacy_policy"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/action_privacy_policy"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_privacy_policy_24dp"/>
 </menu>
