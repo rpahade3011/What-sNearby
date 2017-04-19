@@ -134,4 +134,10 @@
         <item name="android:textColor">@color/button_text_color</item>
     </style>
 
+    <!--AppRate dialog custom animation style-->
+    <style name="RateDialogTheme">
+        <item name="android:windowEnterAnimation">@anim/animation_grow_in</item>
+        <item name="android:windowExitAnimation">@anim/animation_rate_dialog_shrink</item>
+    </style>
+
 </resources>

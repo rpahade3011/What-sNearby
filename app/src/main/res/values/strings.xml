@@ -23,7 +23,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="application_exit_msg">Press back again to exit %s</string>
-
     <string name="google_map_static_api_url">https://maps.googleapis.com/maps/api/staticmap?center=</string>
 
     <!-- [Developer Privacy Policy URL] -->
@@ -33,6 +32,12 @@
     <string name="explore">EXPLORE</string>
     <string name="share">SHARE</string>
     <string name="about">ABOUT</string>
+
+    <!-- [App rate texts] -->
+    <string name="app_rate_text">If you enjoyed using \"%s\", please take a moment to rate it. Thanks for your support!</string>
+    <string name="app_rate_no_text">No thanks!</string>
+    <string name="app_rate_remind_later_text">Remind me later</string>
+    <string name="app_rate_rate_now_text">Rate now</string>
 
     <!-- SWEET ALERT DIALOG Strings -->
     <string name="dialog_ok">OK</string>

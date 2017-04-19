@@ -30,6 +30,7 @@ import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.guillotine.GuillotineAnimation;
 import com.nearby.whatsnearby.guillotine.GuillotineListener;
 import com.nearby.whatsnearby.interfaces.GpsStatusDetector;
+import com.nearby.whatsnearby.utilities.AppRaterUtils;
 import com.nearby.whatsnearby.utilities.TransitionHelper;
 import com.nearby.whatsnearby.utilities.Utils;
 
@@ -72,6 +73,7 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
         setContentView(R.layout.activity_navigation_controller);
         tvTitle = (TextView) findViewById(R.id.tvTitle);
         gpsStatusDetector = new GpsStatusDetector(NavigationController.this);
+        AppRaterUtils.appDidLaunched(NavigationController.this);
         setUpToolbar();
         setUpPulsatorLayout();
         setUpGuillotineDrawer();

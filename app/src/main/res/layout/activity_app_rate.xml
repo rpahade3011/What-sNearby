@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_centerInParent="true">
+
+    <com.nearby.whatsnearby.arclayout.ArcLayout
+        android:id="@+id/diagonalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:arc_cropDirection="cropInside"
+        app:arc_height="90dp"
+        android:padding="16dp"
+        android:elevation="5dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:src="@drawable/nb_mainbg"
+            android:contentDescription="@string/app_desc"
+            android:id="@+id/imageView" />
+
+    </com.nearby.whatsnearby.arclayout.ArcLayout>
+
+    <ImageView
+        android:id="@+id/imgAppRateLogo"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@mipmap/ic_launcher"
+        android:padding="8dp"
+        android:layout_below="@+id/diagonalLayout"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/app_name" />
+    <TextView
+        android:id="@+id/tvAppRateText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_below="@+id/imgAppRateLogo"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="22sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvAppRateText"
+        android:text="@string/app_rate_text"
+        android:layout_centerHorizontal="true"
+        android:gravity="center|center_vertical"
+        android:textSize="18sp"
+        android:padding="8dp"
+        android:layout_marginTop="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_gravity="center"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/buttonNoThanks"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/app_rate_no_text"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/buttonRemindLater"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/app_rate_remind_later_text"
+            android:textSize="12sp"/>
+
+        <Button
+            android:id="@+id/buttonRateApp"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/app_rate_rate_now_text"
+            android:textSize="12sp"
+            android:textColor="#eee"/>
+
+    </LinearLayout>
+
+</RelativeLayout>-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/activity_main"
+    android:gravity="center"
+    android:layout_gravity="center">
+    
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+
+            <ImageView
+                android:id="@+id/imgAppRateLogo"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@mipmap/ic_launcher"
+                android:padding="8dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/app_name" />
+            <TextView
+                android:id="@+id/tvAppRateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:gravity="center"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:id="@+id/tvAppRateMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_rate_text"
+                android:gravity="center|center_vertical"
+                android:textSize="18sp"
+                android:padding="8dp"
+                android:layout_marginTop="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:layout_marginTop="32sp">
+
+                <Button
+                    android:id="@+id/buttonNoThanks"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/app_rate_no_text"
+                    android:textSize="12sp"/>
+
+                <Button
+                    android:id="@+id/buttonRemindLater"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/app_rate_remind_later_text"
+                    android:textSize="12sp"/>
+
+                <Button
+                    android:id="@+id/buttonRateApp"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/app_rate_rate_now_text"
+                    android:textSize="12sp"
+                    android:textColor="#eee"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
