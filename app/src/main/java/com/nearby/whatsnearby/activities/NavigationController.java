@@ -206,18 +206,8 @@ public class NavigationController extends AppCompatActivity implements GpsStatus
         // Initialize the Mobile Ads SDK.
         MobileAds.initialize(NavigationController.this, getResources().getString(R.string.wn_banner_id));
 
-        // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
-        // values/strings.xml.
         fAdView = (AdView) guillotineMenu.findViewById(R.id.ad_view);
 
-        // Create an ad request. Check your logcat output for the hashed device ID to
-        // get test ads on a physical device. e.g.
-        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-
-        // Added code on 06-Jan-2017, by Rudraksh
-
-        // Check whether our application is in "DEBUG" mode.
-        // We need to load test ads on our physical devices.
         if (BuildConfig.DEBUG) {
             String deviceIdForTestAds = Utils.getAdMobDeviceId(NavigationController.this);
             Log.e(LOG_TAG, "Hashed device id to load test ads - " + deviceIdForTestAds);

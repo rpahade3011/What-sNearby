@@ -284,11 +284,7 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    createExitReveal();
-                }
-                startActivity(new Intent(AboutPlaceDetailActivity.this, PlacesMain.class));
-                AboutPlaceDetailActivity.this.finish();
+                onBackPressed();
                 break;
         }
         return super.onOptionsItemSelected(item);

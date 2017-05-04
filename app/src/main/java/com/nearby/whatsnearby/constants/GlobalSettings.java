@@ -28,7 +28,7 @@ public class GlobalSettings {
 
     public static String DISTANCE_AND_TIME_ETA = null;
 
-    public static final String WHATS_NEARBY_GOOGLE_PLAY_STORE_URL_LINK = "https://play.google.com/store/apps/details?id=";
+    public static final String WHATS_NEARBY_GOOGLE_PLAY_STORE_URL_LINK = "https://play.google.com/store/apps/details?id=com.nearby.whatsnearby";
 
     public static long BACK_PRESSED;
 }

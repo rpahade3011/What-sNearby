@@ -251,7 +251,7 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                         intent.putExtras(data);
                         startActivity(intent);
 
-                        PlaceResult.this.finish();
+                        //PlaceResult.this.finish();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         errorFragment = new ErrorFragment();

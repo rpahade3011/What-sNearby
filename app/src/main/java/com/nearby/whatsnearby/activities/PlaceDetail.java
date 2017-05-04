@@ -6,12 +6,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -23,18 +19,10 @@ import com.nearby.whatsnearby.customasynctask.FetchFromServerTask;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
 import com.nearby.whatsnearby.fragments.ErrorFragment;
 import com.nearby.whatsnearby.services.AppController;
-import com.nearby.whatsnearby.views.PagerAnimation;
-import com.nearby.whatsnearby.views.SlidingTabLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlaceDetail extends FragmentActivity implements FetchFromServerUser {
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    ViewPager mViewPager;
-    SlidingTabLayout tabs;
-    Fragment fragAbout, fragReview, fragGallery, errorFragment, fullscreenFrag;
+    Fragment errorFragment;
     private SweetAlertDialog sweetAlertDialog;
     String url;
 
@@ -73,34 +61,6 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
         url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + KEY;
         Log.e("PlaceDetail", url);
         new FetchFromServerTask(this, 0).execute(url);
-    }
-
-    private void initFragments() {
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        mSectionsPagerAdapter.addFragment(fragAbout);
-        mSectionsPagerAdapter.addFragment(fragReview);
-        //mSectionsPagerAdapter.addFragment(fragGallery);
-        mSectionsPagerAdapter.addFragment(fullscreenFrag);
-
-        mViewPager = (ViewPager) findViewById(R.id.places_detail);
-        mViewPager.setPageTransformer(true, new PagerAnimation());
-
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(2);
-
-        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        tabs.setDistributeEvenly(true);
-
-        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-            @Override
-            public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.white);
-            }
-        });
-
-        tabs.setViewPager(mViewPager);
     }
 
     @Override
@@ -157,39 +117,4 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
         new FetchFromServerTask(this, 0).execute(url);
     }
 
-    private class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        List<Fragment> fragments;
-
-        private String[] title = {"ABOUT", "REVIEWS", "GALLERY"};
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-            fragments = new ArrayList<>();
-        }
-
-        public void addFragment(Fragment fragment) {
-            fragments.add(fragment);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-        @Override
-        public void startUpdate(ViewGroup container) {
-            super.startUpdate(container);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return title[position];
-        }
-    }
 }
