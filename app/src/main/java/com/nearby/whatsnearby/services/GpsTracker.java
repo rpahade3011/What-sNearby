@@ -1,5 +1,7 @@
 package com.nearby.whatsnearby.services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,13 +9,17 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.nearby.whatsnearby.R;
+import com.nearby.whatsnearby.activities.NavigationController;
 
 
 /**
@@ -46,6 +52,15 @@ public class GpsTracker extends Service implements LocationListener {
     // LocationManager object
     protected LocationManager locationManager;
 
+    /* [Constants] */
+    private static final String PACKAGE_NAME =
+            "com.nearby.whatsnearby.services.GpsTracker";
+    private static final String EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME +
+            ".started_from_notification";
+    private static final int NOTIFICATION_ID_OREO = 40007;
+
+    private IBinder gpsBinder = new GpsTrackerBinder();
+
     /**
      * Constructor
      *
@@ -54,6 +69,14 @@ public class GpsTracker extends Service implements LocationListener {
     public GpsTracker(Context context) {
         this.mContext = context;
         getLocation();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(NOTIFICATION_ID_OREO, getNotification());
+        }
     }
 
     /**
@@ -164,7 +187,7 @@ public class GpsTracker extends Service implements LocationListener {
 
     @Override
     public IBinder onBind(Intent arg0) {
-        return null;
+        return gpsBinder;
     }
 
     public boolean canGetLocation() {
@@ -180,9 +203,6 @@ public class GpsTracker extends Service implements LocationListener {
 
         // Messgage
         alertDialog.setMessage(mContext.getResources().getString(R.string.gps_disabled_alert_msg));
-
-        // Message icon
-        //alertDialog.setIcon(R.drawable.delete);
 
         // Settings button is clicked in
         alertDialog.setPositiveButton(getResources().getString(R.string.gps_settings), new DialogInterface.OnClickListener() {
@@ -211,6 +231,43 @@ public class GpsTracker extends Service implements LocationListener {
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * Returns the {@link NotificationCompat} used as part of the foreground service.
+     */
+    private Notification getNotification() {
+        Intent intent = new Intent(this, GpsTracker.class);
+        // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
+        intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
+
+        // The PendingIntent that leads to a call to onStartCommand() in this service.
+        PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // The PendingIntent to launch activity.
+        PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, NavigationController.class), 0);
+        String contentText = String.format(mContext.getResources().getString(R.string.bg_serv_noti_content_text),
+                getString(R.string.app_name));
+        return new NotificationCompat.Builder(this)
+                .addAction(R.drawable.ic_oreo_noti_launch_black_24dp, getString(R.string.bg_serv_noti_launch_app),
+                        activityPendingIntent)
+                .addAction(R.drawable.ic_oreo_noti_close_black_24dp, getString(R.string.bg_serv_noti_rem_loc_updates),
+                        servicePendingIntent)
+                .setContentText(contentText)
+                .setContentTitle(getString(R.string.app_name))
+                .setOngoing(true)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker(getString(R.string.app_name))
+                .setWhen(System.currentTimeMillis()).build();
+    }
+
+    public class GpsTrackerBinder extends Binder {
+        public GpsTracker getServiceBinder() {
+            return GpsTracker.this;
         }
     }
 }

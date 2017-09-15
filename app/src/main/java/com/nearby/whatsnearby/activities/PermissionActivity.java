@@ -48,6 +48,7 @@ public class PermissionActivity extends Activity {
     private static String[] PERMISSIONS_LIST = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.CALL_PHONE};
     /**
      * Root of the layout of this Activity.

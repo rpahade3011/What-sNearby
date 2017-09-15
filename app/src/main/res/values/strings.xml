@@ -69,4 +69,9 @@
     <string name="transition_grid_item">transition_from_grid_to_details</string>
     <string name="transition_explore">transition_explore</string>
     <string name="transition_profile">transition_profile</string>
+
+    <!-- [Oreo Notification texts] -->
+    <string name="bg_serv_noti_launch_app">Launch</string>
+    <string name="bg_serv_noti_rem_loc_updates">Close</string>
+    <string name="bg_serv_noti_content_text">%1$s is running in background</string>
 </resources>

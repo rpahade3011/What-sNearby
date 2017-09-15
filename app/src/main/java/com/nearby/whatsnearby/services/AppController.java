@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.multidex.MultiDex;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -62,6 +62,8 @@ public class AppController extends Application implements Application.ActivityLi
     private static final String REPORT_CONTENT_TITLE = "Unexpected Error occurred";
     private static final String REPORT_CONTENT_TEXT = "Send error report to developer to help this get fixed. " +
             "This won't take your much time. Also includes crash reports.";
+    private static String CRASH_FILE_PATH_NAME;
+
 
     /**
      * Enabling multi dex options to avoid 64K Limit.
@@ -71,7 +73,6 @@ public class AppController extends Application implements Application.ActivityLi
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
     }
 
     @Override
@@ -186,10 +187,10 @@ public class AppController extends Application implements Application.ActivityLi
         // the email app.
         String path = GlobalSettings.LOG_FILE_PATH;
         boolean isDirectoryCreated = Utils.createDir(path);
-        final String fullName = path + "crash_log_file_" + System.currentTimeMillis() + ".txt";
+        CRASH_FILE_PATH_NAME = path + "crash_log_file_" + System.currentTimeMillis() + ".txt";
 
         // Extract to file.
-        File file = new File(fullName);
+        File file = new File(CRASH_FILE_PATH_NAME);
         FileWriter writer = null;
         try {
             // write output stream
@@ -201,7 +202,7 @@ public class AppController extends Application implements Application.ActivityLi
             iOex.printStackTrace();
         }
 
-        invokeCrashedDialog(fullName);
+        invokeCrashedDialog(CRASH_FILE_PATH_NAME);
     }
 
     public void restartApplication() {
@@ -245,13 +246,25 @@ public class AppController extends Application implements Application.ActivityLi
 
     private void sendLogFile(String fullName) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{SEND_LOG_TO_EMAIL_TEXT});
-        intent.putExtra(Intent.EXTRA_SUBJECT, SEND_LOG_TO_EMAIL_SUBJECT);
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fullName));
-        intent.putExtra(Intent.EXTRA_TEXT, SEND_LOG_TO_EMAIL_EXTRA_TEXT); // do this so some email clients don't complain about empty body.
-        mCurrentActivity.startActivity(intent);
-
+        Uri uri = null;
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+            File file = new File(fullName);
+            uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", file);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setType("plain/text");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{SEND_LOG_TO_EMAIL_TEXT});
+            intent.putExtra(Intent.EXTRA_SUBJECT, SEND_LOG_TO_EMAIL_SUBJECT);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.putExtra(Intent.EXTRA_TEXT, SEND_LOG_TO_EMAIL_EXTRA_TEXT); // do this so some email clients don't complain about empty body.
+            mCurrentActivity.startActivity(intent);
+        } else {
+            intent.setType("plain/text");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{SEND_LOG_TO_EMAIL_TEXT});
+            intent.putExtra(Intent.EXTRA_SUBJECT, SEND_LOG_TO_EMAIL_SUBJECT);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fullName));
+            intent.putExtra(Intent.EXTRA_TEXT, SEND_LOG_TO_EMAIL_EXTRA_TEXT); // do this so some email clients don't complain about empty body.
+            mCurrentActivity.startActivity(intent);
+        }
         new CountDownTimer(5000, 1000) {
 
             @Override

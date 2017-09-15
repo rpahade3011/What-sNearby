@@ -59,7 +59,7 @@ public class AppRaterUtils {
     public static void showRateDialog(final AppCompatActivity mContext, final SharedPreferences.Editor editor) {
         final Dialog dialog = new Dialog(mContext);
         dialog.setTitle("Rate " + APP_TITLE);
-        dialog.setCancelable(false);
+        dialog.setCancelable(true);
         dialog.setContentView(R.layout.activity_app_rate);
 
         final Button btnRateMe = (Button) dialog.findViewById(R.id.buttonRateApp);
