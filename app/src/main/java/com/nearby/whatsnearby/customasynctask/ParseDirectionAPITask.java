@@ -111,7 +111,7 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
                 mCircle = map.addCircle(new CircleOptions()
                         .center(MapUtil.destinationBounds).radius(500)
                         .strokeColor(1)
-                        .strokeColor(0x55ffffff)
+                        .strokeColor(0x5530d1d5)
                         .fillColor(0x55383547));
             }
         });

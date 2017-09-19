@@ -166,20 +166,12 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                         Log.d("bottomsheet-", "STATE_COLLAPSED");
                         shouldShowPlaceImages = false;
                         shouldShowReviews = false;
-                        /*initializePlaceImages();
-                        initializeReviews();*/
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
                         Log.d("bottomsheet-", "STATE_DRAGGING");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
                         Log.d("bottomsheet-", "STATE_EXPANDED");
-
-                        /*if (!shouldShowPlaceImages) {
-                            shouldShowPlaceImages = true;
-                            initializePlaceImages();
-                        }*/
-
                         if (!shouldShowReviews) {
                             shouldShowReviews = true;
                             initializeReviews();
@@ -264,10 +256,14 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.setBuildingsEnabled(true);
+            mMap.getFocusedBuilding();
+            mMap.setTrafficEnabled(true);
             mMap.getUiSettings().setZoomGesturesEnabled(true);
             mMap.getUiSettings().setCompassEnabled(false);
             mMap.getUiSettings().setRotateGesturesEnabled(true);
-            mMap.setMyLocationEnabled(true);
             mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.flag_marker))
                     .position(destination).title(placeName));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 14.0f));

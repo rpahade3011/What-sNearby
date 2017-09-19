@@ -283,9 +283,9 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     private void initTypeface() {
-        TypefaceUtil.overrideFont(this, "SERIF", "fonts/Sertig.otf");
-        TypefaceUtil.overrideFont(this, "MONOSPACE", "fonts/Sertig.otf");
-        TypefaceUtil.overrideFont(this, "DEFAULT", "fonts/Sertig.otf");
+        TypefaceUtil.overrideFont(this, "SERIF", "fonts/clan-book-webfont.ttf");
+        TypefaceUtil.overrideFont(this, "MONOSPACE", "fonts/clan-book-webfont.ttf");
+        TypefaceUtil.overrideFont(this, "DEFAULT", "fonts/clan-book-webfont.ttf");
     }
 
     /**

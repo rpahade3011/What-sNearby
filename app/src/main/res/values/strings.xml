@@ -29,9 +29,9 @@
     <string name="dev_privacy_policy_url">https://docs.google.com/document/d/1RYqPBi2Y_XRS7E7xPbtfmACeyPRkCcYLt6RbG9rRGO8/edit?usp=sharing</string>
 
     <!-- Guillotine Strings -->
-    <string name="explore">EXPLORE</string>
-    <string name="share">SHARE</string>
-    <string name="about">ABOUT</string>
+    <string name="explore">Explore</string>
+    <string name="share">Share</string>
+    <string name="about">About</string>
 
     <!-- [App rate texts] -->
     <string name="app_rate_text">If you enjoyed using \"%s\", please take a moment to rate it. Thanks for your support!</string>
@@ -74,4 +74,6 @@
     <string name="bg_serv_noti_launch_app">Launch</string>
     <string name="bg_serv_noti_rem_loc_updates">Close</string>
     <string name="bg_serv_noti_content_text">%1$s is running in background</string>
+    <string name="title_activity_bottom_nav_controller">What\'s Nearby</string>
+    <string name="title_home">Home</string>
 </resources>

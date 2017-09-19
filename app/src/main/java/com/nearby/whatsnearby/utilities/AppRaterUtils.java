@@ -1,13 +1,11 @@
 package com.nearby.whatsnearby.utilities;
 
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.nearby.whatsnearby.R;
 
@@ -56,54 +54,52 @@ public class AppRaterUtils {
         editor.apply();
     }
 
-    public static void showRateDialog(final AppCompatActivity mContext, final SharedPreferences.Editor editor) {
-        final Dialog dialog = new Dialog(mContext);
-        dialog.setTitle("Rate " + APP_TITLE);
-        dialog.setCancelable(true);
-        dialog.setContentView(R.layout.activity_app_rate);
-
-        final Button btnRateMe = (Button) dialog.findViewById(R.id.buttonRateApp);
-        final Button btnRemindLater = (Button) dialog.findViewById(R.id.buttonRemindLater);
-        final Button btnNoThanks = (Button)dialog.findViewById(R.id.buttonNoThanks);
-
-        TextView tvAppRateMessage = (TextView) dialog.findViewById(R.id.tvAppRateMessage);
-        tvAppRateMessage.setText(mContext.getResources().getString(R.string.app_rate_text,
+    private static void showRateDialog(final AppCompatActivity mContext,
+                                      final SharedPreferences.Editor editor) {
+        final AlertDialog.Builder appRaterDialogBuilder = new AlertDialog.Builder(mContext);
+        appRaterDialogBuilder.setTitle("Rate " + APP_TITLE);
+        appRaterDialogBuilder.setCancelable(false);
+        appRaterDialogBuilder.setMessage(mContext.getResources().getString(R.string.app_rate_text,
                 mContext.getResources().getString(R.string.app_name)));
-
         // Button Rate Clicked
-        btnRateMe.setOnClickListener(new View.OnClickListener() {
+        appRaterDialogBuilder.setPositiveButton(mContext.getResources()
+                .getString(R.string.app_rate_rate_now_text), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(DialogInterface dialogInterface, int i) {
                 try{
                     mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
                 }catch (Exception e){
                     mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://market.android.com/details?id="+ APP_PNAME)));
                 }
 
-                dialog.dismiss();
-            }
-        });
-        // Button Remind Later Clicked
-        btnRemindLater.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+                dialogInterface.dismiss();
             }
         });
         // Button No Thanks Clicked
-        btnNoThanks.setOnClickListener(new View.OnClickListener() {
+        appRaterDialogBuilder.setNegativeButton(mContext.getResources()
+                .getString(R.string.app_rate_no_text), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(DialogInterface dialogInterface, int i) {
                 if (editor != null) {
                     editor.putBoolean("dontshowagain", true);
                     editor.commit();
                 }
-                dialog.dismiss();
+                dialogInterface.dismiss();
             }
         });
-        if (dialog != null) {
-            dialog.getWindow().getAttributes().windowAnimations = R.style.RateDialogTheme;
-            dialog.show();
+        // Button Remind Later Clicked
+        appRaterDialogBuilder.setNeutralButton(mContext.getResources()
+                .getString(R.string.app_rate_remind_later_text), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog appRaterDialog = appRaterDialogBuilder.create();
+        if (appRaterDialog != null) {
+            appRaterDialog.getWindow().getAttributes().windowAnimations = R.style.RateDialogTheme;
+            appRaterDialog.show();
         }
     }
 }
