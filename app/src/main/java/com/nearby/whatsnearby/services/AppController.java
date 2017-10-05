@@ -130,7 +130,7 @@ public class AppController extends Application implements Application.ActivityLi
         final String DOUBLE_LINE_SEP = "\n\n";
         final String SINGLE_LINE_SEP = "\n";
         report.append(DOUBLE_LINE_SEP);
-        report.append("--------- Stack trace ---------\n\n");
+        report.append("--------- Stack trace ---------\n");
         for (int i = 0; i < arr.length; i++) {
             report.append( "    ");
             report.append(arr[i].toString());
@@ -139,7 +139,7 @@ public class AppController extends Application implements Application.ActivityLi
         report.append(lineSeperator);
         // If the exception was thrown in a background thread inside
         // AsyncTask, then the actual exception can be found with getCause
-        report.append("--------- Cause ---------\n\n");
+        report.append("--------- Cause ---------\n");
         Throwable cause = e.getCause();
         if (cause != null) {
             report.append(cause.toString());
@@ -151,9 +151,9 @@ public class AppController extends Application implements Application.ActivityLi
                 report.append(SINGLE_LINE_SEP);
             }
         }
-        // Getting the Device brand,model and sdk verion details.
+        // Getting the Device brand, model and sdk version details.
         report.append(lineSeperator);
-        report.append("--------- Device ---------\n\n");
+        report.append("--------- Device ---------\n");
         report.append("Brand: ");
         report.append(Build.BRAND);
         report.append(SINGLE_LINE_SEP);
@@ -170,9 +170,9 @@ public class AppController extends Application implements Application.ActivityLi
         report.append(Build.PRODUCT);
         report.append(SINGLE_LINE_SEP);
         report.append(lineSeperator);
-        report.append("--------- Firmware ---------\n\n");
+        report.append("--------- Firmware ---------\n");
         report.append("SDK: ");
-        report.append(Build.VERSION.SDK);
+        report.append(Build.VERSION.SDK_INT);
         report.append(SINGLE_LINE_SEP);
         report.append("Release: ");
         report.append(Build.VERSION.RELEASE);
@@ -187,7 +187,8 @@ public class AppController extends Application implements Application.ActivityLi
         // the email app.
         String path = GlobalSettings.LOG_FILE_PATH;
         boolean isDirectoryCreated = Utils.createDir(path);
-        CRASH_FILE_PATH_NAME = path + "crash_log_file_" + System.currentTimeMillis() + ".txt";
+        String fileNameForNougat = "crash_log_file_" + System.currentTimeMillis() + ".txt";
+        CRASH_FILE_PATH_NAME = path + fileNameForNougat;
 
         // Extract to file.
         File file = new File(CRASH_FILE_PATH_NAME);
@@ -199,10 +200,10 @@ public class AppController extends Application implements Application.ActivityLi
 
             writer.close();
         } catch (IOException iOex) {
-            iOex.printStackTrace();
+            Log.e(TAG, "Exception while writing crash file: " + iOex.getMessage());
         }
 
-        invokeCrashedDialog(CRASH_FILE_PATH_NAME);
+        invokeCrashedDialog(CRASH_FILE_PATH_NAME, fileNameForNougat);
     }
 
     public void restartApplication() {
@@ -211,7 +212,7 @@ public class AppController extends Application implements Application.ActivityLi
         System.exit(0);
     }
 
-    private void invokeCrashedDialog(final String fullName) {
+    private void invokeCrashedDialog(final String fullName, final String fileNameForNougat) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -225,7 +226,7 @@ public class AppController extends Application implements Application.ActivityLi
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismissWithAnimation();
-                        sendLogFile(fullName);
+                        sendLogFile(fullName, fileNameForNougat);
                     }
                 });
                 sweetAlertDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -244,17 +245,18 @@ public class AppController extends Application implements Application.ActivityLi
         }).start();
     }
 
-    private void sendLogFile(String fullName) {
+    private void sendLogFile(String fullName, String fileNameForNougat) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         Uri uri = null;
         if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
-            File file = new File(fullName);
+            File file = new File("/storage/emulated/0/WhatsNearby/" + fileNameForNougat);
             uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", file);
+            String encodedUri = uri.getEncodedPath();
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setType("plain/text");
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{SEND_LOG_TO_EMAIL_TEXT});
             intent.putExtra(Intent.EXTRA_SUBJECT, SEND_LOG_TO_EMAIL_SUBJECT);
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.putExtra(Intent.EXTRA_STREAM, encodedUri);
             intent.putExtra(Intent.EXTRA_TEXT, SEND_LOG_TO_EMAIL_EXTRA_TEXT); // do this so some email clients don't complain about empty body.
             mCurrentActivity.startActivity(intent);
         } else {
@@ -278,14 +280,12 @@ public class AppController extends Application implements Application.ActivityLi
                 restartApplication();
             }
         }.start();
-
-        //restartApplication();
     }
 
     private void initTypeface() {
-        TypefaceUtil.overrideFont(this, "SERIF", "fonts/clan-book-webfont.ttf");
-        TypefaceUtil.overrideFont(this, "MONOSPACE", "fonts/clan-book-webfont.ttf");
-        TypefaceUtil.overrideFont(this, "DEFAULT", "fonts/clan-book-webfont.ttf");
+        TypefaceUtil.overrideFont(this, "SERIF", "fonts/Hanken-Book.ttf");
+        TypefaceUtil.overrideFont(this, "MONOSPACE", "fonts/Hanken-Book.ttf");
+        TypefaceUtil.overrideFont(this, "DEFAULT", "fonts/Hanken-Book.ttf");
     }
 
     /**

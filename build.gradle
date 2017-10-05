@@ -1,6 +1,28 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
+    ext.versions = [
+            'appPackageName': 'com.nearby.whatsnearby',
+            'compileSdk': 26,
+            'buildToolsVersion': '26.0.1',
+            'minSdk': 21,
+            'targetSdk': 26,
+            'versionCode': 3,
+            'versionName': '1.2',
+            'supportLibraryAppCompat': '26.0.2',
+            'supportLibraryV4': '23.3.0',
+            'playServicesLib': '9.0.0',
+            'firebase': '9.0.0',
+            'resolveForceLib': '23.4.0'
+    ]
+    ext.versions.others = [
+            'picasso': '2.5.2',
+            'pulsator': '1.0.2',
+            'photoView': '1.2.4',
+            'volley': '1.0.0',
+            'topMessage': '1.0.5',
+            'materialAbbout': '+',
+            'jsoup': '1.10.1'
+    ]
     repositories {
         jcenter()
         mavenLocal()

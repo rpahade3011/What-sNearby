@@ -7,17 +7,16 @@ buildscript {
 
 repositories {
     jcenter()
-    maven { url 'https://maven.google.com' }
 }
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion "${versions.buildToolsVersion}"
     defaultConfig {
-        applicationId "com.nearby.whatsnearby"
-        minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 2
-        versionName "1.1"
+        applicationId "${versions.appPackageName}"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.versionCode
+        versionName "${versions.versionName}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -40,6 +39,7 @@ android {
         exclude 'META-INF/license.txt'
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
     }
 
     dexOptions {
@@ -74,45 +74,45 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:26.0.2'
+    compile "com.android.support:appcompat-v7:${versions.supportLibraryAppCompat}"
     //noinspection GradleCompatible
-    compile 'com.android.support:support-v4:23.3.0'
+    compile "com.android.support:support-v4:${versions.supportLibraryV4}"
     //noinspection GradleCompatible
-    compile 'com.android.support:design:23.3.0'
+    compile "com.android.support:design:${versions.supportLibraryV4}"
     //noinspection GradleCompatible
-    compile 'com.google.android.gms:play-services-location:9.0.0'
+    compile "com.google.android.gms:play-services-location:${versions.playServicesLib}"
     //noinspection GradleCompatible
-    compile 'com.google.android.gms:play-services:9.0.0'
+    compile "com.google.android.gms:play-services:${versions.playServicesLib}"
     //noinspection GradleCompatible
     compile 'com.google.maps.android:android-maps-utils:0.4.+'
     //noinspection GradleCompatible
-    compile 'com.android.support:cardview-v7:23.3.0'
+    compile "com.android.support:cardview-v7:${versions.supportLibraryV4}"
     //noinspection GradleCompatible
-    compile 'com.android.support:recyclerview-v7:23.3.0'
+    compile "com.android.support:recyclerview-v7:${versions.supportLibraryV4}"
     //noinspection GradleCompatible
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'pl.bclogic:pulsator4droid:1.0.2'
+    compile "com.squareup.picasso:picasso:${versions.others.picasso}"
+    compile "pl.bclogic:pulsator4droid:${versions.others.pulsator}"
     //noinspection GradleCompatible
-    compile 'com.android.support:palette-v7:23.3.0'
-    compile 'com.github.chrisbanes.photoview:library:1.2.4'
+    compile "com.android.support:palette-v7:${versions.supportLibraryV4}"
+    compile "com.github.chrisbanes.photoview:library:${versions.others.photoView}"
     //Volley library for networking operation
-    compile 'com.android.volley:volley:1.0.0'
+    compile "com.android.volley:volley:${versions.others.volley}"
     // TopMessage library
-    compile 'com.wizchen.topmessage:topmessage:1.0.5'
+    compile "com.wizchen.topmessage:topmessage:${versions.others.topMessage}"
     // Material About library
-    compile 'com.github.jrvansuita:MaterialAbout:+'
+    compile "com.github.jrvansuita:MaterialAbout:${versions.others.materialAbbout}"
     // Jsoup library
-    compile 'org.jsoup:jsoup:1.10.1'
+    compile "org.jsoup:jsoup:${versions.others.jsoup}"
     // Firebase
-    compile 'com.google.firebase:firebase-ads:9.0.0'
-    compile 'com.google.firebase:firebase-messaging:9.0.0'
+    compile "com.google.firebase:firebase-ads:${versions.playServicesLib}"
+    compile "com.google.firebase:firebase-messaging:${versions.playServicesLib}"
     testCompile 'junit:junit:4.12'
 }
 configurations.all {
     resolutionStrategy {
-        force 'com.android.support:design:23.4.0'
-        force 'com.android.support:support-v4:23.4.0'
-        force 'com.android.support:appcompat-v7:23.4.0'
+        force "com.android.support:design:${versions.resolveForceLib}"
+        force "com.android.support:support-v4:${versions.resolveForceLib}"
+        force "com.android.support:appcompat-v7:${versions.resolveForceLib}"
     }
 }
 apply plugin: 'com.google.gms.google-services'
