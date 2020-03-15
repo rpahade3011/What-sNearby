@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,10 +11,11 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:background="@android:color/darker_gray"
         android:fitsSystemWindows="true"/>
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,15 +24,15 @@
         app:behavior_scrolling_appbar_peek_height="@dimen/bottom_sheet_peek_height"
         app:layout_behavior="@string/ScrollingAppBarLayoutBehavior">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:background="@color/colorPrimary"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="@dimen/anchor_point"
@@ -39,9 +40,9 @@
         android:background="@android:color/transparent"
         app:layout_behavior="@string/BackDropBottomSheetBehavior"
         android:fitsSystemWindows="true">
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -56,9 +57,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"/>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_anchor="@id/bottom_sheet"
@@ -70,7 +71,7 @@
         android:clickable="true"
         android:id="@+id/fabNavigate"/>
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/merged_appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,7 +89,7 @@
                 android:layout_height="0dp"
                 android:background="@android:color/transparent"
                 android:layout_gravity="bottom"/>
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/expanded_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -96,5 +97,5 @@
                 app:title="@string/key_binding_default_toolbar_name"
                 app:navigationIcon="@mipmap/ic_close_white_24dp"/>
         </FrameLayout>
-    </android.support.design.widget.AppBarLayout>
-</android.support.design.widget.CoordinatorLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

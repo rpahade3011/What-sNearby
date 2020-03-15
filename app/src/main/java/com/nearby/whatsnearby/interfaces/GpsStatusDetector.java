@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -57,7 +58,8 @@ public class GpsStatusDetector {
     }
 
     private boolean isGpsEnabled(Activity activity) {
-        return ((LocationManager) activity.getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return ((LocationManager) activity.getSystemService(Context.LOCATION_SERVICE))
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     private void setLocationRequest(final Activity activity, final GpsStatusDetectorCallBack callBack) {
@@ -120,11 +122,9 @@ public class GpsStatusDetector {
         }
     }
 
-
     public interface GpsStatusDetectorCallBack {
         void onGpsSettingStatus(boolean enabled);
 
         void onGpsAlertCanceledByUser();
     }
-
 }

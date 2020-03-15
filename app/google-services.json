@@ -1,41 +1,48 @@
 {
   "project_info": {
-    "project_number": "983858053947",
-    "firebase_url": "https://whats-nearby-1367.firebaseio.com",
-    "project_id": "whats-nearby-1367",
-    "storage_bucket": "whats-nearby-1367.appspot.com"
+    "project_number": "42276254595",
+    "firebase_url": "https://what-snearby-1a52a.firebaseio.com",
+    "project_id": "what-snearby-1a52a",
+    "storage_bucket": "what-snearby-1a52a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:983858053947:android:b773ce4b2a4ecb25",
+        "mobilesdk_app_id": "1:42276254595:android:3cbb29633b725e40d1fcb6",
         "android_client_info": {
           "package_name": "com.nearby.whatsnearby"
         }
       },
       "oauth_client": [
         {
-          "client_id": "983858053947-vj3tgpdqmuf2vrcdrufgkh81bgdfp3or.apps.googleusercontent.com",
+          "client_id": "42276254595-r8bn166nocb052mjkdssf71hrj350rkv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nearby.whatsnearby",
+            "certificate_hash": "ed6955d7e3620e371c6716b2bda317b4e8f63900"
+          }
+        },
+        {
+          "client_id": "42276254595-tal3tbop8op26573i1vvfh6mf3drjntn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDwAc3T5XtCVK7bMWAzD1udQfLEqsP2-QE"
+          "current_key": "AIzaSyAjGDQ75DPWiSKK4A1REQexNexpbd-3Vxk"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "42276254595-tal3tbop8op26573i1vvfh6mf3drjntn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-5293031144790539~9762984208"
     }
   ],
   "configuration_version": "1"

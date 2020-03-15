@@ -2,17 +2,11 @@ package com.nearby.whatsnearby.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,21 +15,26 @@ import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.adapters.SearchResultAdapter;
 import com.nearby.whatsnearby.beans.GooglePlacesBean;
 import com.nearby.whatsnearby.beans.GooglePlacesParser;
 import com.nearby.whatsnearby.beans.SearchItemBean;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
-import com.nearby.whatsnearby.customasynctask.FetchFromServerTask;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
 import com.nearby.whatsnearby.fragments.ErrorFragment;
+import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.services.GpsTracker;
+import com.nearby.whatsnearby.utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +44,6 @@ import java.util.List;
  */
 
 public class ActivitySearch extends FragmentActivity implements FetchFromServerUser {
-
-    public static final String GOOGLE_PLACES_URL = "maps.googleapis.com/maps/api/place/autocomplete/json";
-    public static final int SEARCH_RADIUS = 1000;
-    public static final String PLACES_API_KEY = "AIzaSyA2nMz4vfd-wyeivmvJffVB5RP59POoTm0";
 
     private AutoCompleteTextView mAutocompleteView;
     private FloatingActionButton getDirection = null;
@@ -75,42 +70,26 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
         setContentView(R.layout.activity_search);
 
         myView = findViewById(R.id.searchBar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            myView.post(new Runnable() {
-                @Override
-                public void run() {
-                    createRevealLayout();
-                }
-            });
-        }
-
+        myView.post(this::createRevealLayout);
         checkGpsState();
 
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         hideSoftKeyboard(ActivitySearch.this);
 
-        ImageView back = (ImageView) findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActivitySearch.this.finish();
-            }
-        });
+        ImageView back = findViewById(R.id.back);
+        back.setOnClickListener(v -> ActivitySearch.this.finish());
 
 
-        mAutocompleteView = (AutoCompleteTextView) findViewById(R.id.places_autocomplete);
-        getDirection = (FloatingActionButton) findViewById(R.id.getDirection);
-        getDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (search != null) {
-                    Intent detailActivity = new Intent(ActivitySearch.this, PlaceDetail.class);
-                    detailActivity.putExtra("placeId", search.getPlaceID());
-                    startActivity(detailActivity);
-                }
-                ActivitySearch.this.finish();
+        mAutocompleteView = findViewById(R.id.places_autocomplete);
+        getDirection = findViewById(R.id.getDirection);
+        getDirection.setOnClickListener(v -> {
+            if (search != null) {
+                Intent detailActivity = new Intent(ActivitySearch.this, PlaceDetail.class);
+                detailActivity.putExtra("placeId", search.getPlaceID());
+                startActivity(detailActivity);
             }
+            ActivitySearch.this.finish();
         });
         resultAdapter = new SearchResultAdapter(this, results);
         mAutocompleteView.addTextChangedListener(new TextWatcher() {
@@ -122,17 +101,10 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 results.clear();
-                Uri.Builder builder = new Uri.Builder();
-                builder.scheme("https")
-                        .encodedAuthority(GOOGLE_PLACES_URL)
-                        .appendQueryParameter("input", s.toString())
-                        .appendQueryParameter("location", latitude + "," + longitude)
-                        .appendQueryParameter("radius", String.valueOf(SEARCH_RADIUS))
-                        .appendQueryParameter("key", PLACES_API_KEY);
-
-                String url = builder.build().toString();
+                String url = Utils.getInstance().getSearchUrl(s.toString(), latitude, longitude);
                 Log.e("URL", url);
-                new FetchFromServerTask(ActivitySearch.this, 0).execute(url);
+                NetworkTask.getInstance(ActivitySearch.this, 0)
+                        .executeAutocompleteSearch(url);
             }
 
             @Override
@@ -140,7 +112,6 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
 
             }
         });
-
     }
 
     /**
@@ -159,7 +130,6 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void createRevealLayout() {
         // finding X and Y co-ordinates
         cx = (myView.getLeft() + myView.getRight());
@@ -222,35 +192,27 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
             sweetAlertDialog.setContentText(getResources().getString(R.string.gps_disabled_alert_msg));
             sweetAlertDialog.setConfirmText((getResources().getString(R.string.gps_settings)));
             sweetAlertDialog.setCancelText(getResources().getString(R.string.gps_cancel));
-            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    sweetAlertDialog.dismissWithAnimation();
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                }
+            sweetAlertDialog.setConfirmClickListener(sweetAlertDialog -> {
+                sweetAlertDialog.dismissWithAnimation();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
             });
-            sweetAlertDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    sweetAlertDialog.dismissWithAnimation();
-                }
-            });
+            sweetAlertDialog.setCancelClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation());
             sweetAlertDialog.show();
         }
-
     }
 
 
     @Override
-    public void onPreFetch() {
+    public void onPreFetch(AlertType alertType) {
 
     }
 
     @Override
-    public void onFetchCompletion(String string, int id) {
+    public void onFetchCompletion(String string, int id,
+                                  AlertType alertType) {
         if (string != null && !string.equals("")) {
-            Log.e("Result", string);
+            Log.d("Result", string);
             GooglePlacesParser parser = new GooglePlacesParser(string);
             ArrayList<GooglePlacesBean> placesList = parser.getPlaces();
             for (int i = 0; i < placesList.size(); i++) {
@@ -261,14 +223,11 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
                 results.add(bean);
             }
             resultAdapter.notifyDataSetChanged();
-            ListView resultList = (ListView) findViewById(R.id.searchResult);
+            ListView resultList = findViewById(R.id.searchResult);
             resultList.setAdapter(resultAdapter);
-            resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    search = results.get(position);
-                    mAutocompleteView.setText(search.getName());
-                }
+            resultList.setOnItemClickListener((parent, view, position, id1) -> {
+                search = results.get(position);
+                mAutocompleteView.setText(search.getName());
             });
         } else {
             ErrorFragment errorFragment = new ErrorFragment();

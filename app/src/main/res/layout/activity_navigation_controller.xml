@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/guillotine_background_dark"
     android:orientation="vertical">
+
     <View
         android:layout_gravity="top"
         android:layout_width="match_parent"
@@ -17,7 +18,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             app:contentInsetStart="0dp"
             style="@style/Toolbar">
@@ -35,8 +36,7 @@
                 android:layout_gravity="center"
                 android:text="@string/explore"
                 android:textSize="@dimen/guillotine_item_text_size" />
-        </android.support.v7.widget.Toolbar>
-
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <pl.bclogic.pulsator4droid.library.PulsatorLayout
             android:id="@+id/pulsator"
@@ -75,6 +75,7 @@
                 android:gravity="center"/>
 
         </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
         <com.google.android.gms.ads.AdView
             android:id="@+id/ad_view"
             android:layout_width="match_parent"

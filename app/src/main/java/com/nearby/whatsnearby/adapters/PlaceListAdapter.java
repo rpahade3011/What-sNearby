@@ -2,12 +2,13 @@ package com.nearby.whatsnearby.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.beans.PlaceBean;
@@ -32,12 +33,12 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
 
         public ViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.name);
-            rating = (RatingBar) itemView.findViewById(R.id.rating);
-            address = (TextView) itemView.findViewById(R.id.address);
-            isOpen = (TextView) itemView.findViewById(R.id.isOpen);
-            distance = (TextView) itemView.findViewById(R.id.distance);
-            time = (TextView) itemView.findViewById(R.id.time);
+            name = itemView.findViewById(R.id.name);
+            rating = itemView.findViewById(R.id.rating);
+            address = itemView.findViewById(R.id.address);
+            isOpen = itemView.findViewById(R.id.isOpen);
+            distance = itemView.findViewById(R.id.distance);
+            time = itemView.findViewById(R.id.time);
         }
     }
 
@@ -109,4 +110,3 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
         return (rad * 180 / Math.PI);
     }
 }
-

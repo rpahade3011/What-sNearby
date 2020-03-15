@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.nearby.whatsnearby.R;
+import com.nearby.whatsnearby.services.AppController;
+
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +24,17 @@ import java.security.NoSuchAlgorithmException;
 public class Utils {
 
     private static final String LOG_TAG = Utils.class.getSimpleName();
+    private static Utils mInstance = null;
+
+    private Utils() {}
+
+    public static Utils getInstance() {
+        if (mInstance == null) {
+            mInstance = new Utils();
+        }
+        return mInstance;
+    }
+
     /**
      * Retrieve your own app version
      *
@@ -115,7 +129,7 @@ public class Utils {
         }
     }
 
-    public static boolean createDir(String LOG_DIR) {
+    public boolean createDir(String LOG_DIR) {
         File file = new File(LOG_DIR);
         if (!file.exists()) {
             try {
@@ -135,7 +149,7 @@ public class Utils {
      * @param activity the activity
      * @return the device id
      */
-    public static String getDeviceId(Activity activity) {
+    private String getDeviceId(Activity activity) {
         @SuppressLint("HardwareIds")
         String deviceId = Settings.Secure.getString(activity.getContentResolver(),
                 Settings.Secure.ANDROID_ID);
@@ -149,7 +163,7 @@ public class Utils {
      * @param activity Activity - requires an activity instance to get the android id
      * @return String - returns the hashed device id
      */
-    public static String getAdMobDeviceId(Activity activity) {
+    public String getAdMobDeviceId(Activity activity) {
         String androidId = getDeviceId(activity);
         return getMessageDigest(androidId).toUpperCase();
     }
@@ -161,7 +175,7 @@ public class Utils {
      * @param android_id String - android id on which MD5 going to perform
      * @return String - hashed android id
      */
-    private static String getMessageDigest(final String android_id) {
+    private String getMessageDigest(final String android_id) {
         try {
             // Create MD5 Hash
             MessageDigest digest = MessageDigest
@@ -183,5 +197,92 @@ public class Utils {
             Log.e("Utils", "Exception - " + e.getMessage());
         }
         return "";
+    }
+
+    public String getNearbySearchUrl(String placeId, double lat, double lng) {
+        StringBuilder stringBuilder =
+                new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=");
+        stringBuilder.append(lat);
+        stringBuilder.append(",");
+        stringBuilder.append(lng);
+        stringBuilder.append("&rankby=distance&types=");
+        stringBuilder.append(placeId);
+        stringBuilder.append("&key=");
+        stringBuilder.append(AppController.getInstance()
+                .getApplicationContext().getResources().getString(R.string.google_maps_key));
+        return stringBuilder.toString();
+    }
+
+    public String getPlaceDetailsUrl(String placeRef) {
+        StringBuilder stringBuilder =
+                new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?placeid=");
+        stringBuilder.append(placeRef);
+        stringBuilder.append("&key=");
+        stringBuilder.append(AppController.getInstance()
+                .getApplicationContext().getResources().getString(R.string.google_maps_key));
+        return stringBuilder.toString();
+    }
+
+    public String getUrlForStaticMaps(double lat, double lng) {
+        StringBuilder locationBuilder = new StringBuilder();
+        locationBuilder.append(AppController.getInstance()
+                .getApplicationContext().getResources().getString(R.string.google_map_static_api_url));
+        locationBuilder.append(lat);
+        locationBuilder.append(",");
+        locationBuilder.append(lng);
+        locationBuilder.append("&zoom=13&size=100x100&scale=2&format=jpeg&maptype=roadmap");
+        locationBuilder.append("&markers=color:blue");
+        locationBuilder.append("|");
+        locationBuilder.append("label:");
+        locationBuilder.append("|");
+        locationBuilder.append(lat);
+        locationBuilder.append(",");
+        locationBuilder.append(lng);
+        locationBuilder.append("&key=");
+        locationBuilder.append(AppController.getInstance()
+                .getApplicationContext().getResources().getString(R.string.google_maps_key));
+
+        return locationBuilder.toString();
+    }
+
+    public String getDistanceMatrixUrl(double srcLat, double srcLng, double destLat, double destLng) {
+        StringBuilder matrixUrl =
+                new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?origins=");
+        matrixUrl.append(srcLat);
+        matrixUrl.append(",");
+        matrixUrl.append(srcLng);
+        matrixUrl.append("&destinations=");
+        matrixUrl.append(destLat);
+        matrixUrl.append(",");
+        matrixUrl.append(destLng);
+        matrixUrl.append("&mode=driving&language=en&key=");
+        matrixUrl.append(AppController.getInstance().getApplicationContext()
+                .getResources().getString(R.string.google_maps_key));
+
+        return matrixUrl.toString();
+    }
+
+    public String getSearchUrl(String place, double latitude, double longitude) {
+        final String GOOGLE_PLACES_URL = "maps.googleapis.com/maps/api/place/autocomplete/json";
+        final int SEARCH_RADIUS = 1000;
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .encodedAuthority(GOOGLE_PLACES_URL)
+                .appendQueryParameter("input", place)
+                .appendQueryParameter("location", latitude + "," + longitude)
+                .appendQueryParameter("radius", String.valueOf(SEARCH_RADIUS))
+                .appendQueryParameter("key", AppController.getInstance()
+                        .getApplicationContext().getResources().getString(R.string.google_maps_key));
+        return builder.build().toString();
+    }
+
+    public String getSearchedPlaceDetailsUrl(String placeId) {
+        StringBuilder stringBuilder =
+                new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?placeid=");
+        stringBuilder.append(placeId);
+        stringBuilder.append("&key=");
+        stringBuilder.append(AppController.getInstance()
+                .getApplicationContext().getResources().getString(R.string.google_maps_key));
+        return stringBuilder.toString();
     }
 }

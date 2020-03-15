@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.nearby.whatsnearby.utilities.MapUtil;
 
+import java.lang.ref.WeakReference;
+
 
 /**
  * Created by rudhraksh.pahade on 13-07-2016.
@@ -14,11 +16,11 @@ import com.nearby.whatsnearby.utilities.MapUtil;
 
 public class ExecuteDirectionsAPI extends AsyncTask<String, Void, String> {
 
-    private Activity activity;
+    private WeakReference<Activity> activity;
     private GoogleMap map;
 
     public ExecuteDirectionsAPI(Activity a, GoogleMap gm) {
-        this.activity = a;
+        this.activity = new WeakReference<>(a);
         this.map = gm;
     }
 
@@ -30,7 +32,7 @@ public class ExecuteDirectionsAPI extends AsyncTask<String, Void, String> {
         try {
             Log.d("URL for direction", url[0]);
             // Fetching the data from web service
-            data = MapUtil.getMapStreams(url[0]);
+            data = MapUtil.getInstance().getMapStreams(url[0]);
         } catch (Exception e) {
             Log.d("Background Task", e.toString());
         }
@@ -42,7 +44,7 @@ public class ExecuteDirectionsAPI extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        ParseDirectionAPITask parseDirectionAPITask = new ParseDirectionAPITask(activity, map);
+        ParseDirectionAPITask parseDirectionAPITask = new ParseDirectionAPITask(activity.get(), map);
         // Invokes the thread for parsing the JSON data
         parseDirectionAPITask.execute(s);
     }

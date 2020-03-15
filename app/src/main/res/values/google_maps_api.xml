@@ -15,11 +15,18 @@
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
     -->
+    <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+         AIzaSyDy3ZuaY1abwo9W1w71qWvmf5lF8mnAw1g
+    </string>-->
+    <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyASWmIidGWN&#45;&#45;l-B-0PU83Wy4hoU7stkQQ
+    </string>-->
+
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-         AIzaSyBe1V_etMvTgwlUrTvxzZwlyK0mWZ_1p24
+        AIzaSyAH6Et-eOnnrjC_vRFvv1qDTbJbO5gFtWg
     </string>
     <string name="google_places_search_server_key" translatable="false">
-        AIzaSyA2nMz4vfd-wyeivmvJffVB5RP59POoTm0
+        AIzaSyC-YmEevBz8f4UOnHtOYJAbDvHmHzgm3B4
     </string>
     
     <string name="admob_id">ca-app-pub-5293031144790539~9762984208</string>

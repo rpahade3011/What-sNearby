@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
  */
 
 public class Streams {
+
     public static String readStream(InputStream stream) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         StringBuilder sb = new StringBuilder();

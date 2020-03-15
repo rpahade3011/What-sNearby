@@ -91,11 +91,7 @@ public class GuillotineAnimation {
         mGuillotineView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    mGuillotineView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    mGuillotineView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
+                mGuillotineView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mGuillotineView.setPivotX(calculatePivotX(closingView));
                 mGuillotineView.setPivotY(calculatePivotY(closingView));
             }

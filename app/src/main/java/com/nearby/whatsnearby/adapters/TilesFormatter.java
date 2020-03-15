@@ -62,8 +62,8 @@ public class TilesFormatter extends BaseAdapter {
 
         }else {
             try {
-                ImageView place_img = (ImageView) convertView.findViewById(R.id.place_img);
-                TextView place_text = (TextView) convertView.findViewById(R.id.place_text);
+                ImageView place_img = convertView.findViewById(R.id.place_img);
+                TextView place_text = convertView.findViewById(R.id.place_text);
                 place_img.setBackgroundColor(Color.parseColor(colors[position % 13]));
                 if (icon_id != null) {
                     Drawable drawable = mContext.getResources().getDrawable(getDrawable(mContext, icon_id));

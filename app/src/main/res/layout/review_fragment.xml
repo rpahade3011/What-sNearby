@@ -10,13 +10,14 @@
         android:gravity="center_horizontal"
         android:layout_centerVertical="true"
         android:textColor="@color/selected_item_color"/>
-    <ListView
+
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
         android:id="@+id/review_list"
         android:dividerHeight="0dp">
 
-    </ListView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

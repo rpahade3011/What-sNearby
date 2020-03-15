@@ -1,17 +1,13 @@
 package com.nearby.whatsnearby.utilities;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.nearby.whatsnearby.R;
-import com.nearby.whatsnearby.constants.GlobalSettings;
+import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
+import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.services.AppController;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,11 +21,47 @@ import java.net.URL;
  */
 
 public class MapUtil {
+    private static MapUtil mInstance = null;
 
-    public static LatLng sourceBounds;
-    public static LatLng destinationBounds;
+    private LatLng mSourceBounds;
+    private LatLng mDestinationBounds;
 
-    public static String getDirectionUrl(LatLng source, LatLng destination) {
+    private String mDistanceAndTimeETA = null;
+
+    private MapUtil() {}
+
+    public static MapUtil getInstance() {
+        if (mInstance == null) {
+            mInstance = new MapUtil();
+        }
+        return mInstance;
+    }
+
+    public LatLng getSourceBounds() {
+        return mSourceBounds;
+    }
+
+    public void setSourceBounds(LatLng sourceBounds) {
+        mSourceBounds = sourceBounds;
+    }
+
+    public LatLng getDestinationBounds() {
+        return mDestinationBounds;
+    }
+
+    public void setDestinationBounds(LatLng destinationBounds) {
+        mDestinationBounds = destinationBounds;
+    }
+
+    public String getDistanceAndTimeETA() {
+        return mDistanceAndTimeETA;
+    }
+
+    public void setDistanceAndTimeETA(String mDistanceAndTimeETA) {
+        this.mDistanceAndTimeETA = mDistanceAndTimeETA;
+    }
+
+    public String getDirectionUrl(LatLng source, LatLng destination) {
         // Origin of route
         String str_origin = "origin=" + source.latitude + "," + source.longitude;
 
@@ -50,13 +82,13 @@ public class MapUtil {
 
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" +
-                AppController.getInstance().getResources().getString(R.string.google_places_search_server_key);
+                AppController.getInstance().getResources().getString(R.string.google_maps_key);
 
         return url;
     }
 
     @SuppressLint("LongLogTag")
-    public static String getMapStreams(String strUrl) throws IOException {
+    public String getMapStreams(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
@@ -94,60 +126,10 @@ public class MapUtil {
         return data;
     }
 
-    public static void calculateNearbyDistance (final LatLng srcLatLng, final LatLng destLatLng) {
-        final String distanceMatrixUrlApiKey = AppController.getInstance().getResources().getString(R.string.google_places_search_server_key);
-        new AsyncTask<Void, Void, Void>() {
-            String data = null;
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                String distanceMatrixUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="
-                        + srcLatLng.latitude + "," + srcLatLng.longitude + "&destinations=" + destLatLng.latitude + ","
-                        + destLatLng.longitude + "&mode=driving&language=en&key=" + distanceMatrixUrlApiKey;
-                try {
-                    data = getMapStreams(distanceMatrixUrl);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (data != null) {
-                    Log.e("MapUtils", "calculateDistance().onPostExecute() - " + data);
-                    try {
-                        JSONObject resultJson = new JSONObject(data);
-
-                        JSONArray rowArray = resultJson.getJSONArray("rows");
-                        JSONObject jsonObject = rowArray.getJSONObject(0);
-
-                        JSONArray elementArray = jsonObject.getJSONArray("elements");
-
-                        JSONObject finalObject = elementArray.getJSONObject(0);
-
-                        JSONObject durationObject = finalObject.getJSONObject("duration");
-
-                        String durationText = durationObject.optString("text");
-                        int durationValue = durationObject.getInt("value");
-
-                        GlobalSettings.DISTANCE_AND_TIME_ETA = durationText;
-
-                        JSONObject distanceObject = finalObject.getJSONObject("distance");
-
-                        String dText = distanceObject.optString("text");
-                        int distanceValue = distanceObject.getInt("value");
-                        double roundOff = Math.round((distanceValue / 1609.34) * 100.0) / 100.0;
-
-                        String distanceText = dText.replace(",", ".");
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public void calculateNearbyDistance (FetchFromServerUser user,
+                                         final LatLng srcLatLng,
+                                         final LatLng destLatLng) {
+        NetworkTask.getInstance(user, 0).calculateDistanceBetweenTwoLocations(srcLatLng.latitude,
+                srcLatLng.longitude, destLatLng.latitude, destLatLng.longitude, user);
     }
 }

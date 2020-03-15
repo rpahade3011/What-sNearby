@@ -20,6 +20,7 @@ import com.nearby.whatsnearby.utilities.MapUtil;
 
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +31,12 @@ import java.util.List;
 
 public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
-    private Activity activity;
+    private WeakReference<Activity> activity;
     private GoogleMap map;
     private Circle mCircle = null;
 
     public ParseDirectionAPITask(Activity a, GoogleMap gm) {
-        this.activity = a;
+        this.activity = new WeakReference<>(a);
         this.map = gm;
     }
 
@@ -90,11 +91,11 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
             // Drawing polyline in the Google Map for the i-th route
             map.addPolyline(lineOptions);
             LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-            boundsBuilder.include(MapUtil.sourceBounds);
-            boundsBuilder.include(MapUtil.destinationBounds);
+            boundsBuilder.include(MapUtil.getInstance().getSourceBounds());
+            boundsBuilder.include(MapUtil.getInstance().getDestinationBounds());
             LatLngBounds bounds = boundsBuilder.build();
             DisplayMetrics displaymetrics = new DisplayMetrics();
-            activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            activity.get().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int height = displaymetrics.heightPixels - 100;
             int width = displaymetrics.widthPixels;
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height - width, 100));
@@ -109,7 +110,7 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
             @Override
             public void run() {
                 mCircle = map.addCircle(new CircleOptions()
-                        .center(MapUtil.destinationBounds).radius(500)
+                        .center(MapUtil.getInstance().getDestinationBounds()).radius(500)
                         .strokeColor(1)
                         .strokeColor(0x5530d1d5)
                         .fillColor(0x55383547));

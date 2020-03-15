@@ -2,29 +2,30 @@ package com.nearby.whatsnearby.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
+import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.beans.PlaceDetailParser;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
-import com.nearby.whatsnearby.customasynctask.FetchFromServerTask;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
 import com.nearby.whatsnearby.fragments.ErrorFragment;
-import com.nearby.whatsnearby.services.AppController;
+import com.nearby.whatsnearby.requests.NetworkTask;
+import com.nearby.whatsnearby.utilities.Utils;
 
 public class PlaceDetail extends FragmentActivity implements FetchFromServerUser {
 
-    Fragment errorFragment;
+    private Fragment errorFragment;
     private SweetAlertDialog sweetAlertDialog;
-    String url;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,39 +33,28 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
         setContentView(R.layout.place_detail);
 
         // Setting navigation bar color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-            getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
-        ImageView back = (ImageView) findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlaceDetail.this.finish();
-            }
-        });
+        ImageView back = findViewById(R.id.back);
+        back.setOnClickListener(v -> PlaceDetail.this.finish());
 
-        ImageView search = (ImageView) findViewById(R.id.search);
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PlaceDetail.this, ActivitySearch.class);
-                startActivity(intent);
-            }
+        ImageView search = findViewById(R.id.search);
+        search.setOnClickListener(v -> {
+            Intent intent = new Intent(PlaceDetail.this, ActivitySearch.class);
+            startActivity(intent);
         });
 
         Intent intent = getIntent();
         String placeId = intent.getStringExtra("placeId");
-        String KEY = AppController.getInstance().getResources().getString(R.string.google_places_search_server_key);
-        url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=" + KEY;
+        url = Utils.getInstance().getSearchedPlaceDetailsUrl(placeId);
         Log.e("PlaceDetail", url);
-        new FetchFromServerTask(this, 0).execute(url);
+        NetworkTask.getInstance(this, 0).executeSearchedPlaceDetailTask(url);
     }
 
     @Override
-    public void onPreFetch() {
+    public void onPreFetch(AlertType alertType) {
         sweetAlertDialog = new SweetAlertDialog(PlaceDetail.this, SweetAlertDialog.PROGRESS_TYPE);
         sweetAlertDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         sweetAlertDialog.setTitleText("Retrieving information");
@@ -73,7 +63,7 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
     }
 
     @Override
-    public void onFetchCompletion(String string, int id) {
+    public void onFetchCompletion(String string, int id, AlertType alertType) {
         if (sweetAlertDialog != null)
             sweetAlertDialog.dismissWithAnimation();
         if (errorFragment != null)
@@ -114,7 +104,6 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
     }
 
     public void retry(View view) {
-        new FetchFromServerTask(this, 0).execute(url);
+        NetworkTask.getInstance(this, 0).executeSearchedPlaceDetailTask(url);
     }
-
 }

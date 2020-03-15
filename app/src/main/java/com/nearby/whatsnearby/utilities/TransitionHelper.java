@@ -18,10 +18,11 @@ package com.nearby.whatsnearby.utilities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,8 @@ public class TransitionHelper {
      * @return All transition participants.
      */
     public static Pair<View, String>[] createSafeTransitionParticipants(@NonNull Activity activity,
-                                                                        boolean includeStatusBar, @Nullable Pair... otherParticipants) {
+                                                                        boolean includeStatusBar,
+                                                                        @Nullable Pair... otherParticipants) {
         // Avoid system UI glitches as described here:
         // https://plus.google.com/+AlexLockwood/posts/RPtwZ5nNebb
         View decor = activity.getWindow().getDecorView();
@@ -71,5 +73,4 @@ public class TransitionHelper {
         }
         participants.add(new Pair<>(view, view.getTransitionName()));
     }
-
 }

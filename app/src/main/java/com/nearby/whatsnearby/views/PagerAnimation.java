@@ -1,7 +1,8 @@
 package com.nearby.whatsnearby.views;
 
-import android.support.v4.view.ViewPager;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created by suny on 9/8/15.

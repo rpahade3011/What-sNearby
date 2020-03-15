@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
@@ -27,6 +24,10 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -53,7 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        bgViewGroup = (RelativeLayout) findViewById(R.id.bgViewGroup);
+        bgViewGroup = findViewById(R.id.bgViewGroup);
         setTheme(theme);
         setupWindowAnimations();
         setupToolbar();
@@ -68,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setupToolbar() {
-        profileToolbar = (Toolbar) findViewById(R.id.toolbar);
+        profileToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(profileToolbar);
         if (profileToolbar != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -150,7 +151,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void hideTarget() {
         findViewById(R.id.shared_target).setVisibility(View.GONE);
-        final TextView title = (TextView) findViewById(R.id.title);
+        final TextView title = findViewById(R.id.title);
         title.setVisibility(View.VISIBLE);
         title.setText("About");
     }
@@ -216,7 +217,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
         // values/strings.xml.
-        fAdView = (AdView) findViewById(R.id.ad_view);
+        fAdView = findViewById(R.id.ad_view);
 
         // Create an ad request. Check your logcat output for the hashed device ID to
         // get test ads on a physical device. e.g.
@@ -227,7 +228,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Check whether our application is in "DEBUG" mode.
         // We need to load test ads on our physical devices.
         if (BuildConfig.DEBUG) {
-            String deviceIdForTestAds = Utils.getAdMobDeviceId(ProfileActivity.this);
+            String deviceIdForTestAds = Utils.getInstance().getAdMobDeviceId(ProfileActivity.this);
             Log.e(LOG_TAG, "Hashed device id to load test ads - " + deviceIdForTestAds);
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice(deviceIdForTestAds).build();
@@ -247,8 +248,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadAboutMe() {
-        final FrameLayout flHolder = (FrameLayout) findViewById(R.id.aboutme);
-
+        final FrameLayout flHolder = findViewById(R.id.aboutme);
         if (flHolder != null) {
             flHolder.addView(
                     AboutBuilder.with(this)
@@ -306,7 +306,8 @@ public class ProfileActivity extends AppCompatActivity {
                 supportFinishAfterTransition();
                 return true;
             case R.id.action_privacy_policy:
-                Intent openIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.dev_privacy_policy_url)));
+                Intent openIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getResources().getString(R.string.dev_privacy_policy_url)));
                 if (openIntent.resolveActivity(getPackageManager()) != null) {
                     try {
                         startActivity(Intent.createChooser(openIntent, "Open via"));
@@ -314,7 +315,8 @@ public class ProfileActivity extends AppCompatActivity {
                         anfe.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No such app found to view this content", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                            "No such app found to view this content", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

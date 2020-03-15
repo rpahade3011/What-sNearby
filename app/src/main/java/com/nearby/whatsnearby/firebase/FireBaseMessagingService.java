@@ -7,8 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -53,12 +54,12 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        android.support.v4.app.NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(this.getResources().getString(R.string.app_name))
                 .setContentText(messageBody)
                 .setAutoCancel(true)
-                .setStyle(new android.support.v4.app.NotificationCompat.BigTextStyle().bigText(messageBody))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                 .setSound(defaultSoundUri)
                 /*.setContentIntent(pendingIntent)*/;
 

@@ -67,13 +67,13 @@
         android:background="@color/colorPrimary">
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list"
         android:layout_below="@+id/contentDescription"
         android:padding="12dp">
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <FrameLayout
         android:layout_width="match_parent"

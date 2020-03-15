@@ -139,4 +139,3 @@ public class JSONParser {
         return this.placeBeanList;
     }
 }
-

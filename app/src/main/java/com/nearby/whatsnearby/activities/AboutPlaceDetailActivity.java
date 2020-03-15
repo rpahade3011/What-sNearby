@@ -10,7 +10,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,46 +17,51 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.adapters.PlacesImageAdapter;
-import com.nearby.whatsnearby.adapters.ReviewAdapter;
+import com.nearby.whatsnearby.adapters.ReviewRecyclerAdapter;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.bottomsheet.BottomSheetBehaviorGoogleMapsLike;
 import com.nearby.whatsnearby.bottomsheet.MergedAppBarLayoutBehavior;
 import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.customasynctask.ExecuteDirectionsAPI;
+import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
+import com.nearby.whatsnearby.customasynctask.SharePlaceTask;
 import com.nearby.whatsnearby.fragments.ErrorFragment;
 import com.nearby.whatsnearby.services.AppController;
 import com.nearby.whatsnearby.services.GpsTracker;
@@ -66,9 +70,9 @@ import com.nearby.whatsnearby.views.PagerAnimation;
 import com.wizchen.topmessage.TopMessage;
 import com.wizchen.topmessage.TopMessageManager;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by rudhraksh.pahade on 8/3/2016.
@@ -78,7 +82,7 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "AboutPlaceDetailActivity";
     private static final int REQUEST_SHARE = 1010;
-    private static final String PREFIX_DEFAULT_GOOGLE_NAVIGATE = "google.navigation:q=";
+
 
     private static final String NO_REVIEWS_TEXT = "Sorry, no reviews available for this place";
 
@@ -99,7 +103,6 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
     private GpsTracker gpsTracker;
     private LatLng source;
     private LatLng destination;
-
     private Bitmap locationBitmap = null;
 
     private String imagePath = null;
@@ -120,44 +123,37 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_about_fragment);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
+        coordinatorLayout = findViewById(R.id.coordinatorlayout);
 
         getIntentData();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("Place details");
             // Setting navigation bar color for lollipop devices
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-                getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimaryDark));
-            }
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            coordinatorLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    createImageReveal();
-                }
-            });
+            coordinatorLayout.post((this::createImageReveal));
         }
         setUpMapIfNeeded();
         getUsersLocation();
-        fabNavigate = (FloatingActionButton) findViewById(R.id.fabNavigate);
-        photosViewPager = (ViewPager) findViewById (R.id.pager);
-        tvDistanceETA = (TextView) findViewById (R.id.tvDistanceETA);
+        fabNavigate = findViewById(R.id.fabNavigate);
+        photosViewPager = findViewById (R.id.pager);
+        tvDistanceETA = findViewById (R.id.tvDistanceETA);
+
         /**
          * If we want to listen for states callback
          */
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorlayout);
         View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
         final BottomSheetBehaviorGoogleMapsLike behavior = BottomSheetBehaviorGoogleMapsLike.from(bottomSheet);
         behavior.addBottomSheetCallback(new BottomSheetBehaviorGoogleMapsLike.BottomSheetCallback() {
-
             @Override
             public void onStateChanged(@NonNull View bottomSheet,
                                        @BottomSheetBehaviorGoogleMapsLike.State int newState) {
@@ -200,18 +196,15 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
             }
         });
 
-        AppBarLayout mergedAppBarLayout = (AppBarLayout) findViewById(R.id.merged_appbarlayout);
-        MergedAppBarLayoutBehavior mergedAppBarLayoutBehavior = MergedAppBarLayoutBehavior.from(mergedAppBarLayout);
+        AppBarLayout mergedAppBarLayout = findViewById(R.id.merged_appbarlayout);
+        MergedAppBarLayoutBehavior mergedAppBarLayoutBehavior =
+                MergedAppBarLayoutBehavior.from(mergedAppBarLayout);
         mergedAppBarLayoutBehavior.setToolbarTitle(placeName);
-        mergedAppBarLayoutBehavior.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                behavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
-            }
-        });
+        mergedAppBarLayoutBehavior.setNavigationOnClickListener(v ->
+                behavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED));
 
-        bottomSheetTextView = (TextView) bottomSheet.findViewById(R.id.bottom_sheet_title);
-        txtReviewsSize = (TextView) bottomSheet.findViewById(R.id.text_dummy1);
+        bottomSheetTextView = bottomSheet.findViewById(R.id.bottom_sheet_title);
+        txtReviewsSize = bottomSheet.findViewById(R.id.text_dummy1);
 
         bottomSheetTextView.setText(placeName);
         if (reviewsArray != null && reviewsArray.length > 0) {
@@ -222,9 +215,9 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
 
         // Setting Distance and Time ETA
         if (source != null && destination != null) {
-            MapUtil.calculateNearbyDistance(source, destination);
-            if (GlobalSettings.DISTANCE_AND_TIME_ETA != null) {
-                tvDistanceETA.setText(GlobalSettings.DISTANCE_AND_TIME_ETA);
+            MapUtil.getInstance().calculateNearbyDistance(mServerResponse, source, destination);
+            if (MapUtil.getInstance().getDistanceAndTimeETA() != null) {
+                tvDistanceETA.setText(MapUtil.getInstance().getDistanceAndTimeETA());
             } else {
                 String NO_ETA = "0 Mins";
                 tvDistanceETA.setText(NO_ETA);
@@ -238,36 +231,14 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
             Log.e(LOG_TAG, "Exception");
         }
 
-        fabNavigate.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startNavigation(destination);
-            }
-        });
+        fabNavigate.setOnClickListener(v -> startNavigation(destination));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mMap == null) {
-            mMap = fragment.getMap();
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            mMap.setBuildingsEnabled(true);
-            mMap.getFocusedBuilding();
-            mMap.setTrafficEnabled(true);
-            mMap.getUiSettings().setZoomGesturesEnabled(true);
-            mMap.getUiSettings().setCompassEnabled(false);
-            mMap.getUiSettings().setRotateGesturesEnabled(true);
-            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.flag_marker))
-                    .position(destination).title(placeName));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 14.0f));
-            drawRoute();
+        if (fragment != null) {
+            fragment.getMapAsync(mOnMapReadyCallbacks);
         }
     }
 
@@ -278,10 +249,8 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -324,7 +293,8 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
         // Android native animator
         try {
             animator =
-                    ViewAnimationUtils.createCircularReveal(profileImageView, cx, cy, 0, finalRadius);
+                    ViewAnimationUtils
+                            .createCircularReveal(profileImageView, cx, cy, 0, finalRadius);
             animator.setInterpolator(new AccelerateDecelerateInterpolator());
             animator.setDuration(500);
             animator.start();
@@ -336,7 +306,6 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
         hidden = false;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void createExitReveal() {
 
         View profileImageView = coordinatorLayout;
@@ -353,7 +322,8 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
         int reverse_endradius = 0;
 
         // performing circular reveal for reverse animation
-        Animator animate = ViewAnimationUtils.createCircularReveal(profileImageView, cx, cy, finalRadius, reverse_endradius);
+        Animator animate = ViewAnimationUtils
+                .createCircularReveal(profileImageView, cx, cy, finalRadius, reverse_endradius);
         if (hidden) {
             // to show the layout when icon is tapped
             coordinatorLayout.setVisibility(View.VISIBLE);
@@ -361,8 +331,6 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
             animator.start();
             hidden = false;
         } else {
-            //reveal_items.setVisibility(View.VISIBLE);
-
             // to hide layout on animation end
             animate.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -383,13 +351,11 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
     }
 
     private void setUpMapIfNeeded() {
-        if (mMap == null) {
-            fm = getSupportFragmentManager();
-            fragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
-            if (fragment == null) {
-                fragment = SupportMapFragment.newInstance();
-                fm.beginTransaction().replace(R.id.map, fragment).commit();
-            }
+        fm = getSupportFragmentManager();
+        fragment = (SupportMapFragment) fm.findFragmentById(R.id.map);
+        if (fragment != null) {
+            fragment = SupportMapFragment.newInstance();
+            fm.beginTransaction().replace(R.id.map, fragment).commit();
         }
     }
 
@@ -397,18 +363,18 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
         gpsTracker = new GpsTracker(getApplicationContext());
         source = new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude());
         destination = new LatLng(lat, lng);
-        MapUtil.sourceBounds = source;
-        MapUtil.destinationBounds = destination;
+        MapUtil.getInstance().setSourceBounds(source);
+        MapUtil.getInstance().setDestinationBounds(destination);
     }
 
     private void setUpBottomSheetContents(View bottomSheet) throws Exception {
-        ImageButton buttonCall = (ImageButton) bottomSheet.findViewById(R.id.buttonCall);
-        ImageButton buttonNavigate = (ImageButton) bottomSheet.findViewById(R.id.buttonNavigate);
-        ImageButton buttonShare = (ImageButton) bottomSheet.findViewById(R.id.buttonShare);
+        ImageButton buttonCall = bottomSheet.findViewById(R.id.buttonCall);
+        ImageButton buttonNavigate = bottomSheet.findViewById(R.id.buttonNavigate);
+        ImageButton buttonShare = bottomSheet.findViewById(R.id.buttonShare);
 
-        final TextView places_detail_int_phone_detail = (TextView) bottomSheet.findViewById(R.id.places_detail_int_phone_detail);
-        TextView places_detail_address_detail = (TextView) bottomSheet.findViewById(R.id.places_detail_address_detail);
-        RatingBar places_rating = (RatingBar) bottomSheet.findViewById(R.id.rating);
+        final TextView places_detail_int_phone_detail = bottomSheet.findViewById(R.id.places_detail_int_phone_detail);
+        TextView places_detail_address_detail = bottomSheet.findViewById(R.id.places_detail_address_detail);
+        RatingBar places_rating = bottomSheet.findViewById(R.id.rating);
 
         places_detail_int_phone_detail.setText(contactNumber);
         places_detail_address_detail.setText(placeAddress);
@@ -418,27 +384,13 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
         places_rating.setRating(placeRatings);
 
         // Setting calling enabled to phone numbers
-        buttonCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCallingDialog(places_detail_int_phone_detail.getText().toString(), placeName);
-            }
-        });
+        buttonCall.setOnClickListener(v ->
+                openCallingDialog(places_detail_int_phone_detail.getText().toString(), placeName));
 
         // Setting navigation to particular destination
-        buttonNavigate.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startNavigation(destination);
-            }
-        });
+        buttonNavigate.setOnClickListener(v -> startNavigation(destination));
 
-        buttonShare.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSharePlace();
-            }
-        });
+        buttonShare.setOnClickListener(v -> openSharePlace());
     }
 
     private void initializePlaceImages() {
@@ -454,13 +406,17 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
             reviewView.setVisibility(View.GONE);
         } else {
             reviewView.setVisibility(View.VISIBLE);
-            ListView reviews = (ListView) reviewView.findViewById(R.id.review_list);
+            RecyclerView reviews = reviewView.findViewById(R.id.review_list);
+            reviews.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+            reviews.setLayoutManager(layoutManager);
             PlaceDetailBean.Review[] reviewArray = reviewsArray;
             if (reviewArray != null && reviewsArray.length > 0) {
-                ReviewAdapter reviewsAdapter = new ReviewAdapter(reviewArray, getApplicationContext());
+                ReviewRecyclerAdapter reviewsAdapter = new ReviewRecyclerAdapter(reviewArray,
+                        getApplicationContext());
                 reviews.setAdapter(reviewsAdapter);
             } else {
-                TextView no_Review = (TextView) reviewView.findViewById(R.id.no_reviews);
+                TextView no_Review = reviewView.findViewById(R.id.no_reviews);
                 no_Review.setText(NO_REVIEWS_TEXT);
             }
         }
@@ -477,38 +433,16 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
     @SuppressLint("LongLogTag")
     private void openSharePlace() {
 
-        final String locationUrl = getResources().getString(R.string.google_map_static_api_url)
-                + destination.latitude + "," + destination.longitude
-                + "&zoom=13&size=100x100&scale=2&format=jpeg&maptype=roadmap"
-                + "&markers=color:blue" + "|" + "label:" + "|" + destination.latitude
-                + "," + destination.longitude + "&key="
-                + getResources().getString(R.string.google_places_search_server_key);
-
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                InputStream is = null;
-                try {
-                    is = new URL(locationUrl.trim()).openStream();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                locationBitmap = BitmapFactory.decodeStream(is);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                imagePath = MediaStore.Images.Media.insertImage(getContentResolver(), locationBitmap, placeName, placeAddress);
-                assert imagePath != null;
-                sharePlace();
-            }
-        }.execute();
+        SharePlaceTask sharePlaceTask = new SharePlaceTask(destination.latitude, destination.longitude);
+        locationBitmap = sharePlaceTask.execute();
+        imagePath = MediaStore.Images.Media.insertImage(getContentResolver(),
+                locationBitmap, placeName, placeAddress);
+        assert imagePath != null;
+        sharePlace();
     }
 
     private void sharePlace() {
-        if (locationBitmap != null) {
+        if (imagePath != null) {
             Uri imageUri = Uri.parse(imagePath);
             if (imageUri != null) {
                 Intent locationShareIntent = new Intent(Intent.ACTION_SEND);
@@ -517,7 +451,8 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                 locationShareIntent.setType("image/*");
                 locationShareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 if (locationShareIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(Intent.createChooser(locationShareIntent, "Share image via"), REQUEST_SHARE);
+                    startActivityForResult(Intent.createChooser(locationShareIntent, "Share image via"),
+                            REQUEST_SHARE);
                 } else {
                     ErrorFragment errorFragment = new ErrorFragment();
                     Bundle msg = new Bundle();
@@ -539,7 +474,7 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
     }
 
     private void drawRoute() {
-        String directionUrl = MapUtil.getDirectionUrl(source, destination);
+        String directionUrl = MapUtil.getInstance().getDirectionUrl(source, destination);
         Log.d("DirectionURL", directionUrl);
         new ExecuteDirectionsAPI(this, mMap)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, directionUrl);
@@ -547,12 +482,12 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
 
     private void startNavigation(LatLng dest) {
         //The intent chooser displays all the installed apps.
-        String suffixCoordinatesLink = destination.latitude + "," + destination.longitude;
+        String suffixCoordinatesLink = dest.latitude + "," + dest.longitude;
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         //build the link url
         StringBuilder link = new StringBuilder();
-        link.append(PREFIX_DEFAULT_GOOGLE_NAVIGATE + suffixCoordinatesLink);
+        link.append(GlobalSettings.PREFIX_DEFAULT_GOOGLE_NAVIGATE + suffixCoordinatesLink);
         intent.setData(Uri.parse(link.toString()));
 
         if (intent.resolveActivity(this.getPackageManager()) != null) {
@@ -562,18 +497,19 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
                 anfe.printStackTrace();
             }
         } else {
-            Toast.makeText(this.getApplicationContext(), "Could not start the activity", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getApplicationContext(),
+                    "Could not start the activity", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @SuppressLint("LongLogTag")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_SHARE:
                 if (resultCode == Activity.RESULT_CANCELED) {
-                    TopMessageManager.showSuccess("You've successfully shared " + placeName, "", TopMessage.DURATION.LONG);
+                    TopMessageManager.showSuccess("You've successfully shared "
+                            + placeName, "", TopMessage.DURATION.LONG);
                 }
                 break;
         }
@@ -587,4 +523,78 @@ public class AboutPlaceDetailActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    private final OnMapReadyCallback mOnMapReadyCallbacks = googleMap -> {
+        if (googleMap != null) {
+            mMap = googleMap;
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            mMap.setBuildingsEnabled(true);
+            mMap.getFocusedBuilding();
+            mMap.setTrafficEnabled(true);
+            mMap.getUiSettings().setZoomGesturesEnabled(true);
+            mMap.getUiSettings().setCompassEnabled(false);
+            mMap.getUiSettings().setRotateGesturesEnabled(true);
+            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.flag_marker))
+                    .position(destination).title(placeName));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 14.0f));
+            drawRoute();
+        }
+    };
+
+    private final FetchFromServerUser mServerResponse = new FetchFromServerUser() {
+        @Override
+        public void onPreFetch(AlertType alertType) {
+            switch (alertType) {
+                case CALCULATE_DISTANCE_BETWEEN_TWO_LOCATIONS:
+                    break;
+            }
+        }
+
+
+        @SuppressLint("LongLogTag")
+        @Override
+        public void onFetchCompletion(String string, int id, AlertType alertType) {
+            switch (alertType) {
+                case CALCULATE_DISTANCE_BETWEEN_TWO_LOCATIONS:
+                    if (string != null) {
+                        Log.i(LOG_TAG, "execute() - " + string);
+                        try {
+                            JSONObject resultJson = new JSONObject(string);
+
+                            JSONArray rowArray = resultJson.getJSONArray("rows");
+                            JSONObject jsonObject = rowArray.getJSONObject(0);
+
+                            JSONArray elementArray = jsonObject.getJSONArray("elements");
+
+                            JSONObject finalObject = elementArray.getJSONObject(0);
+
+                            JSONObject durationObject = finalObject.getJSONObject("duration");
+
+                            String durationText = durationObject.optString("text");
+                            int durationValue = durationObject.getInt("value");
+
+                            MapUtil.getInstance().setDistanceAndTimeETA(durationText);
+
+                            JSONObject distanceObject = finalObject.getJSONObject("distance");
+
+                            String dText = distanceObject.optString("text");
+                            int distanceValue = distanceObject.getInt("value");
+                            double roundOff = Math.round((distanceValue / 1609.34) * 100.0) / 100.0;
+
+                            String distanceText = dText.replace(",", ".");
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+            }
+        }
+    };
 }

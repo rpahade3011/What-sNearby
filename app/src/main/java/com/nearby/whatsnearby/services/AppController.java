@@ -14,9 +14,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.core.content.FileProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -186,7 +187,7 @@ public class AppController extends Application implements Application.ActivityLi
         // Make file name - file must be saved to external storage or it wont be readable by
         // the email app.
         String path = GlobalSettings.LOG_FILE_PATH;
-        boolean isDirectoryCreated = Utils.createDir(path);
+        boolean isDirectoryCreated = Utils.getInstance().createDir(path);
         String fileNameForNougat = "crash_log_file_" + System.currentTimeMillis() + ".txt";
         CRASH_FILE_PATH_NAME = path + fileNameForNougat;
 

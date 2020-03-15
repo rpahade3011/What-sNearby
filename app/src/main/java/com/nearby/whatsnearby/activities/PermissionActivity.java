@@ -10,10 +10,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +22,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.permissions.PermissionAdapter;
 import com.nearby.whatsnearby.permissions.PermissionsPreferences;
@@ -218,15 +219,19 @@ public class PermissionActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSIONS) {
             // We have requested multiple permissions for this application, so all of them need to be
             // checked.
             if (PermissionsUtil.verifyPermissions(grantResults)) {
                 // All required permissions have been granted, display map.
-                if (permissionsPreferences.savePermissionPreferences(getApplicationContext(), true, true, true)) {
+                if (permissionsPreferences.savePermissionPreferences(getApplicationContext(),
+                        true, true, true)) {
                     tvPermissionName.setText(START_APP_TEXT_VALUE);
-                    Snackbar.make(mLayout, R.string.permission_available_location, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(mLayout, R.string.permission_available_location,
+                            Snackbar.LENGTH_SHORT).show();
                     // Checking GPS state of device
 
                     new Thread(new Runnable() {

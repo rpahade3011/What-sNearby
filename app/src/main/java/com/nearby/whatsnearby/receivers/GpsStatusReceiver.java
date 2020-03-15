@@ -9,7 +9,8 @@ import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
 
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.constants.GlobalSettings;

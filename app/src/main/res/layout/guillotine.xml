@@ -7,7 +7,7 @@
     android:background="@color/guillotine_background"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         style="@style/Toolbar"
         app:contentInsetStart="0dp">
 
@@ -16,7 +16,7 @@
             style="@style/ImageView.Hamburger"
             android:src="@mipmap/ic_menu"
             android:contentDescription="@string/app_name"/>
-    </android.support.v7.widget.Toolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <LinearLayout
         android:id="@+id/explore_group"
@@ -74,6 +74,7 @@
         android:layout_marginTop="200dp"
         android:layout_gravity="bottom"
         android:gravity="bottom">
+
         <com.google.android.gms.ads.AdView
             android:id="@+id/ad_view"
             android:layout_width="match_parent"

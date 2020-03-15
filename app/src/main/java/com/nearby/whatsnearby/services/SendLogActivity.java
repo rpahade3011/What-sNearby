@@ -8,6 +8,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
@@ -92,6 +93,7 @@ public class SendLogActivity extends Activity {
         try {
             info = manager.getPackageInfo(this.getPackageName(), 0);
         } catch (NameNotFoundException e2) {
+            Log.e("SendLogActivity", "Exception: " + e2.getMessage());
         }
         String model = Build.MODEL;
         if (!model.startsWith(Build.MANUFACTURER))
@@ -100,7 +102,7 @@ public class SendLogActivity extends Activity {
         // Make file name - file must be saved to external storage or it wont be readable by
         // the email app.
         String path = GlobalSettings.LOG_FILE_PATH;
-        boolean isDirectoryCreated = Utils.createDir(path);
+        boolean isDirectoryCreated = Utils.getInstance().createDir(path);
         String fullName = path + "_log_file_" + System.currentTimeMillis();
 
         // Extract to file.
@@ -153,5 +155,4 @@ public class SendLogActivity extends Activity {
 
         return fullName;
     }
-
 }

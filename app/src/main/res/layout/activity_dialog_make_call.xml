@@ -55,7 +55,7 @@
             android:text="@string/make_call_msg"
             android:textColor="@color/white"/>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:src="@drawable/ic_call"
@@ -71,7 +71,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"/>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:src="@drawable/ic_clear"

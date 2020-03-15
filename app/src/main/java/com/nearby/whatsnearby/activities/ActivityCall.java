@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -16,6 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nearby.whatsnearby.R;
 
 /**
@@ -37,7 +38,6 @@ public class ActivityCall extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         setUpWindowParameters();
         super.onCreate(savedInstanceState);
-
     }
 
     private void setUpWindowParameters() {
@@ -50,14 +50,14 @@ public class ActivityCall extends Activity implements View.OnClickListener {
     }
 
     private void initViews() {
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.relativeLayoutMain);
+        mRelativeLayout = findViewById(R.id.relativeLayoutMain);
         mRelativeLayout.setAnimation(mAnimation);
-        mTextViewCallMsg = (TextView) findViewById(R.id.callerName);
+        mTextViewCallMsg = findViewById(R.id.callerName);
         mTextViewCallMsg.setText(getResources().getString(R.string.make_call_msg, personName));
-        mTextViewContactNumber = (TextView) findViewById(R.id.callerPhoneNumber);
+        mTextViewContactNumber = findViewById(R.id.callerPhoneNumber);
         mTextViewContactNumber.setText(getResources().getString(R.string.make_call_msg, personContactNumber));
-        fabCall = (FloatingActionButton) findViewById(R.id.fabCall);
-        fabCancelCall = (FloatingActionButton) findViewById(R.id.fabCancelCall);
+        fabCall = findViewById(R.id.fabCall);
+        fabCancelCall = findViewById(R.id.fabCancelCall);
         fabCall.setOnClickListener(this);
         fabCancelCall.setOnClickListener(this);
     }

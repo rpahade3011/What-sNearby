@@ -18,14 +18,14 @@ import java.util.List;
 
 public class SearchResultAdapter extends BaseAdapter {
 
-    Context context;
-    List<SearchItemBean> items;
-    LayoutInflater inflater;
+    private Context mContext;
+    private List<SearchItemBean> items;
+    private LayoutInflater inflater;
 
     public SearchResultAdapter(Context context, List<SearchItemBean> items) {
-        this.context = context;
+        this.mContext = context;
         this.items = items;
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     @Override
     public int getCount() {
@@ -45,10 +45,11 @@ public class SearchResultAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            convertView = inflater.inflate(R.layout.auto_complete_list_item, parent, false);
+            convertView = inflater.inflate(R.layout.auto_complete_list_item,
+                    parent, false);
         }
         
-        TextView searchResult = (TextView)convertView.findViewById(R.id.place_auto_complete_desc);
+        TextView searchResult = convertView.findViewById(R.id.place_auto_complete_desc);
         searchResult.setText(items.get(position).getName());
         return convertView;
     }
