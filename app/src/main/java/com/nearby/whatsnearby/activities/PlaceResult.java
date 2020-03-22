@@ -24,7 +24,7 @@ import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.beans.PlaceDetailParser;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
-import com.nearby.whatsnearby.fragments.ErrorFragment;
+import com.nearby.whatsnearby.fragments.error.ErrorFragment;
 import com.nearby.whatsnearby.places.JSONParser;
 import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.services.GpsTracker;

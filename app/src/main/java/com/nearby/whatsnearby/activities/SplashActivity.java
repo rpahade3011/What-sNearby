@@ -20,16 +20,16 @@ public class SplashActivity extends AppCompatActivity {
 
     // Splash screen timer
     private static final int SPLASH_TIME_OUT = 4000;
-    Animation anim;
-    ImageView img;
-    ImageView img1;
-    ImageView img2;
-    ImageView img3;
-    ImageView img4;
-    ImageView img5;
-    ImageView img6;
-    ImageView img7;
-    TextView nearbyTxt;
+    private Animation anim;
+    private ImageView img;
+    private ImageView img1;
+    private ImageView img2;
+    private ImageView img3;
+    private ImageView img4;
+    private ImageView img5;
+    private ImageView img6;
+    private ImageView img7;
+    private TextView nearbyTxt;
 
     private PermissionsPreferences permissionsPreferences = new PermissionsPreferences();
 
@@ -78,7 +78,9 @@ public class SplashActivity extends AppCompatActivity {
 
     private void startAppNormally() {
         if (permissionsPreferences.getApplicationOk(getApplicationContext())) {
-            Intent mainInt = new Intent(SplashActivity.this, NavigationController.class);
+            //Intent mainInt = new Intent(SplashActivity.this, NavigationController.class);
+            Intent mainInt = new Intent(SplashActivity.this,
+                    ActivityBottomNavigationView.class);
             SplashActivity.this.startActivity(mainInt);
             SplashActivity.this.finish();
         } else {

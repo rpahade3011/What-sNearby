@@ -92,6 +92,7 @@
         <activity android:name=".activities.PlaceDetail" />
         <activity android:name=".activities.PlaceResult" />
         <activity android:name=".activities.NavigationController" />
+        <activity android:name=".activities.ActivityBottomNavigationView" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.AboutPlaceDetailActivity" />
         <activity

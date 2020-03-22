@@ -62,7 +62,7 @@ import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.customasynctask.ExecuteDirectionsAPI;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
 import com.nearby.whatsnearby.customasynctask.SharePlaceTask;
-import com.nearby.whatsnearby.fragments.ErrorFragment;
+import com.nearby.whatsnearby.fragments.error.ErrorFragment;
 import com.nearby.whatsnearby.services.AppController;
 import com.nearby.whatsnearby.services.GpsTracker;
 import com.nearby.whatsnearby.utilities.MapUtil;

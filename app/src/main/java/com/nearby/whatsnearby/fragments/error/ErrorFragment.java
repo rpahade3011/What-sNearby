@@ -1,4 +1,4 @@
-package com.nearby.whatsnearby.fragments;
+package com.nearby.whatsnearby.fragments.error;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,7 +19,7 @@ public class ErrorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         String msg = getArguments().getString("msg");
         View view = inflater.inflate(R.layout.error_fragment, container, false);
-        TextView errorMsg = (TextView) view.findViewById(R.id.error);
+        TextView errorMsg = view.findViewById(R.id.error);
         errorMsg.setText(msg);
         return view;
     }

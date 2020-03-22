@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by rudhraksh.pahade on 13-07-2016.
+ * Created by rudraksh.pahade on 13-07-2016.
  */
 
 public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
@@ -106,15 +106,10 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
     }
 
     private void makeDestinationRipple() {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                mCircle = map.addCircle(new CircleOptions()
-                        .center(MapUtil.getInstance().getDestinationBounds()).radius(500)
-                        .strokeColor(1)
-                        .strokeColor(0x5530d1d5)
-                        .fillColor(0x55383547));
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(() -> mCircle = map.addCircle(new CircleOptions()
+                .center(MapUtil.getInstance().getDestinationBounds()).radius(500)
+                .strokeColor(1)
+                .strokeColor(0x5530d1d5)
+                .fillColor(0x55383547)));
     }
 }

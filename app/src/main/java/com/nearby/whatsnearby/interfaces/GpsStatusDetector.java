@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.IntentSender;
 import android.location.LocationManager;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -23,7 +21,7 @@ import java.lang.ref.WeakReference;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * Created by rudhraksh.pahade on 12/29/2016.
+ * Created by rudraksh.pahade on 12/29/2016.
  */
 
 public class GpsStatusDetector {
@@ -39,7 +37,7 @@ public class GpsStatusDetector {
     }
 
     public GpsStatusDetector(Fragment fragment) {
-        this.mActivityWeakReference = new WeakReference<>((Activity) fragment.getActivity());
+        this.mActivityWeakReference = new WeakReference<>(fragment.getActivity());
         this.mCallBackWeakReference = new WeakReference<>((GpsStatusDetectorCallBack) fragment);
     }
 
@@ -58,7 +56,9 @@ public class GpsStatusDetector {
     }
 
     private boolean isGpsEnabled(Activity activity) {
-        return ((LocationManager) activity.getSystemService(Context.LOCATION_SERVICE))
+        LocationManager locationManager = (LocationManager)
+                activity.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager != null && locationManager
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
@@ -80,28 +80,25 @@ public class GpsStatusDetector {
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
                 .checkLocationSettings(mGoogleApiClient, locationSettingsRequest);
 
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(@NonNull LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        callBack.onGpsSettingStatus(true);
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        try {
-                            status.startResolutionForResult(activity, REQUEST_CODE);
-                        } catch (IntentSender.SendIntentException e) {
-                            callBack.onGpsSettingStatus(false);
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+        result.setResultCallback(result1 -> {
+            final Status status = result1.getStatus();
+            switch (status.getStatusCode()) {
+                case LocationSettingsStatusCodes.SUCCESS:
+                    callBack.onGpsSettingStatus(true);
+                    break;
+                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                    try {
+                        status.startResolutionForResult(activity, REQUEST_CODE);
+                    } catch (IntentSender.SendIntentException e) {
                         callBack.onGpsSettingStatus(false);
-                        break;
-                }
-
-                mGoogleApiClient.disconnect(); // If you do not disconnect, causes a memory leak
+                    }
+                    break;
+                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                    callBack.onGpsSettingStatus(false);
+                    break;
             }
+
+            mGoogleApiClient.disconnect(); // If you do not disconnect, causes a memory leak
         });
     }
 
