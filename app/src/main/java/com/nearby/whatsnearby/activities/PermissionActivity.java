@@ -4,17 +4,13 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -75,35 +71,25 @@ public class PermissionActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Window w = getWindow();
-        w.setFlags(
-                WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,
-                WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        w.setStatusBarColor(Color.parseColor("#FFFFFF"));
-
         setContentView(R.layout.activity_permissions);
 
         mLayout = findViewById(R.id.permissionMain);
-        tvPermissionName = (TextView) findViewById(R.id.tvPermissionName);
+        tvPermissionName = findViewById(R.id.tvPermissionName);
 
         tvPermissionName.setText(SETUP_TEXT_VALUE);
 
         // Start animating our ImageViews
         setUpGears();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Checking required permissions are granted
-                Log.i(TAG, "onCreate(). Gathering permissions");
-                checkPermissions(PermissionActivity.this);
-            }
+        new Handler().postDelayed(() -> {
+            // Checking required permissions are granted
+            Log.i(TAG, "onCreate(). Gathering permissions");
+            checkPermissions(PermissionActivity.this);
         }, 2000);
     }
 
     private void setUpGears() {
-        final ImageView gearProgressLeft = (ImageView) findViewById(R.id.gear_progress_left);
-        final ImageView gearProgressRight = (ImageView) findViewById(R.id.gear_progress_right);
+        final ImageView gearProgressLeft = findViewById(R.id.gear_progress_left);
+        final ImageView gearProgressRight = findViewById(R.id.gear_progress_right);
 
         final RotateAnimation gearProgressLeftAnim = new RotateAnimation(0.0f, 360.0f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -114,22 +100,12 @@ public class PermissionActivity extends Activity {
         final RotateAnimation gearProgressRightAnim = new RotateAnimation(360.0f, 0.0f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         gearProgressRightAnim.setRepeatCount(Animation.INFINITE);
-        gearProgressRightAnim.setDuration((long) 1500);
+        gearProgressRightAnim.setDuration(1500);
         gearProgressRightAnim.setInterpolator(new LinearInterpolator());
 
-        gearProgressLeft.post(new Runnable() {
-            @Override
-            public void run() {
-                gearProgressLeft.setAnimation(gearProgressLeftAnim);
-            }
-        });
+        gearProgressLeft.post(() -> gearProgressLeft.setAnimation(gearProgressLeftAnim));
 
-        gearProgressLeft.post(new Runnable() {
-            @Override
-            public void run() {
-                gearProgressRight.setAnimation(gearProgressRightAnim);
-            }
-        });
+        gearProgressLeft.post(() -> gearProgressRight.setAnimation(gearProgressRightAnim));
     }
 
     private void checkPermissions(Context context) {
@@ -143,35 +119,25 @@ public class PermissionActivity extends Activity {
                 Log.i(TAG,
                         "Displaying location permission rationale to provide additional context.");
                 Snackbar.make(mLayout, R.string.permission_location_rationale,
-                        Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        inflatePermissionDialog();
-                    }
-                }).show();
+                        Snackbar.LENGTH_INDEFINITE).setAction("OK", view ->
+                        inflatePermissionDialog()).show();
             } else {
                 // Permission has not been granted yet. Request it directly.
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Checking required permissions are granted
-                        Log.i(TAG, "checkPermissions(). Asking permissions");
-                        inflatePermissionDialog();
-                    }
+                new Handler().postDelayed(() -> {
+                    // Checking required permissions are granted
+                    Log.i(TAG, "checkPermissions(). Asking permissions");
+                    inflatePermissionDialog();
                 }, 2000);
             }
         } else {
             tvPermissionName.setText(START_APP_TEXT_VALUE);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    navigateToNavigationActivity();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                navigateToNavigationActivity();
             }).start();
 
         }
@@ -180,30 +146,31 @@ public class PermissionActivity extends Activity {
     private void inflatePermissionDialog() {
         mDialogInflater = getLayoutInflater();
         // Inflating custom dialog title view
-        View customTitleView = mDialogInflater.inflate(R.layout.perm_dialog_custom_title, null);
+        View customTitleView = mDialogInflater.inflate(R.layout.perm_dialog_custom_title,
+                null);
 
         // All list of permissions are not granted, display an AlertDialog
-        AlertDialog.Builder permissionDialogBuilder = new AlertDialog.Builder(PermissionActivity.this);
+        AlertDialog.Builder permissionDialogBuilder = new AlertDialog.Builder(
+                PermissionActivity.this);
 
         permissionDialogBuilder.setIcon(R.mipmap.ic_launcher);
         permissionDialogBuilder.setCancelable(false);
         permissionDialogBuilder.setCustomTitle(customTitleView);
-        permissionDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                doAskPermissions();
-            }
+        permissionDialogBuilder.setPositiveButton("OK", (dialog, which) -> {
+            dialog.dismiss();
+            doAskPermissions();
         });
 
         // Inflating dialog ListView
-        View permDialogView = mDialogInflater.inflate(R.layout.layout_permission_dialog, null);
+        View permDialogView = mDialogInflater.inflate(R.layout.layout_permission_dialog,
+                null);
         permissionDialogBuilder.setView(permDialogView);
 
         // Extracting ListView from {@link layout_permission_dialog}
-        ListView permissionListView = (ListView) permDialogView.findViewById(R.id.exLstPerm);
+        ListView permissionListView = permDialogView.findViewById(R.id.exLstPerm);
 
-        PermissionAdapter permissionDialogAdapter = new PermissionAdapter(PermissionActivity.this);
+        PermissionAdapter permissionDialogAdapter = new PermissionAdapter(
+                PermissionActivity.this);
 
         permissionListView.setAdapter(permissionDialogAdapter);
 
@@ -234,17 +201,14 @@ public class PermissionActivity extends Activity {
                             Snackbar.LENGTH_SHORT).show();
                     // Checking GPS state of device
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            navigateToNavigationActivity();
-
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
+                        navigateToNavigationActivity();
+
                     }).start();
 
                 } else {
@@ -269,7 +233,8 @@ public class PermissionActivity extends Activity {
     private void navigateToNavigationActivity() {
         if (!permissionsPreferences.getApplicationOk(getApplicationContext())) {
             permissionsPreferences.setApplicationOk(getApplicationContext(), true);
-            Intent intent = new Intent(PermissionActivity.this, NavigationController.class);
+            Intent intent = new Intent(PermissionActivity.this,
+                    ActivityBottomNavigationView.class);
             PermissionActivity.this.startActivity(intent);
             PermissionActivity.this.finish();
         }

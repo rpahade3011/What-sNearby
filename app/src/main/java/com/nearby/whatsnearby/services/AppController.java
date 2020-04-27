@@ -1,12 +1,10 @@
 package com.nearby.whatsnearby.services;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -27,7 +25,6 @@ import com.android.volley.toolbox.Volley;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
-import com.nearby.whatsnearby.receivers.GpsStatusReceiver;
 import com.nearby.whatsnearby.utilities.TypefaceUtil;
 import com.nearby.whatsnearby.utilities.Utils;
 import com.wizchen.topmessage.util.TopActivityManager;
@@ -35,7 +32,6 @@ import com.wizchen.topmessage.util.TopActivityManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 
 
 /**
@@ -52,7 +48,6 @@ public class AppController extends Application implements Application.ActivityLi
     private static AppController mInstance;
     private RequestQueue requestQueue;
     private ImageLoader imageLoader;
-    private GpsStatusReceiver gpsStatusReceiver = null;
 
     private PlaceDetailBean.Review[] review;
     private String[] placePhotos;
@@ -80,18 +75,11 @@ public class AppController extends Application implements Application.ActivityLi
     public void onCreate() {
         super.onCreate();
         // Setup handler for uncaught exceptions.
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable ex) {
-                handleUncaughtException(thread, ex);
-            }
-        });
+        Thread.setDefaultUncaughtExceptionHandler(this::handleUncaughtException);
         initTypeface();
         mInstance = this;
         mInstance.registerActivityLifecycleCallbacks(this);
         registerActivityLifecycleCallbacks(TopActivityManager.getInstance());
-        registerGpsStatusReceiver();
-
     }
 
     public static synchronized AppController getInstance() {
@@ -110,12 +98,7 @@ public class AppController extends Application implements Application.ActivityLi
             writeLogToFile(thread, e);
         } else {
             //handle non UI thread throw uncaught exception
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    writeLogToFile(thread, e);
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(() -> writeLogToFile(thread, e));
         }
 
     }
@@ -214,35 +197,26 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     private void invokeCrashedDialog(final String fullName, final String fileNameForNougat) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
+        new Thread(() -> {
+            Looper.prepare();
 
-                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(mCurrentActivity,
-                        SweetAlertDialog.ERROR_TYPE);
-                sweetAlertDialog.setTitleText(REPORT_CONTENT_TITLE);
-                sweetAlertDialog.setContentText(REPORT_CONTENT_TEXT);
-                sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismissWithAnimation();
-                        sendLogFile(fullName, fileNameForNougat);
-                    }
-                });
-                sweetAlertDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismissWithAnimation();
-                        restartApplication();
-                    }
-                });
-                sweetAlertDialog.setConfirmText("REPORT");
-                sweetAlertDialog.setCancelText("Cancel");
-                sweetAlertDialog.show();
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(mCurrentActivity,
+                    SweetAlertDialog.ERROR_TYPE);
+            sweetAlertDialog.setTitleText(REPORT_CONTENT_TITLE);
+            sweetAlertDialog.setContentText(REPORT_CONTENT_TEXT);
+            sweetAlertDialog.setConfirmClickListener(sweetAlertDialog1 -> {
+                sweetAlertDialog1.dismissWithAnimation();
+                sendLogFile(fullName, fileNameForNougat);
+            });
+            sweetAlertDialog.setCancelClickListener(sweetAlertDialog12 -> {
+                sweetAlertDialog12.dismissWithAnimation();
+                restartApplication();
+            });
+            sweetAlertDialog.setConfirmText("REPORT");
+            sweetAlertDialog.setCancelText("Cancel");
+            sweetAlertDialog.show();
 
-                Looper.loop();
-            }
+            Looper.loop();
         }).start();
     }
 
@@ -284,9 +258,12 @@ public class AppController extends Application implements Application.ActivityLi
     }
 
     private void initTypeface() {
-        TypefaceUtil.overrideFont(this, "SERIF", "fonts/Hanken-Book.ttf");
-        TypefaceUtil.overrideFont(this, "MONOSPACE", "fonts/Hanken-Book.ttf");
-        TypefaceUtil.overrideFont(this, "DEFAULT", "fonts/Hanken-Book.ttf");
+        TypefaceUtil.overrideFont(this,
+                "SERIF", "fonts/ProductSans-Regular.ttf");
+        TypefaceUtil.overrideFont(this,
+                "MONOSPACE", "fonts/ProductSans-Regular.ttf");
+        TypefaceUtil.overrideFont(this,
+                "DEFAULT", "fonts/ProductSans-Regular.ttf");
     }
 
     /**
@@ -355,7 +332,6 @@ public class AppController extends Application implements Application.ActivityLi
     public void onTerminate() {
         super.onTerminate();
         mInstance = null;
-        unRegisterGpsStatusReceiver();
     }
 
     @Override
@@ -364,36 +340,9 @@ public class AppController extends Application implements Application.ActivityLi
 
     }
 
-    @TargetApi(VERSION_CODES.KITKAT)
-    private void registerGpsStatusReceiver() {
-        IntentFilter gpsIntentFilter = new IntentFilter("android.location.PROVIDERS_CHANGED");
-        // Registering broadcast receiver for GpsStatusChanges
-        if (gpsStatusReceiver == null) {
-            gpsStatusReceiver = new GpsStatusReceiver();
-            try {
-                registerReceiver(gpsStatusReceiver, gpsIntentFilter);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void unRegisterGpsStatusReceiver() {
-        // Un registering broadcast receiver for GpsStatusChanges
-        if (gpsStatusReceiver != null) {
-            try {
-                this.unregisterReceiver(gpsStatusReceiver);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
-        registerGpsStatusReceiver();
         setCurrentActivity(activity);
-
     }
 
     @Override
@@ -404,13 +353,11 @@ public class AppController extends Application implements Application.ActivityLi
     @Override
     public void onActivityResumed(Activity activity) {
         setCurrentActivity(activity);
-        registerGpsStatusReceiver();
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
         clearReferences();
-        registerGpsStatusReceiver();
     }
 
     @Override
@@ -427,7 +374,6 @@ public class AppController extends Application implements Application.ActivityLi
     public void onActivityDestroyed(Activity activity) {
         // Close all the instances of Activity
         clearReferences();
-        unRegisterGpsStatusReceiver();
     }
 
     public Activity getCurrentActivity() {

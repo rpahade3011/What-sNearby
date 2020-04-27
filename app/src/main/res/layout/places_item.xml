@@ -1,3 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+<layout>
+    <data>
+        <variable
+            name="placeBean"
+            type="com.nearby.whatsnearby.beans.PlaceBean" />
+    </data>
+
+
+</layout>-->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,13 +19,13 @@
     app:cardElevation="4dp"
     android:layout_marginEnd="5dp"
     android:layout_marginStart="5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
         android:orientation="vertical"
-        android:background="#FFF"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:background="#FFF">
 
         <TextView
             android:layout_width="match_parent"
@@ -23,14 +34,14 @@
             android:id="@+id/name"
             android:textSize="14sp"
             android:textColor="@android:color/white"
-            android:background="@color/colorPrimaryLight"
+            android:background="@color/primary_light"
             android:gravity="center_vertical|center_horizontal"
             android:padding="8dp" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:background="@color/colorPrimaryLight">
+            android:background="@color/primary_light">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -46,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/time"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/white"
                     android:text="12 min"
                     android:gravity="center"/>
             </LinearLayout>
@@ -59,8 +70,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/distance"
-                    android:textColor="@color/light_gray"
-                    android:text="12km"
+                    android:textColor="@color/white"
+                    android:text="12 km"
                     android:gravity="center"/>
             </LinearLayout>
         </LinearLayout>
@@ -86,13 +97,13 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/isOpen"
                     android:layout_weight="1"
-                    android:textColor="#555"
+                    android:textColor="@color/primary_dark"
                     android:textStyle="bold" />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/primary_dark"
                     android:gravity="end"
                     android:paddingEnd="16dp"
                     android:text="Info"/>
@@ -109,10 +120,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textColor="#555"
+                android:textColor="@color/primary_dark"
                 android:text="Rating"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="16dp"/>
+
             <RatingBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -138,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textColor="#555"
+                android:textColor="@color/primary_dark"
                 android:text="Address"
                 android:id="@+id/prediction"
                 android:layout_marginStart="60dp"
@@ -151,7 +163,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="4dp"
                 android:textSize="14sp"
-                android:textColor="@color/primary"/>
+                android:textColor="@color/colorAccent"/>
         </LinearLayout>
 
     </LinearLayout>

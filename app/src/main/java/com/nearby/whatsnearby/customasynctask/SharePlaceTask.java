@@ -2,6 +2,7 @@ package com.nearby.whatsnearby.customasynctask;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.nearby.whatsnearby.utilities.Utils;
 
@@ -19,6 +20,7 @@ public class SharePlaceTask {
     }
     public Bitmap execute() {
         final String locationUrl = Utils.getInstance().getUrlForStaticMaps(lat, lng);
+        Log.i("SharePlaceTask", "Url For StaticMaps --> " + locationUrl);
         InputStream is = null;
         try {
             is = new URL(locationUrl.trim()).openStream();

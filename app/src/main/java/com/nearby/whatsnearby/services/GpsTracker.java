@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,7 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 
 import com.nearby.whatsnearby.R;
-import com.nearby.whatsnearby.activities.NavigationController;
+import com.nearby.whatsnearby.activities.ActivityBottomNavigationView;
 
 
 /**
@@ -206,19 +205,13 @@ public class GpsTracker extends Service implements LocationListener {
         alertDialog.setMessage(mContext.getResources().getString(R.string.gps_disabled_alert_msg));
 
         // Settings button is clicked in
-        alertDialog.setPositiveButton(getResources().getString(R.string.gps_settings), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
-            }
+        alertDialog.setPositiveButton(getResources().getString(R.string.gps_settings), (dialog, which) -> {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mContext.startActivity(intent);
         });
 
         // Cancel button is clicked in
-        alertDialog.setNegativeButton(getResources().getString(R.string.gps_cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alertDialog.setNegativeButton(getResources().getString(R.string.gps_cancel), (dialog, which) -> dialog.cancel());
 
         // Will show the message box
         alertDialog.show();
@@ -249,7 +242,7 @@ public class GpsTracker extends Service implements LocationListener {
 
         // The PendingIntent to launch activity.
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, NavigationController.class), 0);
+                new Intent(this, ActivityBottomNavigationView.class), 0);
         String contentText = String.format(mContext.getResources().getString(R.string.bg_serv_noti_content_text),
                 getString(R.string.app_name));
         return new NotificationCompat.Builder(this)

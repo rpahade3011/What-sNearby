@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class PlacesConstants {
 
-    public static String distanceEta;
     public Map<String, String> places;
 
     public PlacesConstants() {

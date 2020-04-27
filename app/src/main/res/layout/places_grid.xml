@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:columnWidth="175dp"
         android:numColumns="auto_fit"
-        android:verticalSpacing="3dp"
+        android:verticalSpacing="2dp"
+        android:horizontalSpacing="2dp"
         android:stretchMode="spacingWidthUniform"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true">

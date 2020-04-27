@@ -79,6 +79,29 @@ public class PlaceDetailParser {
             } else {
                 detailBean.setRating(0.0f);
             }
+            // Parsing opening timings
+            if (result.has("opening_hours")) {
+                JSONObject openingHoursObject = result.optJSONObject("opening_hours");
+                if (openingHoursObject != null) {
+                    detailBean.setOpen(openingHoursObject.optBoolean("open_now"));
+                    JSONArray weekdayArray = openingHoursObject.optJSONArray("weekday_text");
+                    if (weekdayArray != null && weekdayArray.length() > 0) {
+                        String[] weekDay = new String[weekdayArray.length()];
+                        for (int i = 0; i < weekdayArray.length(); i++) {
+                            weekDay[i] = weekdayArray.optString(i);
+                        }
+                        detailBean.setWeekday(weekDay);
+                    } else {
+                        detailBean.setWeekday(null);
+                    }
+                }
+            }
+
+            if (result.has("plus_code")) {
+                JSONObject plusCodeObject = result.optJSONObject("plus_code");
+                detailBean.setCompoundAddress(plusCodeObject.optString("compound_code"));
+            }
+
             if (result.has("photos")) {
                 JSONArray photosArray = result.getJSONArray("photos");
                 String[] photoRef = new String[photosArray.length()];

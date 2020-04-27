@@ -1,97 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="top|start|center_horizontal|end"
     android:background="@color/white"
-    android:gravity="center_vertical"
-    android:minHeight="?android:listPreferredItemHeight"
-    android:padding="16dp"
-    android:orientation="horizontal"
+    android:layout_marginBottom="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="8dp"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
     android:id="@+id/review_item">
-    <com.nearby.whatsnearby.views.RoundImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:id="@+id/author_icon"
-        android:background="@drawable/circle"
-        android:src="@drawable/ic_person_white_24dp"
-        android:gravity="center"
-        android:scaleType="center" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:minHeight="?android:listPreferredItemHeight">
+
+        <com.nearby.whatsnearby.views.RoundImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/author_icon"
+            android:layout_gravity="center"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/circle"
+            android:src="@drawable/ic_person_white_24dp"
+            android:gravity="center"
+            android:scaleType="center" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
+            android:orientation="vertical"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/author_name"
+                        android:textSize="6.8pt"
+                        android:textIsSelectable="false"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:text="author_name"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end">
+                    <RatingBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="?android:ratingBarStyleSmall"
+                        android:id="@+id/author_rating"
+                        android:numStars="5"
+                        android:isIndicator="true"
+                        android:focusable="false"
+                        android:clickable="false" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
                 android:layout_weight="1">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/author_name"
-                    android:textSize="6.8pt"
+                    android:id="@+id/relative_time_description"
+                    android:textSize="4.8pt"
                     android:textIsSelectable="false"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/secondary_text_selector_light"
                     android:textStyle="bold"
-                    android:text="author_name"
+                    android:text="relative_time_description"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end">
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="?android:ratingBarStyleSmall"
-                    android:id="@+id/author_rating"
-                    android:numStars="5"
-                    android:isIndicator="true"
-                    android:focusable="false"
-                    android:clickable="false" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/relative_time_description"
-                android:textSize="4.8pt"
+                android:id="@+id/author_text"
+                android:textStyle="normal"
                 android:textIsSelectable="false"
-                android:textColor="@color/secondary_text_selector_light"
-                android:textStyle="bold"
-                android:text="relative_time_description"
-                tools:ignore="HardcodedText" />
-        </LinearLayout>
+                android:textSize="14sp"
+                android:textColor="#444"
+                android:paddingTop="8dp"
+                android:text="author_text"
+                tools:ignore="HardcodedText"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/author_text"
-            android:textStyle="normal"
-            android:textIsSelectable="false"
-            android:textSize="14sp"
-            android:textColor="#444"
-            android:paddingTop="8dp"
-            android:text="author_text"
-            tools:ignore="HardcodedText"/>
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>

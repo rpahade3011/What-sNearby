@@ -3,6 +3,9 @@ package com.nearby.whatsnearby.utilities;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
@@ -25,8 +28,7 @@ public class MapUtil {
 
     private LatLng mSourceBounds;
     private LatLng mDestinationBounds;
-
-    private String mDistanceAndTimeETA = null;
+    private MutableLiveData<String> mDistanceAndTimeETA = new MutableLiveData<>();
 
     private MapUtil() {}
 
@@ -53,12 +55,12 @@ public class MapUtil {
         mDestinationBounds = destinationBounds;
     }
 
-    public String getDistanceAndTimeETA() {
+    public LiveData<String> getDistanceTimeETA() {
         return mDistanceAndTimeETA;
     }
 
-    public void setDistanceAndTimeETA(String mDistanceAndTimeETA) {
-        this.mDistanceAndTimeETA = mDistanceAndTimeETA;
+    public void setDistanceAndTimeETA(String eta) {
+        mDistanceAndTimeETA.setValue(eta);
     }
 
     public String getDirectionUrl(LatLng source, LatLng destination) {
@@ -129,7 +131,7 @@ public class MapUtil {
     public void calculateNearbyDistance (FetchFromServerUser user,
                                          final LatLng srcLatLng,
                                          final LatLng destLatLng) {
-        NetworkTask.getInstance(user, 0).calculateDistanceBetweenTwoLocations(srcLatLng.latitude,
+        NetworkTask.getInstance(0).calculateDistanceBetweenTwoLocations(srcLatLng.latitude,
                 srcLatLng.longitude, destLatLng.latitude, destLatLng.longitude, user);
     }
 }

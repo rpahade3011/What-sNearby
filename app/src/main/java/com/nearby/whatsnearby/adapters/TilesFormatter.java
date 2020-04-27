@@ -57,7 +57,7 @@ public class TilesFormatter extends BaseAdapter {
         String place_id = places.places_list[position];
         String icon_id = places.places.get(place_id);
 
-        convertView = inflater.inflate(R.layout.grid_item, parent, false);
+        convertView = inflater.inflate(R.layout.places_grid_item, parent, false);
         if(convertView == null){
 
         }else {

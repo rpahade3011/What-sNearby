@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 
 
 /**
- * Created by rudhraksh.pahade on 13-07-2016.
+ * Created by rudraksh.pahade on 13-07-2016.
  */
 
 public class ExecuteDirectionsAPI extends AsyncTask<String, Void, String> {
@@ -46,6 +46,6 @@ public class ExecuteDirectionsAPI extends AsyncTask<String, Void, String> {
         super.onPostExecute(s);
         ParseDirectionAPITask parseDirectionAPITask = new ParseDirectionAPITask(activity.get(), map);
         // Invokes the thread for parsing the JSON data
-        parseDirectionAPITask.execute(s);
+        parseDirectionAPITask.executeOnExecutor(THREAD_POOL_EXECUTOR, s);
     }
 }

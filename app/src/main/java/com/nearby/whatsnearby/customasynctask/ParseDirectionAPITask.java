@@ -11,10 +11,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
 import com.nearby.whatsnearby.places.DirectionsJSONParser;
 import com.nearby.whatsnearby.utilities.MapUtil;
 
@@ -25,8 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 /**
- * Created by rudhraksh.pahade on 13-07-2016.
+ * Created by rudraksh.pahade on 13-07-2016.
  */
 
 public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
@@ -34,6 +38,10 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
     private WeakReference<Activity> activity;
     private GoogleMap map;
     private Circle mCircle = null;
+    private ArrayList<LatLng> points = null;
+    private Polyline blackPolyline;
+    private float v;
+    private PolylineOptions lineOptions, blackPolylineOptions = null;
 
     public ParseDirectionAPITask(Activity a, GoogleMap gm) {
         this.activity = new WeakReference<>(a);
@@ -61,12 +69,10 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         super.onPostExecute(result);
-        ArrayList<LatLng> points = null;
-        PolylineOptions lineOptions = null;
         MarkerOptions markerOptions = new MarkerOptions();
         // Traversing through all the routes
         for (int i = 0; i < result.size(); i++) {
-            points = new ArrayList<LatLng>();
+            points = new ArrayList<>();
             lineOptions = new PolylineOptions();
 
             // Fetching i-th route
@@ -100,21 +106,29 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
             int width = displaymetrics.widthPixels;
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height - width, 100));
 
+            blackPolylineOptions = new PolylineOptions();
+            blackPolylineOptions.width(5);
+            blackPolylineOptions.color(Color.BLACK);
+            blackPolylineOptions.startCap(new SquareCap());
+            blackPolylineOptions.endCap(new SquareCap());
+            blackPolylineOptions.jointType(JointType.ROUND);
+            blackPolyline = map.addPolyline(blackPolylineOptions);
+
             // Start destination location ripple
-            makeDestinationRipple();
+            //makeDestinationRipple();
+            startAnimatingLines();
         }
     }
 
+    private void startAnimatingLines() {
+
+    }
+
     private void makeDestinationRipple() {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                mCircle = map.addCircle(new CircleOptions()
-                        .center(MapUtil.getInstance().getDestinationBounds()).radius(500)
-                        .strokeColor(1)
-                        .strokeColor(0x5530d1d5)
-                        .fillColor(0x55383547));
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(() -> mCircle = map.addCircle(new CircleOptions()
+                .center(MapUtil.getInstance().getDestinationBounds()).radius(500)
+                .strokeColor(1)
+                .strokeColor(0x5530d1d5)
+                .fillColor(0x55383547)));
     }
 }

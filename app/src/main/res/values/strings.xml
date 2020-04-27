@@ -76,4 +76,8 @@
     <string name="bg_serv_noti_content_text">%1$s is running in background</string>
     <string name="title_activity_bottom_nav_controller">What\'s Nearby</string>
     <string name="title_home">Home</string>
+    <string name="number_of_reviews">&#40; %d &#41;</string>
+    <string name="number_of_no_reviews">&#40; %d &#41;</string>
+    
+    <!-- Place details data binding -->
 </resources>

@@ -8,12 +8,21 @@ import android.net.NetworkInfo;
  * Class to check device network connectivity and notifies Broadcast
  */
 public class NetworkUtil {
+    private static NetworkUtil mInstance = null;
+    private final int TYPE_WIFI = 1;
+    private final int TYPE_MOBILE = 2;
+    private final int TYPE_NOT_CONNECTED = 0;
 
-    private static final int TYPE_WIFI = 1;
-    private static final int TYPE_MOBILE = 2;
-    private static final int TYPE_NOT_CONNECTED = 0;
+    private NetworkUtil() {}
 
-    private static int getConnectivityStatus(Context context) {
+    public static NetworkUtil getInstance() {
+        if (mInstance == null) {
+            mInstance = new NetworkUtil();
+        }
+        return mInstance;
+    }
+
+    private int getConnectivityStatus(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
@@ -27,8 +36,8 @@ public class NetworkUtil {
         return TYPE_NOT_CONNECTED;
     }
 
-    public static String getConnectivityStatusString(Context context) {
-        int conn = NetworkUtil.getConnectivityStatus(context);
+    public String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
         String status = null;
         switch (conn) {
             case TYPE_WIFI:

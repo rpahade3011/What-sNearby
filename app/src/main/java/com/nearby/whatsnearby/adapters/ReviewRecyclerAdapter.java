@@ -16,14 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
-import com.nearby.whatsnearby.views.ImageLoader;
+import com.nearby.whatsnearby.services.AppController;
+import com.nearby.whatsnearby.utilities.Utils;
 
 public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAdapter.ReviewHolder> {
     private PlaceDetailBean.Review[] reviews;
     private Context context;
     private String colors = "#30d1d5";
+    private ImageLoader imageLoader;
 
     public ReviewRecyclerAdapter(PlaceDetailBean.Review[] reviews, Context context) {
         this.reviews = reviews;
@@ -34,13 +38,13 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAd
     @Override
     public ReviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context)
-                .inflate(R.layout.review_fragment_item, parent);
+                .inflate(R.layout.review_fragment_item, parent, false);
         return new ReviewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReviewHolder holder, int position) {
-       bindData(holder, position);
+        bindData(holder, position);
     }
 
     @Override
@@ -58,16 +62,33 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAd
         holder.icon.setScaleType(ImageView.ScaleType.CENTER);
         GradientDrawable gd = (GradientDrawable) holder.icon.getBackground().getCurrent();
         gd.setColor(Color.parseColor(colors));
-        if(reviews[position].getAuthor_url() != null && reviews[position].getAuthor_url().length() > 24) {
-            String baseURL = "https://www.googleapis.com/plus/v1/people/";
-            String key = "AIzaSyBg-iwzAjavEUVV9hOQUr0JljZHL7XFRkQ";
-            String author_url = baseURL + reviews[position].getAuthor_url().substring(24) + "?fields=image&key=" + key;
+
+        if (reviews[position].getAuthor_url() != null && reviews[position].getAuthor_url().length() > 24) {
+            String author_url = Utils.getInstance().getAuthorReviewsImageUrl(context, reviews[position].getAuthor_url().substring(24));
+            Log.i("ReviewRecyclerAdapter", "Author Reviews Image Url --> " + author_url);
             try {
-                new ImageLoader(context, author_url, holder.icon).loadThumbnailImage();
-            }catch (Exception ex){
+                downloadAuthorImages(author_url, holder.icon);
+            } catch (Exception ex) {
                 Log.e("ReviewAdapter", ex.getMessage());
             }
         }
+    }
+
+    private void downloadAuthorImages(String imageUrl, ImageView imageView) {
+        imageLoader = AppController.getInstance().getImageLoader();
+        imageLoader.get(imageUrl, new ImageLoader.ImageListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (response.getBitmap() != null) {
+                    imageView.setImageBitmap(response.getBitmap());
+                }
+            }
+        });
     }
 
     public static class ReviewHolder extends RecyclerView.ViewHolder {

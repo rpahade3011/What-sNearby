@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.nearby.whatsnearby">
 
     <permission
@@ -18,6 +17,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="com.nearby.whatsnearby.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -47,7 +47,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_places_search_server_key" />
+            android:value="@string/google_maps_key" />
 
         <!--
              Set custom default icon. This is used when no icon is set for incoming notification messages.
@@ -87,44 +87,32 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.PermissionActivity" />
-        <activity android:name=".activities.PlacesMain" />
         <activity android:name=".activities.ActivitySearch" />
         <activity android:name=".activities.PlaceDetail" />
         <activity android:name=".activities.PlaceResult" />
-        <activity android:name=".activities.NavigationController" />
-        <activity android:name=".activities.ProfileActivity" />
-        <activity android:name=".activities.AboutPlaceDetailActivity" />
+
         <activity
             android:name=".activities.ActivityCall"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-
-        <receiver android:name=".receivers.NetworkChangeReceiver">
-            <intent-filter>
-                <action
-                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".receivers.GpsStatusReceiver">
-            <intent-filter>
-                <action android:name="android.location.PROVIDERS_CHANGED" />
-            </intent-filter>
-        </receiver>
-
+        <activity android:name=".activities.placedetails.ActivityPlaceDetails" />
+        <activity android:name=".activities.ActivityBottomNavigationView" />
         <!-- [START firebase_service] -->
         <service android:name=".firebase.FireBaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service android:name=".services.GpsTracker" />
+        <service android:name=".services.MonitorService"
+            android:enabled="true"
+            android:exported="true"/>
         <!-- [END firebase_service] -->
         <!-- [START firebase_iid_service] -->
-        <service android:name=".firebase.FireBaseInstanceIDService">
+        <!--<service android:name=".firebase.FireBaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
-        </service>
+        </service>-->
 
     </application>
 

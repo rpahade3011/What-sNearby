@@ -31,7 +31,7 @@
                 android:id="@+id/tvAppName"
                 android:text="@string/app_name"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/titleBadgeTitle"
+                android:textColor="@color/white"
                 android:layout_gravity="center"/>
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:text="needs access to"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/titleBadgeText"
+                android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"/>
 

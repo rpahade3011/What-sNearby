@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -41,7 +42,7 @@ public class Utils {
      * @param context Context
      * @return String with the app version
      */
-    public static String getAppVersionName(Context context) {
+    public String getAppVersionName(Context context) {
         String res = "0.0.0.0";
         try {
             res = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
@@ -58,7 +59,7 @@ public class Utils {
      * @param context Context
      * @return int with the app version code
      */
-    public static int getAppVersionCode(Context context) {
+    public int getAppVersionCode(Context context) {
         int res = 0;
         try {
             res = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
@@ -75,7 +76,7 @@ public class Utils {
      * @param context Context
      * @param id      PackageName on Google Play
      */
-    public static void goToGooglePlay(Context context, String id) {
+    public void goToGooglePlay(Context context, String id) {
         try {
             context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + id)));
         } catch (ActivityNotFoundException e) {
@@ -89,7 +90,7 @@ public class Utils {
      * @param context Context
      * @param id      Name on Google Play
      */
-    public static void goToGooglePlus(Context context, String id) {
+    public void goToGooglePlus(Context context, String id) {
         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://plus.google.com/u/0/" + id)));
     }
 
@@ -100,7 +101,7 @@ public class Utils {
      * @param id
      */
 
-    public static Intent getFacebookIntent(Context context, String id) {
+    public Intent getFacebookIntent(Context context, String id) {
         try {
             context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
             return new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/" + id));
@@ -119,7 +120,7 @@ public class Utils {
     /*public static void goToTwitter(Context context, String id){
         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.twitter.com/" + id)));
     }*/
-    public static Intent getTwitterIntent(Context context, String id) {
+    public Intent getTwitterIntent(Context context, String id) {
         try {
             context.getPackageManager().getPackageInfo("com.twitter.android", 0);
             return new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=" + id));
@@ -284,5 +285,29 @@ public class Utils {
         stringBuilder.append(AppController.getInstance()
                 .getApplicationContext().getResources().getString(R.string.google_maps_key));
         return stringBuilder.toString();
+    }
+
+    public String getPlaceImagesUrl(Context context, String imageRef) {
+        StringBuilder stringBuilder =
+                new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=");
+        stringBuilder.append(imageRef);
+        stringBuilder.append(context.getResources().getString(R.string.google_maps_key));
+        return stringBuilder.toString();
+    }
+
+    public String getAuthorReviewsImageUrl(Context mContext, String authorImageUrl) {
+        StringBuilder stringBuilder = new StringBuilder("https://www.googleapis.com/plus/v1/people/");
+        stringBuilder.append(authorImageUrl);
+        stringBuilder.append("?fields=image&key=");
+        stringBuilder.append(mContext.getResources().getString(R.string.google_maps_key));
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Checks if the device has Android OS version "8.0" "Oreo" or later version.
+     * @return
+     */
+    public boolean isOreoOrLater() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 }

@@ -15,12 +15,20 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     private static final String NO_NET_MESSAGE = "Err! Internet connection has been lost";
     private static final String NO_NET_TITLE = "Connecting...";
+    private static final String CONNECTION_TITLE = "Connected";
+    private static final String CONNECTION_MESSAGE = "Great! Internet connection established";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String status = NetworkUtil.getConnectivityStatusString(context);
-        if (status.equals("Not connected to internet")) {
-            TopMessageManager.showError(NO_NET_MESSAGE, NO_NET_TITLE, TopMessage.DURATION.LONG);
+        String status = NetworkUtil.getInstance().getConnectivityStatusString(context);
+        switch (status) {
+            case "Not connected to internet":
+                TopMessageManager.showError(NO_NET_MESSAGE, NO_NET_TITLE, TopMessage.DURATION.LONG);
+                break;
+            case "Wifi enabled":
+            case "Mobile data enabled":
+                TopMessageManager.showSuccess(CONNECTION_MESSAGE, CONNECTION_TITLE, TopMessage.DURATION.LONG);
+                break;
         }
     }
 }

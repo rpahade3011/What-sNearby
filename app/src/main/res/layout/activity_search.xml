@@ -62,6 +62,7 @@
                     android:layout_height="24dp"
                     android:id="@+id/startingPoint"
                     android:src="@drawable/ic_place_white_24dp" />
+
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -71,12 +72,13 @@
                     android:labelFor="@id/startingPoint"
                     android:id="@+id/places_autocomplete"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="32dp"
+                    android:layout_marginStart="32dp"
                     android:textSize="16sp"
                     android:typeface="sans"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@color/primary_light"
                     android:padding="4dp" />
             </LinearLayout>
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,6 +89,7 @@
                 android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/grad"
             android:layout_width="match_parent"
@@ -95,6 +98,7 @@
             android:background="@drawable/searchbarback"
             android:orientation="horizontal">
         </LinearLayout>
+
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

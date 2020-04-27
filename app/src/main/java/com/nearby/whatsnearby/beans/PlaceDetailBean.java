@@ -5,15 +5,17 @@ import java.io.Serializable;
 public class PlaceDetailBean implements Serializable {
     private String formatted_address;
     private String formatted_phone_number;
+    private String compoundAddress;
     private double lat;
     private double lng;
     private String international_phone_number;
     private String name;
-    private String[]photos;
+    private String[] photos;
     private String place_id;
     private float rating;
-    private String[]weekday;
+    private String[] weekday;
     private Review[] reviews;
+    private boolean isOpen;
 
     public String getFormatted_address() {
         return formatted_address;
@@ -21,6 +23,14 @@ public class PlaceDetailBean implements Serializable {
 
     public void setFormatted_address(String formatted_address) {
         this.formatted_address = formatted_address;
+    }
+
+    public String getCompoundAddress() {
+        return compoundAddress;
+    }
+
+    public void setCompoundAddress(String compoundAddress) {
+        this.compoundAddress = compoundAddress;
     }
 
     public String getFormatted_phone_number() {
@@ -101,6 +111,14 @@ public class PlaceDetailBean implements Serializable {
 
     public void setReviews(Review[] reviews) {
         this.reviews = reviews;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
     public class Review implements Serializable {

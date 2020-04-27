@@ -31,7 +31,7 @@ import com.nearby.whatsnearby.beans.GooglePlacesParser;
 import com.nearby.whatsnearby.beans.SearchItemBean;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
-import com.nearby.whatsnearby.fragments.ErrorFragment;
+import com.nearby.whatsnearby.fragments.error.ErrorFragment;
 import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.services.GpsTracker;
 import com.nearby.whatsnearby.utilities.Utils;
@@ -43,7 +43,7 @@ import java.util.List;
  * Created by rudhraksh.pahade on 11-07-2016.
  */
 
-public class ActivitySearch extends FragmentActivity implements FetchFromServerUser {
+public class ActivitySearch extends FragmentActivity {
 
     private AutoCompleteTextView mAutocompleteView;
     private FloatingActionButton getDirection = null;
@@ -52,11 +52,11 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
     private int startRadius = 0;
     private int endRadius = 0;
     private boolean hidden = true;
-    View myView;
+    private View myView;
 
-    List<SearchItemBean> results = new ArrayList<>();
-    SearchResultAdapter resultAdapter;
-    SearchItemBean search;
+    private List<SearchItemBean> results = new ArrayList<>();
+    private SearchResultAdapter resultAdapter;
+    private SearchItemBean search;
 
     private GpsTracker gpsTracker = null;
     private double latitude = 0;
@@ -68,6 +68,11 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        // Setting navigation bar color
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
         myView = findViewById(R.id.searchBar);
         myView.post(this::createRevealLayout);
@@ -102,9 +107,9 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 results.clear();
                 String url = Utils.getInstance().getSearchUrl(s.toString(), latitude, longitude);
-                Log.e("URL", url);
-                NetworkTask.getInstance(ActivitySearch.this, 0)
-                        .executeAutocompleteSearch(url);
+                Log.i("URL", url);
+                NetworkTask.getInstance( 0)
+                        .executeAutocompleteSearch(mServerResponse, url);
             }
 
             @Override
@@ -151,7 +156,8 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
         int reverse_endradius = 0;
 
         // performing circular reveal for reverse animation
-        Animator animate = ViewAnimationUtils.createCircularReveal(myView, cx, cy, reverse_startradius, reverse_endradius);
+        Animator animate = ViewAnimationUtils.createCircularReveal(myView, cx, cy,
+                reverse_startradius, reverse_endradius);
         if (hidden) {
             // to show the layout when icon is tapped
             myView.setVisibility(View.VISIBLE);
@@ -197,44 +203,52 @@ public class ActivitySearch extends FragmentActivity implements FetchFromServerU
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             });
-            sweetAlertDialog.setCancelClickListener(sweetAlertDialog -> sweetAlertDialog.dismissWithAnimation());
+            sweetAlertDialog.setCancelClickListener(SweetAlertDialog::dismissWithAnimation);
             sweetAlertDialog.show();
         }
     }
 
-
-    @Override
-    public void onPreFetch(AlertType alertType) {
-
-    }
-
-    @Override
-    public void onFetchCompletion(String string, int id,
-                                  AlertType alertType) {
-        if (string != null && !string.equals("")) {
-            Log.d("Result", string);
-            GooglePlacesParser parser = new GooglePlacesParser(string);
-            ArrayList<GooglePlacesBean> placesList = parser.getPlaces();
-            for (int i = 0; i < placesList.size(); i++) {
-                SearchItemBean bean = new SearchItemBean();
-                bean.setName(placesList.get(i).getDescription());
-                bean.setPlaceID(placesList.get(i).getPlaceId());
-                bean.setType("Google");
-                results.add(bean);
+    private final FetchFromServerUser mServerResponse = new FetchFromServerUser() {
+        @Override
+        public void onPreFetch(AlertType alertType) {
+            switch (alertType) {
+                case AUTO_COMPLETE_SEARCH:
+                    break;
             }
-            resultAdapter.notifyDataSetChanged();
-            ListView resultList = findViewById(R.id.searchResult);
-            resultList.setAdapter(resultAdapter);
-            resultList.setOnItemClickListener((parent, view, position, id1) -> {
-                search = results.get(position);
-                mAutocompleteView.setText(search.getName());
-            });
-        } else {
-            ErrorFragment errorFragment = new ErrorFragment();
-            Bundle msg = new Bundle();
-            msg.putString("msg", "No such place found.");
-            errorFragment.setArguments(msg);
-            getSupportFragmentManager().beginTransaction().replace(R.id.message, errorFragment).commit();
         }
-    }
+
+        @Override
+        public void onFetchCompletion(String string, int id, AlertType alertType) {
+            switch (alertType) {
+                case AUTO_COMPLETE_SEARCH:
+                    if (string != null && !string.equals("")) {
+                        Log.d("Result", string);
+                        GooglePlacesParser parser = new GooglePlacesParser(string);
+                        ArrayList<GooglePlacesBean> placesList = parser.getPlaces();
+                        for (int i = 0; i < placesList.size(); i++) {
+                            SearchItemBean bean = new SearchItemBean();
+                            bean.setName(placesList.get(i).getDescription());
+                            bean.setPlaceID(placesList.get(i).getPlaceId());
+                            bean.setType("Google");
+                            results.add(bean);
+                        }
+                        resultAdapter.notifyDataSetChanged();
+                        ListView resultList = findViewById(R.id.searchResult);
+                        resultList.setAdapter(resultAdapter);
+                        resultList.setOnItemClickListener((parent, view, position, id1) -> {
+                            search = results.get(position);
+                            mAutocompleteView.setText(search.getName());
+                        });
+                    } else {
+                        ErrorFragment errorFragment = new ErrorFragment();
+                        Bundle msg = new Bundle();
+                        msg.putString("msg", "No such place found.");
+                        errorFragment.setArguments(msg);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.message, errorFragment).commit();
+                    }
+                    break;
+            }
+        }
+    };
 }

@@ -13,11 +13,12 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
+import com.nearby.whatsnearby.activities.placedetails.ActivityPlaceDetails;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.beans.PlaceDetailParser;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
-import com.nearby.whatsnearby.fragments.ErrorFragment;
+import com.nearby.whatsnearby.fragments.error.ErrorFragment;
 import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.utilities.Utils;
 
@@ -50,7 +51,7 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
         String placeId = intent.getStringExtra("placeId");
         url = Utils.getInstance().getSearchedPlaceDetailsUrl(placeId);
         Log.e("PlaceDetail", url);
-        NetworkTask.getInstance(this, 0).executeSearchedPlaceDetailTask(url);
+        NetworkTask.getInstance(0).executeSearchedPlaceDetailTask(this, url);
     }
 
     @Override
@@ -79,12 +80,14 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
                 PlaceDetailParser jsonParser = new PlaceDetailParser(string);
                 final PlaceDetailBean detailBean = jsonParser.getPlaceDetail();
 
-                Intent intent = new Intent(PlaceDetail.this, AboutPlaceDetailActivity.class);
+                //Intent intent = new Intent(PlaceDetail.this, AboutPlaceDetailActivity.class);
+                Intent intent = new Intent(PlaceDetail.this, ActivityPlaceDetails.class);
                 Bundle data = new Bundle();
                 data.putDouble("Lat", detailBean.getLat());
                 data.putDouble("Lng", detailBean.getLng());
                 data.putString("Name", detailBean.getName());
                 data.putString("Address", detailBean.getFormatted_address());
+                data.putBoolean("Timing", detailBean.isOpen());
                 data.putString("ContactNumber", detailBean.getInternational_phone_number());
                 data.putFloat("PlaceRatings", detailBean.getRating());
                 data.putStringArray("photos", detailBean.getPhotos());
@@ -104,6 +107,6 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
     }
 
     public void retry(View view) {
-        NetworkTask.getInstance(this, 0).executeSearchedPlaceDetailTask(url);
+        NetworkTask.getInstance(0).executeSearchedPlaceDetailTask(this, url);
     }
 }

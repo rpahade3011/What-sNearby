@@ -1,18 +1,20 @@
 package com.nearby.whatsnearby.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.services.AppController;
+import com.nearby.whatsnearby.utilities.Utils;
 
 /**
  * Created by rudhraksh.pahade on 2/7/2017.
@@ -20,14 +22,12 @@ import com.nearby.whatsnearby.services.AppController;
 
 public class PlacesImageAdapter extends PagerAdapter {
 
-    String basePlaceUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=";
-    String key = "AIzaSyBg-iwzAjavEUVV9hOQUr0JljZHL7XFRkQ";
-    Context context;
-    String imageId[];
-    LayoutInflater inflater;
+    private Context context;
+    private String imageId[];
+    private LayoutInflater inflater;
 
-    ImageLoader imageLoader;
-    NetworkImageView imageView;
+    private ImageLoader imageLoader;
+    private ImageView imageView;
 
     public PlacesImageAdapter(Context ctx, String imageId[]) {
         this.context = ctx;
@@ -53,11 +53,10 @@ public class PlacesImageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
 
         View rootView = inflater.inflate(R.layout.gallery_image_item, container, false);
-        //ImageView imageView = (ImageView)rootView.findViewById(R.id.galleryItem);
-        imageView = (NetworkImageView)rootView.findViewById(R.id.galleryItem);
+        imageView = rootView.findViewById(R.id.banner_image);
         if (imageId.length > 0) {
-            String imageURL = basePlaceUrl + imageId[position] + "&key=" + key;
-            //Picasso.with(context).load(imageURL).into(imageView);
+            String imageURL = Utils.getInstance().getPlaceImagesUrl(context, imageId[position]);
+            Log.i("PlacesImageAdapter", "Place image url --> " + imageURL);
             downloadImages(imageURL);
         } else {
             imageView.setImageResource(R.mipmap.placeholder_image);
@@ -82,10 +81,12 @@ public class PlacesImageAdapter extends PagerAdapter {
 
             @Override
             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                imageView.setImageBitmap(response.getBitmap());
+                if (response.getBitmap() != null) {
+                    imageView.setImageBitmap(response.getBitmap());
+                } else {
+                    imageView.setImageResource(R.mipmap.placeholder_image);
+                }
             }
         });
-
-        imageView.setImageUrl(imageUrl, imageLoader);
     }
 }

@@ -14,23 +14,21 @@ public class NetworkTask {
     private static final String LOG_TAG = "NetworkTask";
     private static NetworkTask mInstance = null;
 
-    private FetchFromServerUser user;
     private int id;
 
-    private NetworkTask(FetchFromServerUser user, int id) {
-        this.user = user;
+    private NetworkTask(int id) {
         this.id = id;
         Log.d(LOG_TAG, "Id: " + id);
     }
 
-    public static NetworkTask getInstance(FetchFromServerUser user, int id) {
+    public static NetworkTask getInstance(int id) {
         if (mInstance == null) {
-            mInstance = new NetworkTask(user, id);
+            mInstance = new NetworkTask(id);
         }
         return mInstance;
     }
 
-    public void executeNearbyPlacesTask(String url) {
+    public void executeNearbyPlacesTask(FetchFromServerUser user, String url) {
         Log.i(LOG_TAG, "executeNearbyPlacesTask() URL --> " + url);
         user.onPreFetch(AlertType.DISCOVER_NEARBY_PLACES);
         JsonObjectRequest jsonObjectRequest =
@@ -46,7 +44,7 @@ public class NetworkTask {
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
-    public void getPlaceDetails(String placeRef) {
+    public void getPlaceDetails(FetchFromServerUser user, String placeRef) {
         user.onPreFetch(AlertType.GET_PLACE_DETAILS);
         String url = Utils.getInstance().getPlaceDetailsUrl(placeRef);
         Log.i(LOG_TAG, "getPlaceDetails() URL --> " + url);
@@ -65,7 +63,7 @@ public class NetworkTask {
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
-    public void executeAutocompleteSearch(String url) {
+    public void executeAutocompleteSearch(FetchFromServerUser user, String url) {
         Log.i(LOG_TAG, "executeAutocompleteSearch() URL --> " + url);
         user.onPreFetch(AlertType.AUTO_COMPLETE_SEARCH);
         JsonObjectRequest jsonObjectRequest =
@@ -78,12 +76,12 @@ public class NetworkTask {
                                         AlertType.AUTO_COMPLETE_SEARCH);
                             }
                         }, error -> {
-
+                    VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
-    public void executeSearchedPlaceDetailTask(String url) {
+    public void executeSearchedPlaceDetailTask(FetchFromServerUser user, String url) {
         Log.i(LOG_TAG, "executeSearchedPlaceDetailTask() URL --> " + url);
         user.onPreFetch(AlertType.GET_PLACE_DETAILS);
         JsonObjectRequest jsonObjectRequest =
@@ -96,7 +94,7 @@ public class NetworkTask {
                                         AlertType.GET_PLACE_DETAILS);
                             }
                         }, error -> {
-
+                    VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
     }
@@ -120,7 +118,7 @@ public class NetworkTask {
                                         AlertType.CALCULATE_DISTANCE_BETWEEN_TWO_LOCATIONS);
                             }
                         }, error -> {
-
+                    VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
     }

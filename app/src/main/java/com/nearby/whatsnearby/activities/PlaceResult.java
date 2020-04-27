@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
+import com.nearby.whatsnearby.activities.placedetails.ActivityPlaceDetails;
 import com.nearby.whatsnearby.adapters.PlaceListAdapter;
 import com.nearby.whatsnearby.adapters.RecyclerItemClickListener;
 import com.nearby.whatsnearby.beans.PlaceBean;
@@ -24,7 +25,7 @@ import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.beans.PlaceDetailParser;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
-import com.nearby.whatsnearby.fragments.ErrorFragment;
+import com.nearby.whatsnearby.fragments.error.ErrorFragment;
 import com.nearby.whatsnearby.places.JSONParser;
 import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.services.GpsTracker;
@@ -91,7 +92,7 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
             }
         }
         Log.i("PlaceResult", "PlaceResult" + url);
-        NetworkTask.getInstance(this, 0).executeNearbyPlacesTask(url);
+        NetworkTask.getInstance(0).executeNearbyPlacesTask(this, url);
     }
 
     @Override
@@ -150,11 +151,11 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                 try {
                     final List<PlaceBean> list = parser.getPlaceBeanList();
                     if (list != null && list.size() > 0) {
-                        PlaceListAdapter Places_adapter = new PlaceListAdapter(context, list, loc);
+                        PlaceListAdapter placesAdapter = new PlaceListAdapter(context, list, loc);
                         listOfPlaces = findViewById(R.id.list);
                         listOfPlaces.setHasFixedSize(true);
                         listOfPlaces.setLayoutManager(new LinearLayoutManager(context));
-                        listOfPlaces.setAdapter(Places_adapter);
+                        listOfPlaces.setAdapter(placesAdapter);
 
                         listOfPlaces.addOnItemTouchListener(new RecyclerItemClickListener(context,
                                 (view, position) -> getPlaceDetails(list.get(position).getPlaceref())));
@@ -170,7 +171,8 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                     Bundle msg = new Bundle();
                     msg.putString("msg", ex.getMessage());
                     errorFragment.setArguments(msg);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.message, errorFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.message, errorFragment)
+                            .commit();
                 }
                 break;
             case GET_PLACE_DETAILS:
@@ -179,12 +181,15 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                     final PlaceDetailBean detailBean = jsonParser.getPlaceDetail();
 
                     Intent intent = new Intent(PlaceResult.this,
-                            AboutPlaceDetailActivity.class);
+                            ActivityPlaceDetails.class);
                     Bundle data = new Bundle();
                     data.putDouble("Lat", detailBean.getLat());
                     data.putDouble("Lng", detailBean.getLng());
                     data.putString("Name", detailBean.getName());
                     data.putString("Address", detailBean.getFormatted_address());
+                    data.putBoolean("Timing", detailBean.isOpen());
+                    data.putString("Place_Category", kind.replace("_", " "));
+                    data.putString("CompoundAddress", detailBean.getCompoundAddress());
                     data.putString("ContactNumber", detailBean.getInternational_phone_number());
                     data.putFloat("PlaceRatings", detailBean.getRating());
                     intent.putExtras(data);
@@ -195,17 +200,18 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                     Bundle msg = new Bundle();
                     msg.putString("msg", ex.getMessage());
                     errorFragment.setArguments(msg);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.message, errorFragment).commit();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.message, errorFragment).commit();
                 }
                 break;
         }
     }
 
     private void getPlaceDetails(String placeRef) {
-        NetworkTask.getInstance(this, 1).getPlaceDetails(placeRef);
+        NetworkTask.getInstance(1).getPlaceDetails(this, placeRef);
     }
 
     public void retry(View view) {
-        NetworkTask.getInstance(this, 0).executeNearbyPlacesTask(url);
+        NetworkTask.getInstance(0).executeNearbyPlacesTask(this, url);
     }
 }

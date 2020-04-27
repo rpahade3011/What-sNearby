@@ -12,35 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.beans.PlaceBean;
-import com.nearby.whatsnearby.constants.PlacesConstants;
 import com.nearby.whatsnearby.services.GpsTracker;
 
 import java.util.List;
 
 public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.ViewHolder> {
 
-    Context context;
-    List<PlaceBean> list;
-    GpsTracker loc;
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
-        RatingBar rating;
-        TextView address;
-        TextView isOpen;
-        TextView distance;
-        TextView time;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            name = itemView.findViewById(R.id.name);
-            rating = itemView.findViewById(R.id.rating);
-            address = itemView.findViewById(R.id.address);
-            isOpen = itemView.findViewById(R.id.isOpen);
-            distance = itemView.findViewById(R.id.distance);
-            time = itemView.findViewById(R.id.time);
-        }
-    }
+    private Context context;
+    private List<PlaceBean> list;
+    private GpsTracker loc;
 
     public PlaceListAdapter(Context context, List<PlaceBean> list, GpsTracker loc) {
         this.context = context;
@@ -50,7 +30,8 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.places_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.places_item,
+                parent, false);
         return new ViewHolder(view);
     }
 
@@ -66,27 +47,50 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.name.setText(list.get(position).getName());
-        holder.rating.setRating(list.get(position).getRating());
-        if (list.get(position).isOpen()) {
-            holder.isOpen.setTextColor(Color.parseColor("#2E7D32"));
-            holder.isOpen.setText("Currently Open");
-        } else {
-            holder.isOpen.setTextColor(Color.parseColor("#D50000"));
-            holder.isOpen.setText("Currently Closed");
-        }
-        holder.address.setText(list.get(position).getVicinity());
-        double distance = distance(loc.latitude, loc.longitude, list.get(position).getLatitude(),
-                list.get(position).getLongitude(), "K");
-        holder.time.setText(String.format("%.2f", ((distance / 5) * 60)) + " min");
-        if (distance < 1)
-            holder.distance.setText(String.format("%.0f", distance * 1000) + " m");
-        else
-            holder.distance.setText(String.format("%.2f", distance) + " km");
-        PlacesConstants.distanceEta = holder.distance.getText().toString();
+        holder.bindDataToList(list.get(position), loc);
     }
 
-    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView name;
+        private RatingBar rating;
+        private TextView address;
+        private TextView isOpen;
+        private TextView distance;
+        private TextView time;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.name);
+            rating = itemView.findViewById(R.id.rating);
+            address = itemView.findViewById(R.id.address);
+            isOpen = itemView.findViewById(R.id.isOpen);
+            distance = itemView.findViewById(R.id.distance);
+            time = itemView.findViewById(R.id.time);
+        }
+        void bindDataToList(PlaceBean bean, GpsTracker loc) {
+            name.setText(bean.getName());
+            rating.setRating(bean.getRating());
+            if (bean.isOpen()) {
+                isOpen.setTextColor(Color.parseColor("#2E7D32"));
+                isOpen.setText("Currently Open");
+            } else {
+                isOpen.setTextColor(Color.parseColor("#D50000"));
+                isOpen.setText("Currently Closed");
+            }
+            address.setText(bean.getVicinity());
+            double d = countDistance(loc.latitude, loc.longitude, bean.getLatitude(),
+                    bean.getLongitude(), "K");
+            time.setText(String.format("%.2f", ((d / 5) * 60)) + " min");
+            distance.setText((d < 1) ? String.format("%.0f", d * 1000) + " m"
+                    : String.format("%.2f", d) + " km");
+            /*if (d < 1)
+                distance.setText(String.format("%.0f", d * 1000) + " m");
+            else
+                distance.setText(String.format("%.2f", d) + " km");*/
+        }
+    }
+
+    private static double countDistance(double lat1, double lon1, double lat2, double lon2, String unit) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1))
                 * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
