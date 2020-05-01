@@ -25,15 +25,15 @@ import com.nearby.whatsnearby.constants.PlacesConstants;
 public class TilesFormatter extends BaseAdapter {
 
     private Context mContext;
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
 
-    PlacesConstants places = new PlacesConstants();
-    String colors[] = {"#ffb300", "#2196f3", "#0277bd", "#e65100", "#3f51b5", "#004d40", "#4caf50",
+    private PlacesConstants places = new PlacesConstants();
+    private String colors[] = {"#ffb300", "#2196f3", "#0277bd", "#e65100", "#3f51b5", "#004d40", "#4caf50",
             "#ffc107", "#607d8b", "#e91e63", "#3f51b5", "#9c27b0", "#673ab7"};
 
     public TilesFormatter(Context c) {
         this.mContext = c;
-        inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -58,9 +58,9 @@ public class TilesFormatter extends BaseAdapter {
         String icon_id = places.places.get(place_id);
 
         convertView = inflater.inflate(R.layout.places_grid_item, parent, false);
-        if(convertView == null){
+        if (convertView == null) {
 
-        }else {
+        } else {
             try {
                 ImageView place_img = convertView.findViewById(R.id.place_img);
                 TextView place_text = convertView.findViewById(R.id.place_text);
@@ -69,10 +69,10 @@ public class TilesFormatter extends BaseAdapter {
                     Drawable drawable = mContext.getResources().getDrawable(getDrawable(mContext, icon_id));
                     place_img.setImageDrawable(drawable);
                 }
-                if(place_id.equalsIgnoreCase("local_government_office")){
+                if (place_id.equalsIgnoreCase("local_government_office")) {
                     place_id = "government_office";
                 }
-                if(place_id.equalsIgnoreCase("grocery_or_supermarket")){
+                if (place_id.equalsIgnoreCase("grocery_or_supermarket")) {
                     place_id = "supermarket";
                 }
                 place_text.setText(place_id.toUpperCase().replace("_", " "));

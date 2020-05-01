@@ -1,25 +1,21 @@
 package com.nearby.whatsnearby.customasynctask;
 
+import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.DisplayMetrics;
+import android.view.animation.LinearInterpolator;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.JointType;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.SquareCap;
+import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.places.DirectionsJSONParser;
 import com.nearby.whatsnearby.utilities.MapUtil;
+import com.nearby.whatsnearby.views.MapAnimator;
 
 import org.json.JSONObject;
 
@@ -33,15 +29,13 @@ import java.util.List;
  * Created by rudraksh.pahade on 13-07-2016.
  */
 
-public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+public class ParseDirectionAPITask extends AsyncTask<String, Integer,
+        List<List<HashMap<String, String>>>> {
 
     private WeakReference<Activity> activity;
     private GoogleMap map;
-    private Circle mCircle = null;
     private ArrayList<LatLng> points = null;
-    private Polyline blackPolyline;
-    private float v;
-    private PolylineOptions lineOptions, blackPolylineOptions = null;
+    private List<LatLng> listLatLng = new ArrayList<>();
 
     public ParseDirectionAPITask(Activity a, GoogleMap gm) {
         this.activity = new WeakReference<>(a);
@@ -64,16 +58,23 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
         }
         return routes;
     }
-    // Executes in UI thread, after the parsing process
 
+    // Executes in UI thread, after the parsing process
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         super.onPostExecute(result);
-        MarkerOptions markerOptions = new MarkerOptions();
-        // Traversing through all the routes
+        drawPolyLine(result);
+    }
+
+    /**
+     * Parses the directions.
+     *
+     * @param result
+     */
+    private void drawPolyLine(List<List<HashMap<String, String>>> result) {
+        // // Traversing through all the routes
         for (int i = 0; i < result.size(); i++) {
             points = new ArrayList<>();
-            lineOptions = new PolylineOptions();
 
             // Fetching i-th route
             List<HashMap<String, String>> path = result.get(i);
@@ -89,46 +90,70 @@ public class ParseDirectionAPITask extends AsyncTask<String, Integer, List<List<
                 points.add(position);
             }
 
-            // Adding all the points in the route to LineOptions
-            lineOptions.addAll(points);
-            lineOptions.width(14);
-            lineOptions.color(Color.parseColor("#444153"));
-
-            // Drawing polyline in the Google Map for the i-th route
-            map.addPolyline(lineOptions);
-            LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-            boundsBuilder.include(MapUtil.getInstance().getSourceBounds());
-            boundsBuilder.include(MapUtil.getInstance().getDestinationBounds());
-            LatLngBounds bounds = boundsBuilder.build();
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            activity.get().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            int height = displaymetrics.heightPixels - 100;
-            int width = displaymetrics.widthPixels;
-            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height - width, 100));
-
-            blackPolylineOptions = new PolylineOptions();
-            blackPolylineOptions.width(5);
-            blackPolylineOptions.color(Color.BLACK);
-            blackPolylineOptions.startCap(new SquareCap());
-            blackPolylineOptions.endCap(new SquareCap());
-            blackPolylineOptions.jointType(JointType.ROUND);
-            blackPolyline = map.addPolyline(blackPolylineOptions);
-
-            // Start destination location ripple
-            //makeDestinationRipple();
-            startAnimatingLines();
+            this.listLatLng.addAll(points);
         }
+        startAnimatingLines();
     }
 
+    /**
+     * Starts animating source and destination routes.
+     */
     private void startAnimatingLines() {
-
+        addMarker(listLatLng.get(listLatLng.size() - 1));
+        addOverlay(listLatLng.get(listLatLng.size() - 1));
+        MapAnimator.getInstance().animateRoute(map, listLatLng);
     }
 
-    private void makeDestinationRipple() {
-        new Handler(Looper.getMainLooper()).post(() -> mCircle = map.addCircle(new CircleOptions()
-                .center(MapUtil.getInstance().getDestinationBounds()).radius(500)
-                .strokeColor(1)
-                .strokeColor(0x5530d1d5)
-                .fillColor(0x55383547)));
+    /**
+     * Adds a location marker at the destination.
+     *
+     * @param destination
+     */
+    private void addMarker(LatLng destination) {
+        MarkerOptions options = new MarkerOptions();
+        options.position(destination);
+        options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.flag_marker));
+        map.addMarker(options);
+    }
+
+    /**
+     * Makes a ripple effect at the destination end.
+     *
+     * @param place
+     */
+    private void addOverlay(LatLng place) {
+        GroundOverlay groundOverlay = map.addGroundOverlay(new GroundOverlayOptions()
+                .position(place, 100)
+                .transparency(0.5f)
+                .zIndex(3)
+                .image(BitmapDescriptorFactory.fromBitmap(MapUtil.getInstance()
+                        .drawableToBitmap(activity.get().getApplicationContext()
+                                .getDrawable(R.drawable.map_overlay)))));
+        startOverlayAnimation(groundOverlay);
+    }
+
+    private void startOverlayAnimation(final GroundOverlay groundOverlay) {
+        AnimatorSet animatorSet = new AnimatorSet();
+        ValueAnimator vAnimator = ValueAnimator.ofInt(0, 100);
+        vAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        vAnimator.setRepeatMode(ValueAnimator.RESTART);
+        vAnimator.setInterpolator(new LinearInterpolator());
+        vAnimator.addUpdateListener(animation -> {
+            final Integer val = (Integer) animation.getAnimatedValue();
+            groundOverlay.setDimensions(val);
+        });
+
+        ValueAnimator tAnimator = ValueAnimator.ofFloat(0, 1);
+        tAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        tAnimator.setRepeatMode(ValueAnimator.RESTART);
+        tAnimator.setInterpolator(new LinearInterpolator());
+        tAnimator.addUpdateListener(animation -> {
+            Float val = (Float) animation.getAnimatedValue();
+            groundOverlay.setTransparency(val);
+        });
+
+        animatorSet.setDuration(3000);
+        animatorSet.playTogether(vAnimator, tAnimator);
+        animatorSet.start();
     }
 }

@@ -69,6 +69,7 @@
     <string name="transition_grid_item">transition_from_grid_to_details</string>
     <string name="transition_explore">transition_explore</string>
     <string name="transition_profile">transition_profile</string>
+    <string name="transition_maps_detail">transition_from_map_to_details</string>
 
     <!-- [Oreo Notification texts] -->
     <string name="bg_serv_noti_launch_app">Launch</string>

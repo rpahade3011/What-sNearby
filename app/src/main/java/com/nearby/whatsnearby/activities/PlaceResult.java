@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
-import com.nearby.whatsnearby.activities.placedetails.ActivityPlaceDetails;
 import com.nearby.whatsnearby.adapters.PlaceListAdapter;
 import com.nearby.whatsnearby.adapters.RecyclerItemClickListener;
 import com.nearby.whatsnearby.beans.PlaceBean;
@@ -181,7 +180,7 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                     final PlaceDetailBean detailBean = jsonParser.getPlaceDetail();
 
                     Intent intent = new Intent(PlaceResult.this,
-                            ActivityPlaceDetails.class);
+                            DirectionsActivity.class);
                     Bundle data = new Bundle();
                     data.putDouble("Lat", detailBean.getLat());
                     data.putDouble("Lng", detailBean.getLng());
@@ -192,6 +191,7 @@ public class PlaceResult extends FragmentActivity implements FetchFromServerUser
                     data.putString("CompoundAddress", detailBean.getCompoundAddress());
                     data.putString("ContactNumber", detailBean.getInternational_phone_number());
                     data.putFloat("PlaceRatings", detailBean.getRating());
+                    data.putString("Place_Website", detailBean.getWebsiteUrl());
                     intent.putExtras(data);
                     startActivity(intent);
                 } catch (Exception ex) {

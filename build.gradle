@@ -22,8 +22,7 @@ buildscript {
             'pulsator': '1.0.2',
             'volley': '1.1.0',
             'topMessage': '1.0.5',
-            'materialAbbout': '0.2.3',
-            'bannerViewPager': '2.7.3'
+            'materialAbbout': '0.2.3'
     ]
     repositories {
         jcenter()

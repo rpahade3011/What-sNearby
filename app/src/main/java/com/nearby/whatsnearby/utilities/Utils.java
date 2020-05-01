@@ -291,15 +291,8 @@ public class Utils {
         StringBuilder stringBuilder =
                 new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=");
         stringBuilder.append(imageRef);
+        stringBuilder.append("&key=");
         stringBuilder.append(context.getResources().getString(R.string.google_maps_key));
-        return stringBuilder.toString();
-    }
-
-    public String getAuthorReviewsImageUrl(Context mContext, String authorImageUrl) {
-        StringBuilder stringBuilder = new StringBuilder("https://www.googleapis.com/plus/v1/people/");
-        stringBuilder.append(authorImageUrl);
-        stringBuilder.append("?fields=image&key=");
-        stringBuilder.append(mContext.getResources().getString(R.string.google_maps_key));
         return stringBuilder.toString();
     }
 

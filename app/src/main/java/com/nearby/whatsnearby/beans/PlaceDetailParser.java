@@ -100,6 +100,14 @@ public class PlaceDetailParser {
             if (result.has("plus_code")) {
                 JSONObject plusCodeObject = result.optJSONObject("plus_code");
                 detailBean.setCompoundAddress(plusCodeObject.optString("compound_code"));
+            } else {
+                detailBean.setCompoundAddress("Not available");
+            }
+
+            if (result.has("website")) {
+                detailBean.setWebsiteUrl(result.optString("website"));
+            } else {
+                detailBean.setWebsiteUrl("Not available");
             }
 
             if (result.has("photos")) {
@@ -115,6 +123,7 @@ public class PlaceDetailParser {
                 detailBean.setPhotos(null);
                 AppController.getInstance().setPlacePhotos(null);
             }
+
             if (result.has("reviews")) {
                 JSONArray reviewArray = result.getJSONArray("reviews");
                 PlaceDetailBean.Review[] reviews = new PlaceDetailBean.Review[reviewArray.length()];
@@ -126,11 +135,12 @@ public class PlaceDetailParser {
                     } else {
                         review.setAuthor_name(null);
                     }
-                    if (reviewObj.has("author_url")) {
-                        review.setAuthor_url(reviewObj.getString("author_url"));
+                    if (reviewObj.has("profile_photo_url")) {
+                        review.setAuthor_profile_url(reviewObj.getString("profile_photo_url"));
                     } else {
-                        review.setAuthor_url(null);
+                        review.setAuthor_profile_url(null);
                     }
+
                     if (reviewObj.has("rating")) {
                         review.setRating((float) reviewObj.getDouble("rating"));
                     } else {

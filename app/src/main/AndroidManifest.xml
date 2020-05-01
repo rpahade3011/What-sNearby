@@ -86,6 +86,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.DirectionsActivity" />
+        <activity android:name=".activities.ActivityBottomNavigationView" />
         <activity android:name=".activities.PermissionActivity" />
         <activity android:name=".activities.ActivitySearch" />
         <activity android:name=".activities.PlaceDetail" />
@@ -94,8 +96,7 @@
         <activity
             android:name=".activities.ActivityCall"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity android:name=".activities.placedetails.ActivityPlaceDetails" />
-        <activity android:name=".activities.ActivityBottomNavigationView" />
+        <activity android:name=".activities.DetailsOverviewActivity" />
         <!-- [START firebase_service] -->
         <service android:name=".firebase.FireBaseMessagingService">
             <intent-filter>

@@ -43,32 +43,15 @@
             android:id="@+id/search" />
     </LinearLayout>
 
-    <com.nearby.whatsnearby.views.SlidingTabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:paddingTop="10dp"
-        android:background="@color/colorPrimary"
-        android:layout_below="@+id/contentDescription"
-        android:layout_gravity="center_horizontal|top" />
-
     <LinearLayout
         android:id="@+id/grad"
         android:layout_width="match_parent"
         android:layout_height="7dp"
         android:background="@drawable/searchbarback"
         android:orientation="horizontal"
-        android:layout_below="@+id/tabs"
+        android:layout_below="@+id/contentDescription"
         android:layout_gravity="center_horizontal|top">
     </LinearLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/places_detail"
-        android:layout_gravity="center"
-        android:layout_below="@+id/grad">
-    </androidx.viewpager.widget.ViewPager>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -31,46 +31,6 @@ public class MonitorService extends Service {
     private static final String ACTION_STOP_SERVICE = "Stop Monitor Service";
     private NotificationManager manager;
 
-    private void registerGpsStatusReceiver() {
-        IntentFilter gpsIntentFilter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
-        // Registering broadcast receiver for GpsStatusChange
-        if (gpsStatusReceiver == null) {
-            gpsStatusReceiver = new GpsStatusReceiver();
-            try {
-                registerReceiver(gpsStatusReceiver, gpsIntentFilter);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void registerNetworkChangeReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
-        if (networkChangeReceiver == null) {
-            networkChangeReceiver = new NetworkChangeReceiver();
-            try {
-                registerReceiver(networkChangeReceiver, intentFilter);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void unRegisterGpsStatusReceiver() {
-        // Un registering broadcast receiver for GpsStatusChanges
-        if (gpsStatusReceiver != null) {
-            unregisterReceiver(gpsStatusReceiver);
-        }
-    }
-
-    private void unRegisterNetworkChangeReceiver() {
-        if (networkChangeReceiver != null) {
-            unregisterReceiver(networkChangeReceiver);
-        }
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -111,11 +71,9 @@ public class MonitorService extends Service {
                         .build();
                 startForeground(47, notification);
             }
-            registerGpsStatusReceiver();
-            registerNetworkChangeReceiver();
+            registerAllBroadcasts();
         } else {
-            registerGpsStatusReceiver();
-            registerNetworkChangeReceiver();
+            registerAllBroadcasts();
         }
         return START_NOT_STICKY;
     }
@@ -123,14 +81,63 @@ public class MonitorService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unRegisterGpsStatusReceiver();
-        unRegisterNetworkChangeReceiver();
+        unRegisterAllBroadcast();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    private void registerGpsStatusReceiver() {
+        IntentFilter gpsIntentFilter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+        // Registering broadcast receiver for GpsStatusChange
+        if (gpsStatusReceiver == null) {
+            gpsStatusReceiver = new GpsStatusReceiver();
+            try {
+                registerReceiver(gpsStatusReceiver, gpsIntentFilter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerNetworkChangeReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        if (networkChangeReceiver == null) {
+            networkChangeReceiver = new NetworkChangeReceiver();
+            try {
+                registerReceiver(networkChangeReceiver, intentFilter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void unRegisterGpsStatusReceiver() {
+        // Un registering broadcast receiver for GpsStatusChanges
+        if (gpsStatusReceiver != null) {
+            unregisterReceiver(gpsStatusReceiver);
+        }
+    }
+
+    private void unRegisterNetworkChangeReceiver() {
+        if (networkChangeReceiver != null) {
+            unregisterReceiver(networkChangeReceiver);
+        }
+    }
+
+    private void registerAllBroadcasts() {
+        registerGpsStatusReceiver();
+        registerNetworkChangeReceiver();
+    }
+
+    private void unRegisterAllBroadcast() {
+        unRegisterGpsStatusReceiver();
+        unRegisterNetworkChangeReceiver();
     }
 
     /**

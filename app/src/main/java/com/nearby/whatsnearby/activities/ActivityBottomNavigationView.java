@@ -28,39 +28,33 @@ import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.fragments.about.FragmentAbout;
 import com.nearby.whatsnearby.fragments.explore.FragmentExplore;
 import com.nearby.whatsnearby.fragments.home.FragmentHome;
-import com.nearby.whatsnearby.interfaces.GpsStatusDetector;
+import com.nearby.whatsnearby.interfaces.IBottomNavView;
+import com.nearby.whatsnearby.interfaces.IGpsStatusDetectorCallBack;
+import com.nearby.whatsnearby.presenters.BottomNavPresenter;
 import com.nearby.whatsnearby.services.MonitorService;
 import com.nearby.whatsnearby.utilities.AppRaterUtils;
+import com.nearby.whatsnearby.utilities.GpsStatusDetector;
 import com.nearby.whatsnearby.utilities.Utils;
 
 public class ActivityBottomNavigationView extends AppCompatActivity
-        implements GpsStatusDetector.GpsStatusDetectorCallBack {
+        implements IGpsStatusDetectorCallBack {
 
     private static final String LOG_TAG = "BottomNavigation";
     private GpsStatusDetector gpsStatusDetector = null;
     private InAppUpdateManager mInAppUpdaterManager;
+    private BottomNavigationView navView;
     private MaterialToolbar toolbar;
+    private BottomNavPresenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_bottom_nagivation_controller);
 
-        gpsStatusDetector = new GpsStatusDetector(this);
-        AppRaterUtils.appDidLaunched(this);
+        mPresenter = new BottomNavPresenter(mBottomNavView);
 
-        setUpToolbar();
-
-        checkGpsState();
-
-        startServices();
-
-        // Check for updates
-        startCheckingForNewUpdates();
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-        openFragment(FragmentHome.newInstance());
+        mPresenter.createView();
     }
 
     @Override
@@ -112,62 +106,6 @@ public class ActivityBottomNavigationView extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Replaces the current screen according to user selection.
-     * @param fragment
-     */
-    private void openFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    private void setUpToolbar() {
-        // Setting toolbar and bottom navigation view
-        toolbar = findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-        }
-        // Setting navigation bar color
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(getResources().getColor(R.color.text_secondary));
-        getWindow().setNavigationBarColor(getResources().getColor(R.color.text_secondary));
-        toolbar.setBackgroundColor(getResources().getColor(R.color.text_secondary));
-    }
-
-    private void checkGpsState() {
-        gpsStatusDetector.checkGpsStatus();
-    }
-
-    private void startCheckingForNewUpdates() {
-        mInAppUpdaterManager = InAppUpdateManager.initialize(this);
-        mInAppUpdaterManager.checkAvailableUpdateIfFound(versionCode -> {
-            Log.i(LOG_TAG, "New version found: " + versionCode);
-            mInAppUpdaterManager.popupDialogForUpdateAvailability(userResponse -> {
-                if (userResponse == UserResponse.ACCEPTED) {
-                    mInAppUpdaterManager.setDefaultUpdateMode(UpdateType.APP_UPDATE_TYPE_FLEXIBLE)
-                            .startCheckingForUpdates();
-                } else {
-                    mInAppUpdaterManager.popupSnackbarForUpdateRejection();
-                }
-            });
-        });
-    }
-
-    private void startServices() {
-        // GPSService
-        Intent monitorService = new Intent(this, MonitorService.class);
-        monitorService.putExtra("inputExtra", getResources().getString(R.string.app_name)
-                + " is monitoring your GPS & Network status");
-        if (Utils.getInstance().isOreoOrLater()) {
-            ContextCompat.startForegroundService(this, monitorService);
-        } else {
-            startService(monitorService);
-        }
-    }
-
     private View getRootView() {
         return getWindow().getDecorView();
     }
@@ -181,22 +119,101 @@ public class ActivityBottomNavigationView extends AppCompatActivity
 
     @Override
     public void onGpsAlertCanceledByUser() {
-        checkGpsState();
+        mPresenter.checkGpsState();
     }
 
     private final BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             item -> {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        openFragment(FragmentHome.newInstance());
+                        mPresenter.launchFragment(FragmentHome.newInstance());
                         return true;
                     case R.id.navigation_explore:
-                        openFragment(FragmentExplore.newInstance());
+                        mPresenter.launchFragment(FragmentExplore.newInstance());
                         return true;
                     case R.id.navigation_about:
-                        openFragment(FragmentAbout.newInstance());
+                        mPresenter.launchFragment(FragmentAbout.newInstance());
                         return true;
                 }
                 return false;
             };
+
+    private final IBottomNavView mBottomNavView = new IBottomNavView() {
+        @Override
+        public void initializeView() {
+            toolbar = findViewById(R.id.toolbar);
+            navView = findViewById(R.id.nav_view);
+            gpsStatusDetector = new GpsStatusDetector(ActivityBottomNavigationView.this);
+            AppRaterUtils.appDidLaunched(ActivityBottomNavigationView.this);
+            mPresenter.setUpToolbar();
+        }
+
+        @Override
+        public void setUpToolbar() {
+            // Setting toolbar and bottom navigation view
+            if (toolbar != null) {
+                setSupportActionBar(toolbar);
+                getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+            }
+            // Setting navigation bar color
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.text_secondary));
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.text_secondary));
+            toolbar.setBackgroundColor(getResources().getColor(R.color.text_secondary));
+            mPresenter.checkGpsState();
+        }
+
+        @Override
+        public void checkGpsState() {
+            gpsStatusDetector.checkGpsStatus();
+            mPresenter.startServices();
+        }
+
+        @Override
+        public void startCheckingForNewUpdates() {
+            mInAppUpdaterManager = InAppUpdateManager.initialize(ActivityBottomNavigationView.this);
+            mInAppUpdaterManager.checkAvailableUpdateIfFound(versionCode -> {
+                Log.i(LOG_TAG, "New version found: " + versionCode);
+                mInAppUpdaterManager.popupDialogForUpdateAvailability(userResponse -> {
+                    if (userResponse == UserResponse.ACCEPTED) {
+                        mInAppUpdaterManager.setDefaultUpdateMode(UpdateType.APP_UPDATE_TYPE_FLEXIBLE)
+                                .startCheckingForUpdates();
+                    } else {
+                        mInAppUpdaterManager.popupSnackbarForUpdateRejection();
+                    }
+                });
+            });
+            mPresenter.createBottomNav();
+        }
+
+        @Override
+        public void startServices() {
+            // GPSService
+            Intent monitorService = new Intent(ActivityBottomNavigationView.this,
+                    MonitorService.class);
+            monitorService.putExtra("inputExtra", getResources().getString(R.string.app_name)
+                    + " is monitoring your GPS & Network status");
+            if (Utils.getInstance().isOreoOrLater()) {
+                ContextCompat.startForegroundService(ActivityBottomNavigationView.this,
+                        monitorService);
+            } else {
+                ActivityBottomNavigationView.this.startService(monitorService);
+            }
+            mPresenter.startCheckingForNewUpdates();
+        }
+
+        @Override
+        public void initializeBottomNav() {
+            navView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+            mPresenter.launchFragment(FragmentHome.newInstance());
+        }
+
+        @Override
+        public void openFragment(Fragment fragment) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.nav_host_fragment, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    };
 }

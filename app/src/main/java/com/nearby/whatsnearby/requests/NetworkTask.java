@@ -1,9 +1,12 @@
 package com.nearby.whatsnearby.requests;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
@@ -121,5 +124,26 @@ public class NetworkTask {
                     VolleyLog.d(LOG_TAG, "Error: " + error.getMessage());
                 });
         AppController.getInstance().addToRequestQueue(jsonObjectRequest);
+    }
+
+    public Bitmap sharePlaceTask(double lat, double lng) {
+        final Bitmap[] bitmapToShare = {null};
+        final String locationUrl = Utils.getInstance().getUrlForStaticMaps(lat, lng);
+        Log.i("SharePlaceTask", "Url For StaticMaps --> " + locationUrl);
+        ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+        imageLoader.get(locationUrl, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                if (response.getBitmap() != null) {
+                    bitmapToShare[0] = response.getBitmap();
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        return bitmapToShare[0];
     }
 }

@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
-import com.nearby.whatsnearby.activities.placedetails.ActivityPlaceDetails;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.beans.PlaceDetailParser;
 import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
@@ -80,17 +79,18 @@ public class PlaceDetail extends FragmentActivity implements FetchFromServerUser
                 PlaceDetailParser jsonParser = new PlaceDetailParser(string);
                 final PlaceDetailBean detailBean = jsonParser.getPlaceDetail();
 
-                //Intent intent = new Intent(PlaceDetail.this, AboutPlaceDetailActivity.class);
-                Intent intent = new Intent(PlaceDetail.this, ActivityPlaceDetails.class);
+                Intent intent = new Intent(PlaceDetail.this, DirectionsActivity.class);
                 Bundle data = new Bundle();
                 data.putDouble("Lat", detailBean.getLat());
                 data.putDouble("Lng", detailBean.getLng());
                 data.putString("Name", detailBean.getName());
                 data.putString("Address", detailBean.getFormatted_address());
                 data.putBoolean("Timing", detailBean.isOpen());
+                data.putString("Place_Category", detailBean.getName());
+                data.putString("CompoundAddress", detailBean.getCompoundAddress());
                 data.putString("ContactNumber", detailBean.getInternational_phone_number());
                 data.putFloat("PlaceRatings", detailBean.getRating());
-                data.putStringArray("photos", detailBean.getPhotos());
+                data.putString("Place_Website", detailBean.getWebsiteUrl());
                 intent.putExtras(data);
                 startActivity(intent);
 

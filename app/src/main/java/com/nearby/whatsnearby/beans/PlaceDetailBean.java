@@ -16,6 +16,7 @@ public class PlaceDetailBean implements Serializable {
     private String[] weekday;
     private Review[] reviews;
     private boolean isOpen;
+    private String websiteUrl;
 
     public String getFormatted_address() {
         return formatted_address;
@@ -121,9 +122,17 @@ public class PlaceDetailBean implements Serializable {
         isOpen = open;
     }
 
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+
     public class Review implements Serializable {
         private String author_name;
-        private String author_url;
+        private String author_profile_url;
         private float author_rating;
         private String author_text;
         private long written_time;
@@ -137,12 +146,12 @@ public class PlaceDetailBean implements Serializable {
             this.author_name = author_name;
         }
 
-        public String getAuthor_url() {
-            return author_url;
+        public String getAuthor_profile_url() {
+            return author_profile_url;
         }
 
-        public void setAuthor_url(String author_url) {
-            this.author_url = author_url;
+        public void setAuthor_profile_url(String author_profile_url) {
+            this.author_profile_url = author_profile_url;
         }
 
         public float getRating() {

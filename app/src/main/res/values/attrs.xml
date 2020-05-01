@@ -27,29 +27,6 @@
         <attr name="matProg_linearProgress" format="boolean" />
     </declare-styleable>
 
-    <!-- BOTTOM SHEET STYLES -->
-    <declare-styleable name="CustomBottomSheetBehavior">
-        <attr name="anchorPoint" format="dimension"/>
-        <attr name="defaultState" format="enum">
-            <enum name="stateAnchorPoint" value="3" />
-            <enum name="stateExpanded" value="4"/>
-            <enum name="stateCollapsed" value="5"/>
-            <enum name="stateHidden" value="6"/>
-        </attr>
-    </declare-styleable>
-
-    <declare-styleable name="BackdropBottomSheetBehavior_Params">
-        <attr name="behavior_backdrop_peekHeight" format="dimension"/>
-    </declare-styleable>
-
-    <declare-styleable name="MergedAppBarLayoutBehavior_Params">
-        <attr name="behavior_merged_appbar_anchor_point" format="dimension"/>
-    </declare-styleable>
-
-    <declare-styleable name="ScrollingAppBarLayoutBehavior_Params">
-        <attr name="behavior_scrolling_appbar_peek_height" format="dimension"/>
-    </declare-styleable>
-
     <!-- [CircularImageView] -->
     <declare-styleable name="CircleImageView">
         <attr name="civ_border_width" format="dimension" />

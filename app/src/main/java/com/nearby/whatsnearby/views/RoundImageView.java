@@ -12,12 +12,11 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.nearby.whatsnearby.R;
 
 
-public class RoundImageView extends ImageView {
+public class RoundImageView extends androidx.appcompat.widget.AppCompatImageView {
 
     Context context;
     Bitmap person = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_person_white_24dp)).getBitmap();

@@ -21,12 +21,11 @@ import com.android.volley.toolbox.ImageLoader;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.services.AppController;
-import com.nearby.whatsnearby.utilities.Utils;
 
 public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAdapter.ReviewHolder> {
     private PlaceDetailBean.Review[] reviews;
     private Context context;
-    private String colors = "#30d1d5";
+    private String colors = "#E98A15";
     private ImageLoader imageLoader;
 
     public ReviewRecyclerAdapter(PlaceDetailBean.Review[] reviews, Context context) {
@@ -55,16 +54,20 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAd
     private void bindData(ReviewHolder holder, int position) {
         holder.author_name.setText(reviews[position].getAuthor_name());
         holder.author_text.setText(reviews[position].getAuthor_text());
+
         holder.relative_time_description.setText(reviews[position].getRelative_time_description());
+
         Drawable ratingStars = holder.author_rating.getProgressDrawable();
-        DrawableCompat.setTint(ratingStars, Color.parseColor("#30d1d5"));
+        DrawableCompat.setTint(ratingStars, Color.parseColor("#FFE98A15"));
+
         holder.author_rating.setRating(reviews[position].getRating());
+
         holder.icon.setScaleType(ImageView.ScaleType.CENTER);
         GradientDrawable gd = (GradientDrawable) holder.icon.getBackground().getCurrent();
         gd.setColor(Color.parseColor(colors));
 
-        if (reviews[position].getAuthor_url() != null && reviews[position].getAuthor_url().length() > 24) {
-            String author_url = Utils.getInstance().getAuthorReviewsImageUrl(context, reviews[position].getAuthor_url().substring(24));
+        if (reviews[position].getAuthor_profile_url() != null) {
+            String author_url = reviews[position].getAuthor_profile_url();
             Log.i("ReviewRecyclerAdapter", "Author Reviews Image Url --> " + author_url);
             try {
                 downloadAuthorImages(author_url, holder.icon);

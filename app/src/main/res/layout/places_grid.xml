@@ -17,7 +17,6 @@
         android:horizontalSpacing="2dp"
         android:stretchMode="spacingWidthUniform"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true">
-    </GridView>
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

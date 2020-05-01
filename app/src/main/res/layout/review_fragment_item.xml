@@ -66,15 +66,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="end">
+
                     <RatingBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="?android:ratingBarStyleSmall"
                         android:id="@+id/author_rating"
                         android:numStars="5"
+                        android:layout_gravity="end"
+                        android:progressTint="@color/colorAccent"
+                        style="?android:attr/ratingBarStyleSmall"
                         android:isIndicator="true"
                         android:focusable="false"
-                        android:clickable="false" />
+                        android:clickable="false"/>
                 </LinearLayout>
             </LinearLayout>
 
