@@ -85,7 +85,7 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:1.0.2'
 
     //noinspection GradleCompatible
-    implementation "com.squareup.picasso:picasso:${versions.others.picasso}"
+
     implementation "pl.bclogic:pulsator4droid:${versions.others.pulsator}"
 
     //Volley library for networking operation
@@ -93,7 +93,7 @@ dependencies {
     // TopMessage library
     implementation "com.wizchen.topmessage:topmessage:${versions.others.topMessage}"
     // Material About library
-    implementation "com.github.jrvansuita:MaterialAbout:${versions.others.materialAbbout}"
+    implementation "com.github.jrvansuita:MaterialAbout:${versions.others.materialAbout}"
     testImplementation 'junit:junit:4.13'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 

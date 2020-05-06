@@ -41,16 +41,17 @@ public class MonitorService extends Service {
         Log.i(TAG, "onHandleIntent() starting broadcast");
         if (Utils.getInstance().isOreoOrLater()) {
             if (intent.getAction() != null
-                    && intent.getAction().equals(ACTION_STOP_SERVICE)
-                    && Utils.getInstance().isOreoOrLater()) {
+                    && intent.getAction().equals(ACTION_STOP_SERVICE)) {
                 manager.cancelAll();
+                unRegisterAllBroadcast();
                 stopForeground(true);
             } else {
                 String inputExtra = intent.getStringExtra("inputExtra");
 
                 createNotificationChannel();
 
-                Intent notificationIntent = new Intent(this, ActivityBottomNavigationView.class);
+                Intent notificationIntent = new Intent(this,
+                        ActivityBottomNavigationView.class);
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(this,
                         0, notificationIntent, 0);
@@ -61,13 +62,14 @@ public class MonitorService extends Service {
                 PendingIntent stopServiceIntent = PendingIntent.getService(this,
                         0, stopSelf, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_ID_OREO)
+                Notification notification = new NotificationCompat.Builder(this,
+                        NOTIFICATION_ID_OREO)
                         .setContentTitle(getResources().getString(R.string.app_name))
                         .setContentText(inputExtra)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentIntent(pendingIntent)
-                        .addAction(R.drawable.ic_oreo_noti_stop_black_24dp, "Stop", stopServiceIntent)
-                        .addAction(R.drawable.ic_oreo_noti_close_black_24dp, "Cancel", null)
+                        .addAction(R.drawable.ic_oreo_noti_stop_black_24dp,
+                                "Stop", stopServiceIntent)
                         .build();
                 startForeground(47, notification);
             }

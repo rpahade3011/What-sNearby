@@ -259,11 +259,11 @@ public class AppController extends Application implements Application.ActivityLi
 
     private void initTypeface() {
         TypefaceUtil.overrideFont(this,
-                "SERIF", "fonts/ProductSans-Regular.ttf");
+                "SERIF", GlobalSettings.FONT_PATH);
         TypefaceUtil.overrideFont(this,
-                "MONOSPACE", "fonts/ProductSans-Regular.ttf");
+                "MONOSPACE", GlobalSettings.FONT_PATH);
         TypefaceUtil.overrideFont(this,
-                "DEFAULT", "fonts/ProductSans-Regular.ttf");
+                "DEFAULT", GlobalSettings.FONT_PATH);
     }
 
     /**

@@ -46,4 +46,9 @@ public class BottomNavPresenter implements IBottomNavPresenter {
     public void launchFragment(Fragment fragment) {
         mView.openFragment(fragment);
     }
+
+    @Override
+    public void navigateToPermissionScreen() {
+        mView.navigateToPermissionScreen();
+    }
 }

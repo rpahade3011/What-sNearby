@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.adapters.PlaceListAdapter;
 import com.nearby.whatsnearby.adapters.RecyclerItemClickListener;
@@ -28,6 +27,7 @@ import com.nearby.whatsnearby.fragments.error.ErrorFragment;
 import com.nearby.whatsnearby.places.JSONParser;
 import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.services.GpsTracker;
+import com.nearby.whatsnearby.utilities.AlertType;
 import com.nearby.whatsnearby.utilities.Utils;
 
 import java.util.List;

@@ -18,11 +18,10 @@ buildscript {
             'inappupdater'     :'1.0'
     ]
     ext.versions.others = [
-            'picasso': '2.5.2',
             'pulsator': '1.0.2',
             'volley': '1.1.0',
             'topMessage': '1.0.5',
-            'materialAbbout': '0.2.3'
+            'materialAbout': '0.2.3'
     ]
     repositories {
         jcenter()

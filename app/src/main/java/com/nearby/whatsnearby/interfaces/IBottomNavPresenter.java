@@ -10,4 +10,5 @@ public interface IBottomNavPresenter {
     void startServices();
     void createBottomNav();
     void launchFragment(Fragment fragment);
+    void navigateToPermissionScreen();
 }

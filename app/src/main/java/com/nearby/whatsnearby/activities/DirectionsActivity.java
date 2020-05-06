@@ -40,7 +40,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.constants.GlobalSettings;
@@ -50,6 +49,7 @@ import com.nearby.whatsnearby.presenters.IPlaceDetailsView;
 import com.nearby.whatsnearby.presenters.PlaceDetailsPresenter;
 import com.nearby.whatsnearby.services.AppController;
 import com.nearby.whatsnearby.services.GpsTracker;
+import com.nearby.whatsnearby.utilities.AlertType;
 import com.nearby.whatsnearby.utilities.MapUtil;
 
 import org.json.JSONArray;
@@ -425,6 +425,7 @@ public class DirectionsActivity extends AppCompatActivity {
             mUserDestination = new LatLng(mDataLat, mDataLng);
             MapUtil.getInstance().setSourceBounds(mUserSource);
             MapUtil.getInstance().setDestinationBounds(mUserDestination);
+            mPresenter.setPlaceDetails();
         }
 
         @Override
@@ -463,7 +464,6 @@ public class DirectionsActivity extends AppCompatActivity {
                             }
                         });
             }
-            mPresenter.setPlaceDetails();
         }
 
         @Override

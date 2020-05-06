@@ -1,4 +1,4 @@
-package com.nearby.whatsnearby;
+package com.nearby.whatsnearby.utilities;
 
 public enum AlertType {
     DISCOVER_NEARBY_PLACES,

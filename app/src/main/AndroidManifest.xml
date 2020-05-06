@@ -88,7 +88,7 @@
         </activity>
         <activity android:name=".activities.DirectionsActivity" />
         <activity android:name=".activities.ActivityBottomNavigationView" />
-        <activity android:name=".activities.PermissionActivity" />
+        <activity android:name=".activities.ActivityPermissions" />
         <activity android:name=".activities.ActivitySearch" />
         <activity android:name=".activities.PlaceDetail" />
         <activity android:name=".activities.PlaceResult" />

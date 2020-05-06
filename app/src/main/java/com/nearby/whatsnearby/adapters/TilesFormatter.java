@@ -88,7 +88,7 @@ public class TilesFormatter extends BaseAdapter {
         return convertView;
     }
 
-    private static int getDrawable(Context context, String name) {
+    private int getDrawable(Context context, String name) {
         return context.getResources().getIdentifier(name, "drawable", context.getPackageName());
     }
 }

@@ -12,6 +12,9 @@ public class GlobalSettings {
 
     public static final String LOG_FILE_PATH
             = Environment.getExternalStorageDirectory() + "/" + "WhatsNearby/";
+
+//    public static final String FONT_PATH = "fonts/ProductSans-Regular.ttf";
+    public static final String FONT_PATH = "fonts/Metropolis-Regular.otf";
     /**
      * The default socket timeout in milliseconds
      */

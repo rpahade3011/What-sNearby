@@ -2,7 +2,6 @@ package com.nearby.whatsnearby.fragments.overview;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.activities.ActivityCall;
 import com.nearby.whatsnearby.constants.GlobalSettings;
 import com.nearby.whatsnearby.fragments.error.ErrorFragment;
+import com.nearby.whatsnearby.interfaces.IStaticMapsListener;
 import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.utilities.MapUtil;
 
@@ -40,11 +40,7 @@ public class OverviewFragment extends Fragment {
     private String mDataWebsiteUrl;
     private boolean mDataIsOpen;
 
-    private Bitmap locationBitmap = null;
-    private String imagePath = null;
-
-    public OverviewFragment() {
-    }
+    public OverviewFragment() { }
 
     public static OverviewFragment getInstance(Bundle bundle) {
         OverviewFragment fragment = new OverviewFragment();
@@ -154,16 +150,12 @@ public class OverviewFragment extends Fragment {
     }
 
     private void openSharePlace() {
-        locationBitmap = NetworkTask.getInstance(0).sharePlaceTask(MapUtil.getInstance()
-                        .getSourceBounds().latitude,
-                MapUtil.getInstance().getDestinationBounds().longitude);
-        imagePath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(),
-                locationBitmap, mDataPlaceName, mDataPlaceAddress);
-        assert imagePath != null;
-        sharePlace();
+         NetworkTask.getInstance(0).sharePlaceTask(MapUtil.getInstance()
+                        .getDestinationBounds().latitude,
+                MapUtil.getInstance().getDestinationBounds().longitude, mStaticMapsReceiver);
     }
 
-    private void sharePlace() {
+    private void sharePlace(String imagePath) {
         if (imagePath != null) {
             Uri imageUri = Uri.parse(imagePath);
             if (imageUri != null) {
@@ -219,4 +211,14 @@ public class OverviewFragment extends Fragment {
                     "Could not start the activity", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private final IStaticMapsListener mStaticMapsReceiver = mapImage -> {
+        String imagePath = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(),
+                mapImage, mDataPlaceName, mDataPlaceAddress);
+        if (imagePath != null) {
+            sharePlace(imagePath);
+        } else {
+            Toast.makeText(getActivity(), "Failed to share the place", Toast.LENGTH_SHORT).show();
+        }
+    };
 }

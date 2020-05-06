@@ -17,11 +17,14 @@ import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.fragments.overview.OverviewFragment;
 import com.nearby.whatsnearby.fragments.photos.PhotosFragment;
 import com.nearby.whatsnearby.fragments.review.ReviewFragment;
+import com.nearby.whatsnearby.interfaces.IDetailsOverviewView;
+import com.nearby.whatsnearby.presenters.DetailsOverviewPresenter;
 import com.nearby.whatsnearby.services.AppController;
 
 public class DetailsOverviewActivity extends AppCompatActivity {
 
     private final static String LOG_TAG = "DetailsOverviewActivity";
+    private DetailsOverviewPresenter mPresenter;
 
     // Intent data
     private double mDataLat;
@@ -37,81 +40,18 @@ public class DetailsOverviewActivity extends AppCompatActivity {
     private String[] mDataPhotosArray;
     private boolean mDataIsOpen;
 
+    private ImageView close;
+    private TextView title;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_details);
+        mPresenter = new DetailsOverviewPresenter(mDetailsView);
 
-        getIntentData();
-
-        ImageView close = findViewById(R.id.btn_close);
-        TextView title = findViewById(R.id.title);
-
-        title.setText(mDataPlaceName);
-
-        close.setOnClickListener(v -> {
-            onBackPressed();
-        });
-
-        final ViewPager viewPager = findViewById(R.id.htab_viewpager);
-        setupViewPager(viewPager);
-
-        TabLayout tabLayout = findViewById(R.id.htab_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-    }
-
-    /**
-     * Retrieves data.
-     */
-    private void getIntentData() {
-        Intent data = getIntent();
-        if (data != null) {
-            Bundle bundleData = data.getExtras();
-            if (bundleData != null) {
-                try {
-                    mDataLat = bundleData.getDouble("Lat");
-                    mDataLng = bundleData.getDouble("Lng");
-                    mDataPlaceName = bundleData.getString("Name");
-                    mDataPlaceAddress = bundleData.getString("Address");
-                    mDataIsOpen = bundleData.getBoolean("Timing");
-                    mDataPlaceCategory = bundleData.getString("Place_Category");
-                    mDataCompoundAddress = bundleData.getString("CompoundAddress");
-                    mDataContactNumber = bundleData.getString("ContactNumber");
-                    mDataWebsiteUrl = bundleData.getString("Place_Website");
-                    mDataPlaceRatings = bundleData.getFloat("PlaceRatings");
-                    mDataPhotosArray = AppController.getInstance().getPlacePhotos();
-                    mDataReviewsArray = AppController.getInstance().getReview();
-                } catch (Exception ex) {
-                    Log.e(LOG_TAG, "Exception while retrieving intent data --> "
-                            + ex.getLocalizedMessage());
-                }
-            }
-        }
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        BottomSheetPagerAdapter adapter = new BottomSheetPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(OverviewFragment.getInstance(getOverviewFragmentData()), "Overview");
-        adapter.addFragment(ReviewFragment.getInstance(), "Review");
-        adapter.addFragment(PhotosFragment.getInstance(), "Photos");
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
+        mPresenter.getIntentData();
     }
 
     private Bundle getOverviewFragmentData() {
@@ -124,5 +64,85 @@ public class DetailsOverviewActivity extends AppCompatActivity {
         bundle.putString("Place_Website", mDataWebsiteUrl);
         return bundle;
     }
-}
 
+    private final IDetailsOverviewView mDetailsView = new IDetailsOverviewView() {
+        @Override
+        public void getIntentData() {
+            /*
+             * Retrieves data.
+             */
+            Intent data = getIntent();
+            if (data != null) {
+                Bundle bundleData = data.getExtras();
+                if (bundleData != null) {
+                    try {
+                        mDataLat = bundleData.getDouble("Lat");
+                        mDataLng = bundleData.getDouble("Lng");
+                        mDataPlaceName = bundleData.getString("Name");
+                        mDataPlaceAddress = bundleData.getString("Address");
+                        mDataIsOpen = bundleData.getBoolean("Timing");
+                        mDataPlaceCategory = bundleData.getString("Place_Category");
+                        mDataCompoundAddress = bundleData.getString("CompoundAddress");
+                        mDataContactNumber = bundleData.getString("ContactNumber");
+                        mDataWebsiteUrl = bundleData.getString("Place_Website");
+                        mDataPlaceRatings = bundleData.getFloat("PlaceRatings");
+                        mDataPhotosArray = AppController.getInstance().getPlacePhotos();
+                        mDataReviewsArray = AppController.getInstance().getReview();
+                    } catch (Exception ex) {
+                        Log.e(LOG_TAG, "Exception while retrieving intent data --> "
+                                + ex.getLocalizedMessage());
+                    }
+                }
+            }
+            mPresenter.notifyUIReady();
+        }
+
+        @Override
+        public void notifyUIReady() {
+            close = findViewById(R.id.btn_close);
+            title = findViewById(R.id.title);
+            viewPager = findViewById(R.id.htab_viewpager);
+            tabLayout = findViewById(R.id.htab_tabs);
+
+            title.setText(mDataPlaceName);
+
+            close.setOnClickListener(v -> {
+                onBackPressed();
+            });
+            mPresenter.setupViewPager();
+        }
+
+        @Override
+        public void setupViewPager() {
+            BottomSheetPagerAdapter adapter = new BottomSheetPagerAdapter(getSupportFragmentManager());
+            adapter.addFragment(OverviewFragment.getInstance(getOverviewFragmentData()), "Overview");
+            adapter.addFragment(ReviewFragment.getInstance(), "Review");
+            adapter.addFragment(PhotosFragment.getInstance(), "Photos");
+            viewPager.setAdapter(adapter);
+            viewPager.setCurrentItem(0);
+
+            mPresenter.setupTabs();
+        }
+
+        @Override
+        public void setupTabs() {
+            tabLayout.setupWithViewPager(viewPager);
+            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            });
+        }
+    };
+}

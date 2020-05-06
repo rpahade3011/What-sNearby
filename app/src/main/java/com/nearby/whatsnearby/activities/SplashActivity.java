@@ -7,7 +7,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,9 +28,6 @@ public class SplashActivity extends AppCompatActivity {
     private ImageView img5;
     private ImageView img6;
     private ImageView img7;
-    private TextView nearbyTxt;
-
-    private PermissionsPreferences permissionsPreferences = new PermissionsPreferences();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +47,6 @@ public class SplashActivity extends AppCompatActivity {
         img5 = findViewById(R.id.imageView6);
         img6 = findViewById(R.id.imageView7);
         img7 = findViewById(R.id.imageView8);
-        nearbyTxt = findViewById(R.id.nearbyTxt);
 
         anim = AnimationUtils.loadAnimation(this, R.anim.anim);
         try {
@@ -77,15 +72,14 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startAppNormally() {
-        if (permissionsPreferences.getApplicationOk(getApplicationContext())) {
-            //Intent mainInt = new Intent(SplashActivity.this, NavigationController.class);
+        if (PermissionsPreferences.getInstance().getApplicationOk(getApplicationContext())) {
             Intent mainInt = new Intent(SplashActivity.this,
                     ActivityBottomNavigationView.class);
             SplashActivity.this.startActivity(mainInt);
             SplashActivity.this.finish();
         } else {
             Intent mainIntent = new Intent(SplashActivity.this,
-                    PermissionActivity.class);
+                    ActivityPermissions.class);
             SplashActivity.this.startActivity(mainIntent);
             SplashActivity.this.finish();
         }

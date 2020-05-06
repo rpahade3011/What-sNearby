@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.nearby.whatsnearby.R;
@@ -29,7 +30,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.places_item,
                 parent, false);
         return new ViewHolder(view);
@@ -83,10 +84,6 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
             time.setText(String.format("%.2f", ((d / 5) * 60)) + " min");
             distance.setText((d < 1) ? String.format("%.0f", d * 1000) + " m"
                     : String.format("%.2f", d) + " km");
-            /*if (d < 1)
-                distance.setText(String.format("%.0f", d * 1000) + " m");
-            else
-                distance.setText(String.format("%.2f", d) + " km");*/
         }
     }
 

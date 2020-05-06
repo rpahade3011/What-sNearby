@@ -94,7 +94,7 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAd
         });
     }
 
-    public static class ReviewHolder extends RecyclerView.ViewHolder {
+    static class ReviewHolder extends RecyclerView.ViewHolder {
         private ImageView icon;
         private TextView author_name;
         private TextView author_text;

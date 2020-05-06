@@ -26,7 +26,7 @@ import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.activities.PlaceResult;
 import com.nearby.whatsnearby.adapters.TilesFormatter;
 import com.nearby.whatsnearby.constants.PlacesConstants;
-import com.nearby.whatsnearby.utilities.GooglePlayServicesUtil;
+import com.nearby.whatsnearby.utilities.Utils;
 
 public class FragmentExplore extends Fragment {
     private static final String LOG_TAG = "FragmentExplore";
@@ -88,7 +88,7 @@ public class FragmentExplore extends Fragment {
 
     private void requestNewInterstitial() {
         if (BuildConfig.DEBUG) {
-            String deviceIdForTestAds = GooglePlayServicesUtil.getAdMobDeviceId(getActivity());
+            String deviceIdForTestAds = Utils.getInstance().getAdMobDeviceId(getActivity());
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice(deviceIdForTestAds)
                     .build();
@@ -120,15 +120,13 @@ public class FragmentExplore extends Fragment {
             GridLayoutAnimationController controller
                     = new GridLayoutAnimationController(animation, .2f, .2f);
             gridview.setLayoutAnimation(controller);
-
+            showAds();
             gridview.setOnItemClickListener((adapterView, view1, position, l) -> {
-
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 }
                 mPresenter.gotoPlace(view1, position);
             });
-            showAds();
         }
 
         @Override

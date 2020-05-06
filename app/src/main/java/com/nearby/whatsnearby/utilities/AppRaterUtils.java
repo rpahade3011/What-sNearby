@@ -1,6 +1,5 @@
 package com.nearby.whatsnearby.utilities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -64,43 +63,33 @@ public class AppRaterUtils {
                 mContext.getResources().getString(R.string.app_name)));
         // Button Rate Clicked
         appRaterDialogBuilder.setPositiveButton(mContext.getResources()
-                .getString(R.string.app_rate_rate_now_text), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                try{
-                    mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
-                }catch (Exception e){
-                    mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://market.android.com/details?id="+ APP_PNAME)));
-                }
+                .getString(R.string.app_rate_rate_now_text), (dialogInterface, i) -> {
+                    try{
+                        mContext.startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("market://details?id=" + APP_PNAME)));
+                    }catch (Exception e){
+                        mContext.startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://market.android.com/details?id="+ APP_PNAME)));
+                    }
 
-                dialogInterface.dismiss();
-            }
-        });
+                    dialogInterface.dismiss();
+                });
         // Button No Thanks Clicked
         appRaterDialogBuilder.setNegativeButton(mContext.getResources()
-                .getString(R.string.app_rate_no_text), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (editor != null) {
-                    editor.putBoolean("dontshowagain", true);
-                    editor.commit();
-                }
-                dialogInterface.dismiss();
-            }
-        });
+                .getString(R.string.app_rate_no_text), (dialogInterface, i) -> {
+                    if (editor != null) {
+                        editor.putBoolean("dontshowagain", true);
+                        editor.commit();
+                    }
+                    dialogInterface.dismiss();
+                });
         // Button Remind Later Clicked
         appRaterDialogBuilder.setNeutralButton(mContext.getResources()
-                .getString(R.string.app_rate_remind_later_text), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+                .getString(R.string.app_rate_remind_later_text), (dialogInterface, i)
+                -> dialogInterface.dismiss());
 
         AlertDialog appRaterDialog = appRaterDialogBuilder.create();
-        if (appRaterDialog != null) {
-            appRaterDialog.getWindow().getAttributes().windowAnimations = R.style.RateDialogTheme;
-            appRaterDialog.show();
-        }
+        appRaterDialog.getWindow().getAttributes().windowAnimations = R.style.RateDialogTheme;
+        appRaterDialog.show();
     }
 }

@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
  */
 
 public class PermissionsPreferences {
+    private static PermissionsPreferences mInstance = null;
     private static final String PREF_LOCATION_PERM = "prefLocationPermission";
     private static final String PREF_EXTERNAL_PERM = "prefExternalStorage";
     private static final String PREF_CALL_PHONE = "prefCallPhone";
@@ -17,6 +18,15 @@ public class PermissionsPreferences {
 
     private SharedPreferences spPermissions = null;
     private SharedPreferences.Editor spEditor = null;
+
+    private PermissionsPreferences() {}
+
+    public static PermissionsPreferences getInstance() {
+        if (mInstance == null) {
+            mInstance = new PermissionsPreferences();
+        }
+        return mInstance;
+    }
 
     @SuppressLint("CommitPrefEdits")
     public boolean savePermissionPreferences(Context context, boolean isLocationPermission,
@@ -27,12 +37,13 @@ public class PermissionsPreferences {
             spEditor.putBoolean(PREF_LOCATION_PERM, true);
             spEditor.putBoolean(PREF_EXTERNAL_PERM, true);
             spEditor.putBoolean(PREF_CALL_PHONE, true);
-            spEditor.commit();
+            spEditor.apply();
             return true;
         }
         return false;
     }
 
+    @SuppressLint("CommitPrefEdits")
     public boolean getPermissionPreferences(Context context) {
         spPermissions = context.getSharedPreferences(permissionSharedPrefName, Context.MODE_PRIVATE);
         boolean isLocationPermission = spPermissions.getBoolean(PREF_LOCATION_PERM, false);
@@ -52,6 +63,7 @@ public class PermissionsPreferences {
             if (isLocationPermission && isExternalPermission && isCallPhone) {
                 spEditor = spPermissions.edit();
                 spEditor.putBoolean(PREF_CHECKED_PERMISSIONS, true);
+                spEditor.apply();
                 return true;
             }
 
@@ -62,5 +74,12 @@ public class PermissionsPreferences {
     public boolean getApplicationOk(Context context) {
         spPermissions = context.getSharedPreferences(permissionSharedPrefName, Context.MODE_PRIVATE);
         return spPermissions.getBoolean(PREF_CHECKED_PERMISSIONS, false);
+    }
+
+    public void clear(Context context) {
+        spPermissions = context.getSharedPreferences(permissionSharedPrefName, Context.MODE_PRIVATE);
+        spEditor = spPermissions.edit();
+        spEditor.clear();
+        spEditor.apply();
     }
 }

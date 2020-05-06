@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,10 +31,12 @@ import com.nearby.whatsnearby.fragments.explore.FragmentExplore;
 import com.nearby.whatsnearby.fragments.home.FragmentHome;
 import com.nearby.whatsnearby.interfaces.IBottomNavView;
 import com.nearby.whatsnearby.interfaces.IGpsStatusDetectorCallBack;
+import com.nearby.whatsnearby.permissions.PermissionsPreferences;
 import com.nearby.whatsnearby.presenters.BottomNavPresenter;
 import com.nearby.whatsnearby.services.MonitorService;
 import com.nearby.whatsnearby.utilities.AppRaterUtils;
 import com.nearby.whatsnearby.utilities.GpsStatusDetector;
+import com.nearby.whatsnearby.utilities.PermissionsUtil;
 import com.nearby.whatsnearby.utilities.Utils;
 
 public class ActivityBottomNavigationView extends AppCompatActivity
@@ -45,6 +48,7 @@ public class ActivityBottomNavigationView extends AppCompatActivity
     private BottomNavigationView navView;
     private MaterialToolbar toolbar;
     private BottomNavPresenter mPresenter;
+    private Handler mFragmentHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,7 +133,12 @@ public class ActivityBottomNavigationView extends AppCompatActivity
                         mPresenter.launchFragment(FragmentHome.newInstance());
                         return true;
                     case R.id.navigation_explore:
-                        mPresenter.launchFragment(FragmentExplore.newInstance());
+                        if (PermissionsUtil.getInstance()
+                                .ifPermissionsAreGranted(ActivityBottomNavigationView.this)) {
+                            mPresenter.launchFragment(FragmentExplore.newInstance());
+                        } else {
+                            mPresenter.navigateToPermissionScreen();
+                        }
                         return true;
                     case R.id.navigation_about:
                         mPresenter.launchFragment(FragmentAbout.newInstance());
@@ -141,6 +150,7 @@ public class ActivityBottomNavigationView extends AppCompatActivity
     private final IBottomNavView mBottomNavView = new IBottomNavView() {
         @Override
         public void initializeView() {
+            mFragmentHandler = new Handler();
             toolbar = findViewById(R.id.toolbar);
             navView = findViewById(R.id.nav_view);
             gpsStatusDetector = new GpsStatusDetector(ActivityBottomNavigationView.this);
@@ -210,10 +220,26 @@ public class ActivityBottomNavigationView extends AppCompatActivity
 
         @Override
         public void openFragment(Fragment fragment) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.nav_host_fragment, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            // Sometimes, when fragment has huge data, screen seems hanging
+            // when switching between navigation menus.
+            // So using runnable, the fragment is loaded with cross fade effect.
+            // This effect can be seen in Gmail app.
+            Runnable mPendingRunnable = () -> {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+                transaction.replace(R.id.nav_host_fragment, fragment);
+                transaction.commit();
+            };
+            mFragmentHandler.post(mPendingRunnable);
+        }
+
+        @Override
+        public void navigateToPermissionScreen() {
+            PermissionsPreferences.getInstance().clear(getApplicationContext());
+            Intent mainIntent = new Intent(ActivityBottomNavigationView.this,
+                    ActivityPermissions.class);
+            ActivityBottomNavigationView.this.startActivity(mainIntent);
+            ActivityBottomNavigationView.this.finish();
         }
     };
 }

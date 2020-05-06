@@ -248,7 +248,8 @@ public class GpsTracker extends Service implements LocationListener {
         return new NotificationCompat.Builder(this)
                 .addAction(R.drawable.ic_oreo_noti_launch_black_24dp, getString(R.string.bg_serv_noti_launch_app),
                         activityPendingIntent)
-                .addAction(R.drawable.ic_oreo_noti_close_black_24dp, getString(R.string.bg_serv_noti_rem_loc_updates),
+                .addAction(R.drawable.ic_oreo_noti_close_black_24dp,
+                        getString(R.string.bg_serv_noti_rem_loc_updates),
                         servicePendingIntent)
                 .setContentText(contentText)
                 .setContentTitle(getString(R.string.app_name))

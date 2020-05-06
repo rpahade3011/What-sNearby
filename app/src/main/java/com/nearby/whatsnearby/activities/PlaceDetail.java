@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.beans.PlaceDetailBean;
 import com.nearby.whatsnearby.beans.PlaceDetailParser;
@@ -19,6 +18,7 @@ import com.nearby.whatsnearby.customalertdialog.SweetAlertDialog;
 import com.nearby.whatsnearby.customasynctask.FetchFromServerUser;
 import com.nearby.whatsnearby.fragments.error.ErrorFragment;
 import com.nearby.whatsnearby.requests.NetworkTask;
+import com.nearby.whatsnearby.utilities.AlertType;
 import com.nearby.whatsnearby.utilities.Utils;
 
 public class PlaceDetail extends FragmentActivity implements FetchFromServerUser {

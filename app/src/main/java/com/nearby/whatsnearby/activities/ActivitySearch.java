@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nearby.whatsnearby.AlertType;
 import com.nearby.whatsnearby.R;
 import com.nearby.whatsnearby.adapters.RecyclerItemClickListener;
 import com.nearby.whatsnearby.adapters.SearchResultAdapter;
@@ -35,6 +34,7 @@ import com.nearby.whatsnearby.interfaces.ISearchView;
 import com.nearby.whatsnearby.presenters.SearchPresenter;
 import com.nearby.whatsnearby.requests.NetworkTask;
 import com.nearby.whatsnearby.services.GpsTracker;
+import com.nearby.whatsnearby.utilities.AlertType;
 import com.nearby.whatsnearby.utilities.Utils;
 
 import java.util.ArrayList;

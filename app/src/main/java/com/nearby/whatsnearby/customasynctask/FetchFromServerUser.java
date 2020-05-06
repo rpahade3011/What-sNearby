@@ -1,6 +1,6 @@
 package com.nearby.whatsnearby.customasynctask;
 
-import com.nearby.whatsnearby.AlertType;
+import com.nearby.whatsnearby.utilities.AlertType;
 
 public interface FetchFromServerUser {
     void onPreFetch(AlertType alertType);
