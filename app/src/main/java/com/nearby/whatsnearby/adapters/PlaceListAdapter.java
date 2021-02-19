@@ -68,6 +68,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
             distance = itemView.findViewById(R.id.distance);
             time = itemView.findViewById(R.id.time);
         }
+
         void bindDataToList(PlaceBean bean, GpsTracker loc) {
             name.setText(bean.getName());
             rating.setRating(bean.getRating());

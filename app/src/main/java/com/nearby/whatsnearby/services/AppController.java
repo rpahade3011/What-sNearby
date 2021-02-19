@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -58,7 +59,7 @@ public class AppController extends Application implements Application.ActivityLi
     private static final String REPORT_CONTENT_TITLE = "Unexpected Error occurred";
     private static final String REPORT_CONTENT_TEXT = "Send error report to developer to help this get fixed. " +
             "This won't take your much time. Also includes crash reports.";
-    private static String CRASH_FILE_PATH_NAME;
+    private String CRASH_FILE_PATH_NAME;
 
 
     /**
@@ -109,14 +110,14 @@ public class AppController extends Application implements Application.ActivityLi
 
     private void writeLogToFile(final Thread t, final Throwable e) {
         StackTraceElement[] arr = e.getStackTrace();
-        final StringBuffer report = new StringBuffer(e.toString());
+        final StringBuilder report = new StringBuilder(e.toString());
         final String lineSeperator = "-------------------------------\n\n";
         final String DOUBLE_LINE_SEP = "\n\n";
         final String SINGLE_LINE_SEP = "\n";
         report.append(DOUBLE_LINE_SEP);
         report.append("--------- Stack trace ---------\n");
         for (int i = 0; i < arr.length; i++) {
-            report.append( "    ");
+            report.append("    ");
             report.append(arr[i].toString());
             report.append(SINGLE_LINE_SEP);
         }
@@ -165,12 +166,13 @@ public class AppController extends Application implements Application.ActivityLi
         report.append(Build.VERSION.INCREMENTAL);
         report.append(SINGLE_LINE_SEP);
         report.append(lineSeperator);
-        Log.e(TAG ,"Crash Report :: " + report.toString());
+        Log.e(TAG, "Crash Report :: " + report.toString());
 
         // Make file name - file must be saved to external storage or it wont be readable by
         // the email app.
         String path = GlobalSettings.LOG_FILE_PATH;
         boolean isDirectoryCreated = Utils.getInstance().createDir(path);
+        Log.i(TAG, "isDirectoryCreated :: " + isDirectoryCreated);
         String fileNameForNougat = "crash_log_file_" + System.currentTimeMillis() + ".txt";
         CRASH_FILE_PATH_NAME = path + fileNameForNougat;
 
@@ -222,23 +224,32 @@ public class AppController extends Application implements Application.ActivityLi
 
     private void sendLogFile(String fullName, String fileNameForNougat) {
         Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
         Uri uri = null;
         if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
             File file = new File("/storage/emulated/0/WhatsNearby/" + fileNameForNougat);
             uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", file);
             String encodedUri = uri.getEncodedPath();
+            Log.i(TAG, "sendLogFile :: URI :: " + encodedUri);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setType("plain/text");
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{SEND_LOG_TO_EMAIL_TEXT});
             intent.putExtra(Intent.EXTRA_SUBJECT, SEND_LOG_TO_EMAIL_SUBJECT);
             intent.putExtra(Intent.EXTRA_STREAM, encodedUri);
+            intent.putExtra("return-data", true);
             intent.putExtra(Intent.EXTRA_TEXT, SEND_LOG_TO_EMAIL_EXTRA_TEXT); // do this so some email clients don't complain about empty body.
             mCurrentActivity.startActivity(intent);
         } else {
-            intent.setType("plain/text");
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{SEND_LOG_TO_EMAIL_TEXT});
             intent.putExtra(Intent.EXTRA_SUBJECT, SEND_LOG_TO_EMAIL_SUBJECT);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fullName));
+            File root = Environment.getExternalStorageDirectory();
+            String pathToMyAttachedFile = "WhatsNearby/" + fileNameForNougat;
+            File file = new File(root, pathToMyAttachedFile);
+            if (!file.exists() || !file.canRead()) {
+                return;
+            }
+            uri = Uri.fromFile(file);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.putExtra("return-data", true);
             intent.putExtra(Intent.EXTRA_TEXT, SEND_LOG_TO_EMAIL_EXTRA_TEXT); // do this so some email clients don't complain about empty body.
             mCurrentActivity.startActivity(intent);
         }

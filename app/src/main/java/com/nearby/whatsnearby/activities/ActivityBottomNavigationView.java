@@ -215,7 +215,15 @@ public class ActivityBottomNavigationView extends AppCompatActivity
         @Override
         public void initializeBottomNav() {
             navView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-            mPresenter.launchFragment(FragmentHome.newInstance());
+            // Checking if app is launched from app shortcuts
+            String value = getIntent().getStringExtra("key_explore");
+            if (value != null && value.equals("value_navigate_to_explore")) {
+                mPresenter.launchFragment(FragmentExplore.newInstance());
+                navView.getMenu().findItem(R.id.navigation_explore).setChecked(true);
+            } else {
+                mPresenter.launchFragment(FragmentHome.newInstance());
+                navView.getMenu().findItem(R.id.navigation_home).setChecked(true);
+            }
         }
 
         @Override

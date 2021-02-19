@@ -127,14 +127,14 @@
                 android:textSize="12sp"
                 android:layout_gravity="center_vertical"
                 android:text="Address"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="30dp"
                 android:textColor="@color/white"
                 android:gravity="start"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:padding="8dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
@@ -150,10 +150,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/places_detail_int_phone_detail"
                 android:layout_weight="1"
-                android:layout_marginEnd="30dp"
                 android:textStyle="bold"
                 android:textSize="12sp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="30dp"
                 android:text="123456789"
                 android:textColor="@color/white"
                 android:gravity="start"/>
@@ -161,7 +160,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:padding="8dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
@@ -177,10 +176,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/places_detail_compound_detail"
                 android:layout_weight="1"
-                android:layout_marginEnd="30dp"
                 android:textStyle="bold"
                 android:textSize="12sp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="30dp"
                 android:text="123456789"
                 android:textColor="@color/white"
                 android:gravity="start"/>
@@ -188,7 +186,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:padding="8dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
@@ -204,19 +202,17 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/places_detail_website_detail"
                 android:layout_weight="1"
-                android:layout_marginEnd="30dp"
                 android:textStyle="bold"
                 android:textSize="12sp"
-
-                android:layout_marginStart="32dp"
-                android:text="123456789"
-                android:textColor="@color/white"
-                android:gravity="start"/>
+                android:layout_marginStart="30dp"
+                android:autoText="true"
+                android:text="dkjfhdskfhkdfhkfhdfhdjkfkdsfkdfhkdsfhdshfdshfkdsfhkjdshfksdjhfkjdshfkjdshfkjdshfkdsjfhkdsfhksjdhfkjsdhfksjdfhksdhfkjsdhfkdshfksdhfksdhfksdhfkjsdhfkjsdhfkjsdhfkjsdfhsdkjfhsdlhfkjhfkdshffhdshfkjdsfhkjdfhkjdsfkjdsfkdshfkdshfdshfkjsdhfkjdshfkjdshfkjsdhfkjsdhfkjdshfksdhfsdkfhsdkjfhkjsdhfkjsdhfkjsdhfkjsdhfkjdshfkjdshfkjdshfkjsdfh"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:padding="8dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
@@ -232,10 +228,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/places_detail_timings"
                 android:layout_weight="1"
-                android:layout_marginEnd="30dp"
                 android:textStyle="bold"
                 android:textSize="12sp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="30dp"
                 android:text="123456789"
                 android:textColor="@color/white"
                 android:gravity="start"/>

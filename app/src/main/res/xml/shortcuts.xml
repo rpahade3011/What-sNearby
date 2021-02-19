@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:targetApi="25">
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_explore_black_24dp"
+        android:shortcutId="shortcut_explore"
+        android:shortcutShortLabel="@string/explore">
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetClass="com.nearby.whatsnearby.activities.SplashActivity"
+            android:targetPackage="com.nearby.whatsnearby">
+        </intent>
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.nearby.whatsnearby.activities.ActivityBottomNavigationView"
+            android:targetPackage="com.nearby.whatsnearby">
+            <extra
+                android:name="key_explore"
+                android:value="value_navigate_to_explore" />
+        </intent>
+    </shortcut>
+
+</shortcuts>

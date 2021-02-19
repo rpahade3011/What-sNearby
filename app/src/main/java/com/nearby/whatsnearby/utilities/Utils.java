@@ -135,7 +135,7 @@ public class Utils {
         if (!file.exists()) {
             try {
                 file.mkdirs();
-                Log.e(LOG_TAG, "DIRECTORY CREATED, LOG_DIR : " + LOG_DIR);
+                Log.i(LOG_TAG, "DIRECTORY CREATED, LOG_DIR : " + LOG_DIR);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();

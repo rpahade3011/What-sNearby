@@ -36,4 +36,8 @@ public class GlobalSettings {
     public static long BACK_PRESSED;
 
     public static final String PREFIX_DEFAULT_GOOGLE_NAVIGATE = "google.navigation:q=";
+
+    public static final int NAV_INDEX_HOME = 0;
+    public static final int NAV_INDEX_EXPLORE = 1;
+    public static final int NAV_INDEX_ABOUT = 2;
 }
